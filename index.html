@@ -410,6 +410,22 @@
       0%,100%{transform: scale(1); opacity:.55}
       50%{transform: scale(1.5); opacity:.9}
     }
+    /* Hero person: calm "breathing" motion */
+.heroHuman {
+  transform-origin: 50% 60%;
+  animation: breathe 6.5s ease-in-out infinite;
+  filter: drop-shadow(0 18px 30px rgba(15,23,42,.10));
+}
+
+@keyframes breathe {
+  0%, 100% { transform: translateY(0) scale(1); opacity: .98; }
+  50%      { transform: translateY(-6px) scale(1.015); opacity: 1; }
+}
+
+/* Optional: extra gentle drift on the whole illustration area */
+.illustration svg {
+  will-change: transform;
+}
 
     footer{
       margin-top: 16px;
