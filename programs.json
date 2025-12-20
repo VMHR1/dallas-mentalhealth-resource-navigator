@@ -2,116 +2,2110 @@
   "meta": {
     "version": "1.0",
     "region": "Dallas–Fort Worth",
+    "state": "TX",
     "language": "English",
-    "source": "Children’s Health community resource lists",
-    "disclaimer": "This directory is for informational purposes only. Listings are not ranked and inclusion does not imply endorsement. Availability and eligibility may change; confirm details directly with programs.",
+    "source_notes": "Compiled from Children’s Health informational resource lists. Listings are not ranked and inclusion does not imply endorsement.",
     "last_updated": "2025-12-20"
   },
   "programs": [
     {
-      "program_id": "php-childrens-dallas",
+      "program_id": "nav-psychiatry-dallas",
+      "entry_type": "System Navigation",
+      "organization": "Psychiatry (Dallas)",
+      "program_name": "Scheduling / Intake Line",
+      "level_of_care": "Navigation",
+      "service_setting": "Phone",
+      "ages_served": "Unknown",
+      "locations": [{ "city": "Dallas", "state": "TX", "zip": "" }],
+      "phone": "214-867-2003",
+      "notes": "General psychiatry contact line listed in Children’s Health resource directories.",
+      "transportation_available": "N/A",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health PHP/IOP/Crisis resource lists",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "nav-psychiatry-plano",
+      "entry_type": "System Navigation",
+      "organization": "Psychiatry (Plano)",
+      "program_name": "Scheduling / Intake Line",
+      "level_of_care": "Navigation",
+      "service_setting": "Phone",
+      "ages_served": "Unknown",
+      "locations": [{ "city": "Plano", "state": "TX", "zip": "" }],
+      "phone": "469-216-5531",
+      "notes": "General psychiatry contact line listed in Children’s Health resource directories.",
+      "transportation_available": "N/A",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health PHP/IOP/Crisis resource lists",
+      "last_verified": "2025-12-20"
+    },
+
+    /* ------------------------- PHP / DAY TREATMENT ------------------------- */
+
+    {
+      "program_id": "php-childrens-health-dallas",
+      "entry_type": "Treatment Program",
       "organization": "Children’s Health",
       "program_name": "Day Treatment / Partial Hospitalization Program",
       "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
       "ages_served": "6+",
-      "county": "Dallas",
-      "city": "Dallas",
-      "address": "1341 W. Mockingbird Ln., Ste. 500",
+      "locations": [
+        {
+          "city": "Dallas",
+          "state": "TX",
+          "zip": "75247",
+          "address": "1341 W. Mockingbird Ln., Ste. 500"
+        }
+      ],
       "phone": "214-456-8899",
+      "notes": "Phone listed with option 1 in the directory.",
       "transportation_available": "Unknown",
-      "notes": "Day treatment program providing higher level of care than outpatient therapy.",
-      "verification_source": "Children’s Health Day Treatment List",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
       "last_verified": "2025-12-20"
     },
     {
-      "program_id": "php-dallas-behavioral-hospital",
+      "program_id": "php-dallas-behavioral-health-care-hospital-desoto",
+      "entry_type": "Treatment Program",
       "organization": "Dallas Behavioral Health Care Hospital",
-      "program_name": "Adolescent PHP",
+      "program_name": "Day Treatment / PHP",
       "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
       "ages_served": "13–17",
-      "county": "Dallas",
-      "city": "DeSoto",
-      "address": "800 Kirnwood Drive",
+      "locations": [
+        {
+          "city": "DeSoto",
+          "state": "TX",
+          "zip": "75115",
+          "address": "800 Kirnwood Drive"
+        }
+      ],
       "phone": "972-982-0897",
-      "transportation_available": "Yes",
       "notes": "",
-      "verification_source": "Children’s Health Day Treatment List",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
       "last_verified": "2025-12-20"
     },
     {
-      "program_id": "iop-sparc-childrens",
+      "program_id": "php-texas-health-bh-center-richardson",
+      "entry_type": "Treatment Program",
+      "organization": "Texas Health Behavioral Health Center Richardson",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "12+",
+      "locations": [
+        {
+          "city": "Richardson",
+          "state": "TX",
+          "zip": "75082",
+          "address": "3661 North Plano Road, Suite 2100"
+        }
+      ],
+      "phone": "682-626-8719",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-reflections-dallas",
+      "entry_type": "Treatment Program",
+      "organization": "Reflections Lifestyle Center - Dallas",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "14+",
+      "locations": [
+        {
+          "city": "Dallas",
+          "state": "TX",
+          "zip": "75225",
+          "address": "8333 Douglas Ave., Ste. 350"
+        }
+      ],
+      "phone": "469-777-4688",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-reflections-richardson",
+      "entry_type": "Treatment Program",
+      "organization": "Reflections Lifestyle Center - Richardson",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "14+",
+      "locations": [
+        {
+          "city": "Richardson",
+          "state": "TX",
+          "zip": "75080",
+          "address": "100 N. Central Expy., Ste. 300"
+        }
+      ],
+      "phone": "469-777-4688",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "php-changes-frisco",
+      "entry_type": "Treatment Program",
+      "organization": "Changes Frisco",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "11+",
+      "locations": [
+        {
+          "city": "Frisco",
+          "state": "TX",
+          "zip": "75034",
+          "address": "6870 Lebanon Rd., Suite 300"
+        }
+      ],
+      "phone": "469-850-2040",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-changes-mckinney",
+      "entry_type": "Treatment Program",
+      "organization": "Changes McKinney",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "11+",
+      "locations": [
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75071",
+          "address": "1820 N. Lake Forest Drive"
+        }
+      ],
+      "phone": "469-634-1270",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-texas-health-seay-plano",
+      "entry_type": "Treatment Program",
+      "organization": "Texas Health Seay Behavioral Health Plano",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "12+",
+      "locations": [
+        {
+          "city": "Plano",
+          "state": "TX",
+          "zip": "75093",
+          "address": "6110 W Parker Rd."
+        }
+      ],
+      "phone": "682-626-8719",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-connections-mckinney",
+      "entry_type": "Treatment Program",
+      "organization": "Connections Wellness Group McKinney",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "8+",
+      "locations": [
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75071",
+          "address": "7290 Virginia Parkway, Ste. 3100"
+        }
+      ],
+      "phone": "940-617-6166",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-connections-plano",
+      "entry_type": "Treatment Program",
+      "organization": "Connections Wellness Group Plano",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "13+",
+      "locations": [
+        {
+          "city": "Plano",
+          "state": "TX",
+          "zip": "75093",
+          "address": "6101 West Plano Parkway, Suite 240"
+        }
+      ],
+      "phone": "469-613-3390",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-reflections-the-colony",
+      "entry_type": "Treatment Program",
+      "organization": "Reflections Lifestyle Center (The Colony)",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "10+",
+      "locations": [
+        {
+          "city": "The Colony",
+          "state": "TX",
+          "zip": "75056",
+          "address": "4901 Windhaven Pkwy., Ste. 200"
+        }
+      ],
+      "phone": "469-777-4688",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "php-carrus-frisco",
+      "entry_type": "Treatment Program",
+      "organization": "Carrus Care Frisco",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "8–17",
+      "locations": [
+        {
+          "city": "Frisco",
+          "state": "TX",
+          "zip": "75034",
+          "address": "2440 Timber Ridge Dr., Suite 105"
+        }
+      ],
+      "phone": "903-870-1222",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-carrus-mckinney",
+      "entry_type": "Treatment Program",
+      "organization": "Carrus Care McKinney",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "8–17",
+      "locations": [
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75072",
+          "address": "3600 Eldorado Pkwy, Bldg C, Ste 1"
+        }
+      ],
+      "phone": "903-870-1222",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-carrus-plano",
+      "entry_type": "Treatment Program",
+      "organization": "Carrus Care Plano",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "8–17",
+      "locations": [
+        {
+          "city": "Plano",
+          "state": "TX",
+          "zip": "75093",
+          "address": "4701 Old Shepard Place, Ste. 200"
+        }
+      ],
+      "phone": "903-870-1222",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "php-basepoint-mckinney",
+      "entry_type": "Treatment Program",
+      "organization": "BasePoint Academy McKinney",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "11+",
+      "locations": [
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75069",
+          "address": "4733 Medical Center Dr."
+        }
+      ],
+      "phone": "469-502-5321",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-basepoint-frisco",
+      "entry_type": "Treatment Program",
+      "organization": "BasePoint Academy Frisco",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "11+",
+      "locations": [
+        {
+          "city": "Frisco",
+          "state": "TX",
+          "zip": "75036",
+          "address": "8275 Judges Way, Suite 100"
+        }
+      ],
+      "phone": "469-502-5321",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "php-connections-denton",
+      "entry_type": "Treatment Program",
+      "organization": "Connections Wellness Group Denton",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "12+",
+      "locations": [
+        {
+          "city": "Denton",
+          "state": "TX",
+          "zip": "76210",
+          "address": "2711 Shoreline Dr., Ste. 121"
+        }
+      ],
+      "phone": "972-239-3578",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-branches-denton",
+      "entry_type": "Treatment Program",
+      "organization": "Branches Denton",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "13–17",
+      "locations": [
+        {
+          "city": "Denton",
+          "state": "TX",
+          "zip": "76201",
+          "address": "2012 West University Dr."
+        }
+      ],
+      "phone": "844-963-4996",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-bricolage-flower-mound",
+      "entry_type": "Treatment Program",
+      "organization": "Bricolage Behavioral Health",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "7+",
+      "locations": [
+        {
+          "city": "Flower Mound",
+          "state": "TX",
+          "zip": "75022",
+          "address": "3204 Long Prairie Road, Suite A"
+        }
+      ],
+      "phone": "469-218-7537",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-carrus-flower-mound",
+      "entry_type": "Treatment Program",
+      "organization": "Carrus Care Flower Mound",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "8–17",
+      "locations": [
+        {
+          "city": "Flower Mound",
+          "state": "TX",
+          "zip": "75022",
+          "address": "2750 Churchill Dr., Suite 110"
+        }
+      ],
+      "phone": "903-870-1222",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "php-texas-health-arlington",
+      "entry_type": "Treatment Program",
+      "organization": "Texas Health Arlington",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "13+",
+      "locations": [
+        {
+          "city": "Arlington",
+          "state": "TX",
+          "zip": "76012",
+          "address": "1001 N. Waldrop Dr., Ste. 510"
+        }
+      ],
+      "phone": "682-549-7961",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-texas-health-springwood-bedford",
+      "entry_type": "Treatment Program",
+      "organization": "Texas Health Springwood",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "13+",
+      "locations": [
+        {
+          "city": "Bedford",
+          "state": "TX",
+          "zip": "76022",
+          "address": "2717 Tibbets Dr."
+        }
+      ],
+      "phone": "682-549-7961",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-branches-fort-worth",
+      "entry_type": "Treatment Program",
+      "organization": "Branches Fort Worth",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "5+",
+      "locations": [
+        {
+          "city": "Fort Worth",
+          "state": "TX",
+          "zip": "76104",
+          "address": "1307 8th Ave., Floor 5"
+        }
+      ],
+      "phone": "844-963-4673",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-mesa-springs-innovations-arlington",
+      "entry_type": "Treatment Program",
+      "organization": "Mesa Springs – Innovations (Arlington)",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "8+",
+      "locations": [
+        {
+          "city": "Arlington",
+          "state": "TX",
+          "zip": "76018",
+          "address": "4935 S. Collins St."
+        }
+      ],
+      "phone": "682-320-2800",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-mesa-springs-innovations-fort-worth",
+      "entry_type": "Treatment Program",
+      "organization": "Mesa Springs – Innovations (Fort Worth)",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "8+",
+      "locations": [
+        {
+          "city": "Fort Worth",
+          "state": "TX",
+          "zip": "76116",
+          "address": "6421 Camp Bowie Blvd., Ste. 200"
+        }
+      ],
+      "phone": "817-841-8002",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-mind-above-matter-keller",
+      "entry_type": "Treatment Program",
+      "organization": "Mind Above Matter (Keller)",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "9+",
+      "locations": [
+        {
+          "city": "Keller",
+          "state": "TX",
+          "zip": "76244",
+          "address": "4232 Heritage Trace Pkwy"
+        }
+      ],
+      "phone": "817-662-6179",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-mind-above-matter-burleson",
+      "entry_type": "Treatment Program",
+      "organization": "Mind Above Matter (Burleson)",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "9+",
+      "locations": [
+        {
+          "city": "Burleson",
+          "state": "TX",
+          "zip": "76028",
+          "address": "2915 S Burleson Blvd."
+        }
+      ],
+      "phone": "817-662-6179",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-connections-keller",
+      "entry_type": "Treatment Program",
+      "organization": "Connections Wellness Group (Keller)",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "10+",
+      "locations": [
+        {
+          "city": "Keller",
+          "state": "TX",
+          "zip": "76244",
+          "address": "9726 North Beach Street"
+        }
+      ],
+      "phone": "817-770-0208",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-connections-mansfield",
+      "entry_type": "Treatment Program",
+      "organization": "Connections Wellness Group (Mansfield)",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "10+",
+      "locations": [
+        {
+          "city": "Mansfield",
+          "state": "TX",
+          "zip": "76063",
+          "address": "1900 Matlock Rd., Building 2"
+        }
+      ],
+      "phone": "817-500-5984",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "php-carrus-mansfield",
+      "entry_type": "Treatment Program",
+      "organization": "Carrus Care Mansfield",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "8–17",
+      "locations": [
+        {
+          "city": "Mansfield",
+          "state": "TX",
+          "zip": "76063",
+          "address": "1707 Fountainview Dr."
+        }
+      ],
+      "phone": "903-870-1222",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-carrus-keller",
+      "entry_type": "Treatment Program",
+      "organization": "Carrus Care Keller",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "8–17",
+      "locations": [
+        {
+          "city": "Keller",
+          "state": "TX",
+          "zip": "76244",
+          "address": "4561 Heritage Trace Pkwy, Ste. 109"
+        }
+      ],
+      "phone": "903-870-1222",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-cook-childrens-fort-worth",
+      "entry_type": "Treatment Program",
+      "organization": "Cook Children’s",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "5–17",
+      "locations": [
+        {
+          "city": "Fort Worth",
+          "state": "TX",
+          "zip": "76104",
+          "address": "801 7th Ave."
+        }
+      ],
+      "phone": "682-885-3917",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-branches-excel-fort-worth",
+      "entry_type": "Treatment Program",
+      "organization": "Branches Excel Fort Worth",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "5+",
+      "locations": [
+        {
+          "city": "Fort Worth",
+          "state": "TX",
+          "zip": "76104",
+          "address": "1307 8th Ave., Fl. 5"
+        }
+      ],
+      "phone": "844-918-4100",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "php-basepoint-forney",
+      "entry_type": "Treatment Program",
+      "organization": "BasePoint Academy (Forney)",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "11+",
+      "locations": [
+        {
+          "city": "Forney",
+          "state": "TX",
+          "zip": "75126",
+          "address": "713 W. Broad St., Suite 200"
+        }
+      ],
+      "phone": "469-502-5321",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-connections-rockwall",
+      "entry_type": "Treatment Program",
+      "organization": "Connections Wellness Group (Rockwall)",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "11+",
+      "locations": [
+        {
+          "city": "Rockwall",
+          "state": "TX",
+          "zip": "75032",
+          "address": "1005 W. Ralph Hall Pkwy, Suite 201"
+        }
+      ],
+      "phone": "469-545-0160",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-carrus-sherman",
+      "entry_type": "Treatment Program",
+      "organization": "Carrus Care Sherman",
+      "program_name": "Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "In-person",
+      "ages_served": "12–17",
+      "locations": [
+        {
+          "city": "Sherman",
+          "state": "TX",
+          "zip": "75092",
+          "address": "1724 US Highway 82 W, Suite 100"
+        }
+      ],
+      "phone": "903-870-1222",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "php-virtual-basepoint",
+      "entry_type": "Treatment Program",
+      "organization": "BasePoint",
+      "program_name": "Virtual Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "Virtual",
+      "ages_served": "11+",
+      "locations": [{ "city": "Virtual", "state": "TX", "zip": "", "address": "" }],
+      "phone": "",
+      "notes": "Listed as a virtual program.",
+      "transportation_available": "N/A",
+      "insurance_notes": "Accepts commercial insurance",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "php-virtual-connections",
+      "entry_type": "Treatment Program",
+      "organization": "Connections Wellness Group",
+      "program_name": "Virtual Day Treatment / PHP",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "service_setting": "Virtual",
+      "ages_served": "13+",
+      "locations": [{ "city": "Virtual", "state": "TX", "zip": "", "address": "" }],
+      "phone": "",
+      "notes": "Listed as a virtual program.",
+      "transportation_available": "N/A",
+      "insurance_notes": "Accepts commercial insurance",
+      "verification_source": "Children’s Health Day Treatment Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    /* ------------------------------- IOP LIST ------------------------------ */
+
+    {
+      "program_id": "iop-childrens-sparc-dallas",
+      "entry_type": "Treatment Program",
       "organization": "Children’s Medical Center",
       "program_name": "SPARC Program (Suicide Prevention and Resilience at Children’s)",
       "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
       "ages_served": "12+",
-      "county": "Dallas",
-      "city": "Dallas",
-      "address": "1341 W. Mockingbird Lane, Ste. E1200",
+      "locations": [
+        {
+          "city": "Dallas",
+          "state": "TX",
+          "zip": "75247",
+          "address": "Mockingbird Towers, 1341 W. Mockingbird Lane, Ste E1200"
+        }
+      ],
       "phone": "214-456-3600",
+      "notes": "",
       "transportation_available": "Unknown",
-      "notes": "IOP focused on suicide prevention and resilience.",
-      "verification_source": "Children’s Health IOP List",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
       "last_verified": "2025-12-20"
     },
     {
-      "program_id": "iop-southern-area",
+      "program_id": "iop-southern-area-dallas",
+      "entry_type": "Treatment Program",
       "organization": "Southern Area Behavioral Health",
-      "program_name": "Adolescent IOP",
+      "program_name": "IOP",
       "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
       "ages_served": "12+",
-      "county": "Dallas",
-      "city": "Dallas",
-      "address": "4215 Gannon Lane",
+      "locations": [
+        {
+          "city": "Dallas",
+          "state": "TX",
+          "zip": "75237",
+          "address": "4215 Gannon Lane"
+        }
+      ],
       "phone": "972-283-9090",
-      "transportation_available": "Unknown",
       "notes": "",
-      "verification_source": "Children’s Health IOP List",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
       "last_verified": "2025-12-20"
     },
     {
       "program_id": "iop-unity-richardson",
+      "entry_type": "Treatment Program",
       "organization": "Unity Behavioral Health",
-      "program_name": "Adolescent IOP",
+      "program_name": "IOP",
       "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
       "ages_served": "8+",
-      "county": "Dallas",
-      "city": "Richardson",
-      "address": "660 W. Campbell Road, Suite 100",
+      "locations": [
+        {
+          "city": "Richardson",
+          "state": "TX",
+          "zip": "75080",
+          "address": "660 W. Campbell Road, Suite 100"
+        }
+      ],
       "phone": "469-940-6900",
-      "transportation_available": "Unknown",
       "notes": "",
-      "verification_source": "Children’s Health IOP List",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
       "last_verified": "2025-12-20"
     },
+    {
+      "program_id": "iop-texas-health-bh-center-richardson",
+      "entry_type": "Treatment Program",
+      "organization": "Texas Health Behavioral Health Center Richardson",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "12+",
+      "locations": [
+        {
+          "city": "Richardson",
+          "state": "TX",
+          "zip": "75082",
+          "address": "3661 North Plano Road, Suite 2100"
+        }
+      ],
+      "phone": "682-626-8719",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "iop-dallas-behavioral-health-care-hospital-desoto",
+      "entry_type": "Treatment Program",
+      "organization": "Dallas Behavioral Health Care Hospital",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "13–17",
+      "locations": [
+        {
+          "city": "DeSoto",
+          "state": "TX",
+          "zip": "75115",
+          "address": "800 Kirnwood Drive"
+        }
+      ],
+      "phone": "972-982-0897",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "iop-reflections-dallas",
+      "entry_type": "Treatment Program",
+      "organization": "Reflections Lifestyle Center - Dallas",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "14+",
+      "locations": [
+        {
+          "city": "Dallas",
+          "state": "TX",
+          "zip": "75225",
+          "address": "8333 Douglas Ave., Ste. 350"
+        }
+      ],
+      "phone": "469-777-4688",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-changes-frisco",
+      "entry_type": "Treatment Program",
+      "organization": "Changes Frisco",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "11+",
+      "locations": [
+        {
+          "city": "Frisco",
+          "state": "TX",
+          "zip": "75034",
+          "address": "6870 Lebanon Rd., Suite 300"
+        }
+      ],
+      "phone": "469-850-2040",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "iop-changes-mckinney",
+      "entry_type": "Treatment Program",
+      "organization": "Changes McKinney",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "11+",
+      "locations": [
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75071",
+          "address": "1820 N. Lake Forest Drive"
+        }
+      ],
+      "phone": "469-634-1270",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "iop-texas-health-bh-center-frisco",
+      "entry_type": "Treatment Program",
+      "organization": "Texas Health Behavioral Health Center Frisco",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "12+",
+      "locations": [
+        {
+          "city": "Frisco",
+          "state": "TX",
+          "zip": "75034",
+          "address": "5858 Main Street, Suite 101"
+        }
+      ],
+      "phone": "682-549-7961",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "iop-texas-health-seay-plano",
+      "entry_type": "Treatment Program",
+      "organization": "Texas Health Seay Behavioral Health Plano",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "12+",
+      "locations": [
+        {
+          "city": "Plano",
+          "state": "TX",
+          "zip": "75093",
+          "address": "6110 W Parker Rd."
+        }
+      ],
+      "phone": "682-626-8719",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "iop-connections-plano",
+      "entry_type": "Treatment Program",
+      "organization": "Connections Wellness Group Plano",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "13+",
+      "locations": [
+        {
+          "city": "Plano",
+          "state": "TX",
+          "zip": "75093",
+          "address": "6101 West Plano Parkway, Suite 240"
+        }
+      ],
+      "phone": "469-613-3390",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "iop-connections-mckinney",
+      "entry_type": "Treatment Program",
+      "organization": "Connections Wellness Group McKinney",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "8+",
+      "locations": [
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75071",
+          "address": "7290 Virginia Parkway, Ste. 3100"
+        }
+      ],
+      "phone": "940-617-6166",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "iop-connections-denton",
+      "entry_type": "Treatment Program",
+      "organization": "Connections Wellness Group Denton",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "12+",
+      "locations": [
+        {
+          "city": "Denton",
+          "state": "TX",
+          "zip": "76210",
+          "address": "2711 Shoreline Dr., Ste. 121"
+        }
+      ],
+      "phone": "972-239-3578",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "iop-reflections-richardson",
+      "entry_type": "Treatment Program",
+      "organization": "Reflections Lifestyle Center - Richardson",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "14+",
+      "locations": [
+        {
+          "city": "Richardson",
+          "state": "TX",
+          "zip": "75080",
+          "address": "100 N. Central Expy., Ste. 300"
+        }
+      ],
+      "phone": "469-777-4688",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-bricolage-flower-mound",
+      "entry_type": "Treatment Program",
+      "organization": "Bricolage Behavioral Health",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "7+",
+      "locations": [
+        {
+          "city": "Flower Mound",
+          "state": "TX",
+          "zip": "75022",
+          "address": "3204 Long Prairie Road, Suite A"
+        }
+      ],
+      "phone": "469-218-7537",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-carrus-flower-mound",
+      "entry_type": "Treatment Program",
+      "organization": "Carrus Care Flower Mound",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "8–17",
+      "locations": [
+        {
+          "city": "Flower Mound",
+          "state": "TX",
+          "zip": "75022",
+          "address": "2750 Churchill Dr., Suite 110"
+        }
+      ],
+      "phone": "903-870-1222",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-reflections-the-colony",
+      "entry_type": "Treatment Program",
+      "organization": "Reflections Lifestyle Center (The Colony)",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "11–17",
+      "locations": [
+        {
+          "city": "The Colony",
+          "state": "TX",
+          "zip": "75056",
+          "address": "4901 Windhaven Parkway, Suite 200"
+        }
+      ],
+      "phone": "469-777-4688",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-branches-denton",
+      "entry_type": "Treatment Program",
+      "organization": "Branches Denton",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "13–17",
+      "locations": [
+        {
+          "city": "Denton",
+          "state": "TX",
+          "zip": "76201",
+          "address": "2012 West University Dr."
+        }
+      ],
+      "phone": "844-963-4996",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-carrus-plano",
+      "entry_type": "Treatment Program",
+      "organization": "Carrus Care Plano",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "8–17",
+      "locations": [
+        {
+          "city": "Plano",
+          "state": "TX",
+          "zip": "75093",
+          "address": "4701 Old Shepard Place, Ste 200"
+        }
+      ],
+      "phone": "903-870-1222",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-basepoint-mckinney",
+      "entry_type": "Treatment Program",
+      "organization": "BasePoint Academy McKinney",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "11+",
+      "locations": [
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75069",
+          "address": "4733 Medical Center Dr."
+        }
+      ],
+      "phone": "469-765-3431",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-basepoint-frisco",
+      "entry_type": "Treatment Program",
+      "organization": "BasePoint Academy Frisco",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "11+",
+      "locations": [
+        {
+          "city": "Frisco",
+          "state": "TX",
+          "zip": "75036",
+          "address": "8275 Judges Way, Suite 100"
+        }
+      ],
+      "phone": "469-765-3431",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-carrus-mckinney",
+      "entry_type": "Treatment Program",
+      "organization": "Carrus Care McKinney",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "8–17",
+      "locations": [
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75072",
+          "address": "3600 Eldorado Pkwy, Bldg C, Ste 1"
+        }
+      ],
+      "phone": "903-870-1222",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-reflections-the-colony-10plus",
+      "entry_type": "Treatment Program",
+      "organization": "Reflections Lifestyle Center - The Colony",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "10+",
+      "locations": [
+        {
+          "city": "The Colony",
+          "state": "TX",
+          "zip": "75056",
+          "address": "4901 Windhaven Pkwy., Ste. 200"
+        }
+      ],
+      "phone": "469-777-4688",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-carrus-frisco",
+      "entry_type": "Treatment Program",
+      "organization": "Carrus Care Frisco",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "12–17",
+      "locations": [
+        {
+          "city": "Frisco",
+          "state": "TX",
+          "zip": "75034",
+          "address": "2440 Timber Ridge Dr., Suite 105"
+        }
+      ],
+      "phone": "903-870-1222",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-branches-fort-worth",
+      "entry_type": "Treatment Program",
+      "organization": "Branches Fort Worth",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "5+",
+      "locations": [
+        {
+          "city": "Fort Worth",
+          "state": "TX",
+          "zip": "76104",
+          "address": "1307 8 Ave., Floor 5"
+        }
+      ],
+      "phone": "844-963-4673",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-mesa-springs-fort-worth",
+      "entry_type": "Treatment Program",
+      "organization": "Mesa Springs – Innovations (Fort Worth)",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "8+",
+      "locations": [
+        {
+          "city": "Fort Worth",
+          "state": "TX",
+          "zip": "76116",
+          "address": "6421 Camp Bowie Blvd., Ste. 200"
+        }
+      ],
+      "phone": "817-841-8002",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-mesa-springs-arlington",
+      "entry_type": "Treatment Program",
+      "organization": "Mesa Springs – Innovations (Arlington)",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "8+",
+      "locations": [
+        {
+          "city": "Arlington",
+          "state": "TX",
+          "zip": "76018",
+          "address": "4935 S. Collins St."
+        }
+      ],
+      "phone": "682-320-2800",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-mind-above-matter-keller",
+      "entry_type": "Treatment Program",
+      "organization": "Mind Above Matter (Keller)",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "9+",
+      "locations": [
+        {
+          "city": "Keller",
+          "state": "TX",
+          "zip": "76244",
+          "address": "4232 Heritage Trace Pkwy"
+        }
+      ],
+      "phone": "817-662-6179",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-mind-above-matter-burleson",
+      "entry_type": "Treatment Program",
+      "organization": "Mind Above Matter (Burleson)",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "9+",
+      "locations": [
+        {
+          "city": "Burleson",
+          "state": "TX",
+          "zip": "76028",
+          "address": "2915 S Burlseon Blvd."
+        }
+      ],
+      "phone": "817-662-6179",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-connections-keller",
+      "entry_type": "Treatment Program",
+      "organization": "Connections Wellness Group (Keller)",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "10+",
+      "locations": [
+        {
+          "city": "Keller",
+          "state": "TX",
+          "zip": "76244",
+          "address": "9726 North Beach Street"
+        }
+      ],
+      "phone": "817-770-0208",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-connections-mansfield",
+      "entry_type": "Treatment Program",
+      "organization": "Connections Wellness Group (Mansfield)",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "10+",
+      "locations": [
+        {
+          "city": "Mansfield",
+          "state": "TX",
+          "zip": "76063",
+          "address": "1900 Matlock Rd., Building 2"
+        }
+      ],
+      "phone": "817-500-5984",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-virtual-charlie-health",
+      "entry_type": "Treatment Program",
+      "organization": "Charlie Health",
+      "program_name": "Virtual IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "Virtual",
+      "ages_served": "8+",
+      "locations": [{ "city": "Virtual", "state": "TX", "zip": "", "address": "" }],
+      "phone": "",
+      "notes": "Listed as a virtual program.",
+      "transportation_available": "N/A",
+      "insurance_notes": "Accepts commercial insurance and Medicaid plans",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "iop-virtual-basepoint",
+      "entry_type": "Treatment Program",
+      "organization": "BasePoint",
+      "program_name": "Virtual IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "Virtual",
+      "ages_served": "11+",
+      "locations": [{ "city": "Virtual", "state": "TX", "zip": "", "address": "" }],
+      "phone": "",
+      "notes": "Listed as a virtual program.",
+      "transportation_available": "N/A",
+      "insurance_notes": "Accepts commercial insurance",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "iop-virtual-connections",
+      "entry_type": "Treatment Program",
+      "organization": "Connections Wellness Group",
+      "program_name": "Virtual IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "Virtual",
+      "ages_served": "13+",
+      "locations": [{ "city": "Virtual", "state": "TX", "zip": "", "address": "" }],
+      "phone": "",
+      "notes": "Listed as a virtual program.",
+      "transportation_available": "N/A",
+      "insurance_notes": "Accepts commercial insurance",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-basepoint-forney",
+      "entry_type": "Treatment Program",
+      "organization": "BasePoint Academy (Forney)",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "11+",
+      "locations": [
+        {
+          "city": "Forney",
+          "state": "TX",
+          "zip": "75126",
+          "address": "713 W. Broad St., Suite 200"
+        }
+      ],
+      "phone": "469-502-5321",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-texas-health-rockwall",
+      "entry_type": "Treatment Program",
+      "organization": "Texas Health Behavioral Health Center Rockwall",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "12+",
+      "locations": [
+        {
+          "city": "Rockwall",
+          "state": "TX",
+          "zip": "75032",
+          "address": "890 Rockwall Parkway, Suite 115"
+        }
+      ],
+      "phone": "682-549-7961",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-connections-rockwall",
+      "entry_type": "Treatment Program",
+      "organization": "Connections Wellness Group (Rockwall)",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "11+",
+      "locations": [
+        {
+          "city": "Rockwall",
+          "state": "TX",
+          "zip": "75032",
+          "address": "1005 W. Ralph Hall Pkwy, Suite 201"
+        }
+      ],
+      "phone": "469-545-0160",
+      "notes": "",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-carrus-sherman",
+      "entry_type": "Treatment Program",
+      "organization": "Carrus Care Sherman",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "12–17",
+      "locations": [
+        {
+          "city": "Sherman",
+          "state": "TX",
+          "zip": "75092",
+          "address": "1724 US Highway 82 W, Suite 100"
+        }
+      ],
+      "phone": "903-870-1222",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-carrus-mansfield",
+      "entry_type": "Treatment Program",
+      "organization": "Carrus Care Mansfield",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "8–17",
+      "locations": [
+        {
+          "city": "Mansfield",
+          "state": "TX",
+          "zip": "76063",
+          "address": "1707 Fountainview Dr."
+        }
+      ],
+      "phone": "903-870-1222",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-carrus-keller",
+      "entry_type": "Treatment Program",
+      "organization": "Carrus Care Keller",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "8–17",
+      "locations": [
+        {
+          "city": "Keller",
+          "state": "TX",
+          "zip": "76244",
+          "address": "4561 Heritage Trace Pkwy, Ste. 109"
+        }
+      ],
+      "phone": "903-870-1222",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "iop-basepoint-arlington",
+      "entry_type": "Treatment Program",
+      "organization": "BasePoint Academy (Arlington)",
+      "program_name": "IOP",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "service_setting": "In-person",
+      "ages_served": "11–17",
+      "locations": [
+        {
+          "city": "Arlington",
+          "state": "TX",
+          "zip": "76018",
+          "address": "3900 Arlington Highlands Blvd., Ste. 237"
+        }
+      ],
+      "phone": "469-502-5321",
+      "notes": "",
+      "transportation_available": "Yes",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Intensive Outpatient Programs list",
+      "last_verified": "2025-12-20"
+    },
+
+    /* ------------------------- EMERGENCY & CRISIS -------------------------- */
+
+    {
+      "program_id": "crisis-mcot-ntbha",
+      "entry_type": "Crisis Service",
+      "organization": "North Texas Behavioral Health Authority (NTBHA)",
+      "program_name": "Mobile Crisis Outreach Team / Crisis Line",
+      "level_of_care": "Mobile Crisis",
+      "service_setting": "Phone / In-community",
+      "ages_served": "All ages",
+      "locations": [
+        { "city": "Multiple", "state": "TX", "zip": "", "address": "" }
+      ],
+      "phone": "866-260-8000",
+      "notes": "For Dallas, Ellis, Hunt, Kaufman, Navarro, or Rockwall County.",
+      "transportation_available": "N/A",
+      "insurance_notes": "N/A",
+      "verification_source": "Children’s Health Emergency & Crisis Mental Health Services list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "crisis-mcot-lifepath",
+      "entry_type": "Crisis Service",
+      "organization": "LifePath Systems",
+      "program_name": "Mobile Crisis Outreach Team / Crisis Line",
+      "level_of_care": "Mobile Crisis",
+      "service_setting": "Phone / In-community",
+      "ages_served": "All ages",
+      "locations": [{ "city": "Multiple", "state": "TX", "zip": "", "address": "" }],
+      "phone": "877-422-5939",
+      "notes": "For Collin County.",
+      "transportation_available": "N/A",
+      "insurance_notes": "N/A",
+      "verification_source": "Children’s Health Emergency & Crisis Mental Health Services list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "crisis-mcot-denton-mhmr",
+      "entry_type": "Crisis Service",
+      "organization": "Denton County MHMR",
+      "program_name": "Mobile Crisis Outreach Team / Crisis Line",
+      "level_of_care": "Mobile Crisis",
+      "service_setting": "Phone / In-community",
+      "ages_served": "All ages",
+      "locations": [{ "city": "Multiple", "state": "TX", "zip": "", "address": "" }],
+      "phone": "800-762-0157",
+      "notes": "For Denton County.",
+      "transportation_available": "N/A",
+      "insurance_notes": "N/A",
+      "verification_source": "Children’s Health Emergency & Crisis Mental Health Services list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "crisis-mcot-icare-tarrant",
+      "entry_type": "Crisis Service",
+      "organization": "ICARE Call Center",
+      "program_name": "Mobile Crisis Outreach Team / Crisis Line",
+      "level_of_care": "Mobile Crisis",
+      "service_setting": "Call or Text",
+      "ages_served": "All ages",
+      "locations": [{ "city": "Multiple", "state": "TX", "zip": "", "address": "" }],
+      "phone": "800-866-2465",
+      "notes": "Call or text. For Tarrant County.",
+      "transportation_available": "N/A",
+      "insurance_notes": "N/A",
+      "verification_source": "Children’s Health Emergency & Crisis Mental Health Services list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "crisis-mcot-lakes-regional",
+      "entry_type": "Crisis Service",
+      "organization": "Lakes Regional Community Center",
+      "program_name": "Mobile Crisis Outreach Team / Crisis Line",
+      "level_of_care": "Mobile Crisis",
+      "service_setting": "Phone",
+      "ages_served": "All ages",
+      "locations": [{ "city": "Multiple", "state": "TX", "zip": "", "address": "" }],
+      "phone": "877-466-0660",
+      "notes": "For Camp, Delta, Franklin, Hunt, Hopkins, Lamar, Morris, Navarro, or Titus County.",
+      "transportation_available": "N/A",
+      "insurance_notes": "N/A",
+      "verification_source": "Children’s Health Emergency & Crisis Mental Health Services list",
+      "last_verified": "2025-12-20"
+    },
+
     {
       "program_id": "crisis-988",
+      "entry_type": "Crisis Service",
       "organization": "988 Suicide & Crisis Lifeline",
-      "program_name": "24/7 Crisis Support",
+      "program_name": "Crisis Support",
       "level_of_care": "Crisis Hotline",
+      "service_setting": "Call or Text",
       "ages_served": "All ages",
-      "county": "National",
-      "city": "N/A",
-      "address": "N/A",
+      "locations": [{ "city": "National", "state": "US", "zip": "", "address": "" }],
       "phone": "988",
+      "notes": "Call or text 988.",
       "transportation_available": "N/A",
-      "notes": "Call or text 988 for immediate emotional support.",
-      "verification_source": "Children’s Health Crisis Services List",
+      "insurance_notes": "N/A",
+      "verification_source": "Children’s Health Emergency & Crisis Mental Health Services list",
       "last_verified": "2025-12-20"
     },
     {
-      "program_id": "crisis-ntbha",
-      "organization": "North Texas Behavioral Health Authority",
-      "program_name": "Mobile Crisis Outreach Team",
-      "level_of_care": "Mobile Crisis",
+      "program_id": "crisis-trevor",
+      "entry_type": "Crisis Service",
+      "organization": "Trevor Lifeline",
+      "program_name": "Crisis Support (LGBTQ)",
+      "level_of_care": "Crisis Hotline",
+      "service_setting": "Phone / Text",
       "ages_served": "All ages",
-      "county": "Dallas, Ellis, Hunt, Kaufman, Navarro, Rockwall",
-      "city": "Multiple",
-      "address": "N/A",
-      "phone": "866-260-8000",
+      "locations": [{ "city": "National", "state": "US", "zip": "", "address": "" }],
+      "phone": "866-488-7386",
+      "notes": "Text START to 678-678.",
       "transportation_available": "N/A",
-      "notes": "24/7 mobile crisis evaluations in the community.",
-      "verification_source": "Children’s Health Crisis Services List",
+      "insurance_notes": "N/A",
+      "verification_source": "Children’s Health Emergency & Crisis Mental Health Services list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "crisis-sccntx",
+      "entry_type": "Crisis Service",
+      "organization": "Suicide and Crisis Center of North Texas",
+      "program_name": "Crisis Support",
+      "level_of_care": "Crisis Hotline",
+      "service_setting": "Phone",
+      "ages_served": "All ages",
+      "locations": [{ "city": "North Texas", "state": "TX", "zip": "", "address": "" }],
+      "phone": "214-828-1000",
+      "notes": "",
+      "transportation_available": "N/A",
+      "insurance_notes": "N/A",
+      "verification_source": "Children’s Health Emergency & Crisis Mental Health Services list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "crisis-textline-741741",
+      "entry_type": "Crisis Service",
+      "organization": "National Crisis Text Line",
+      "program_name": "Crisis Text Support",
+      "level_of_care": "Crisis Hotline",
+      "service_setting": "Text",
+      "ages_served": "All ages",
+      "locations": [{ "city": "National", "state": "US", "zip": "", "address": "" }],
+      "phone": "741741",
+      "notes": "Text HOME to 741741. (English section also lists HOLA; your request was English-only.)",
+      "transportation_available": "N/A",
+      "insurance_notes": "N/A",
+      "verification_source": "Children’s Health Emergency & Crisis Mental Health Services list",
+      "last_verified": "2025-12-20"
+    },
+
+    {
+      "program_id": "crisis-walkin-southern-area-urgent-care",
+      "entry_type": "Crisis Service",
+      "organization": "Southern Area Behavioral Healthcare",
+      "program_name": "Walk-in Urgent Care Clinic (Emergency Psychiatric Care)",
+      "level_of_care": "Walk-In Crisis / Urgent",
+      "service_setting": "In-person",
+      "ages_served": "Unknown",
+      "locations": [
+        {
+          "city": "Dallas",
+          "state": "TX",
+          "zip": "75237",
+          "address": "4215 Gannon Lane"
+        }
+      ],
+      "phone": "972-283-9090",
+      "notes": "Hours: Mon–Fri 2–10 p.m., Sat 1–7 p.m., Sun 2–7 p.m.",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Emergency & Crisis Mental Health Services list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "crisis-walkin-lifepath-outpatient-clinic",
+      "entry_type": "Crisis Service",
+      "organization": "LifePath Systems Outpatient Clinic",
+      "program_name": "Walk-in Outpatient Clinic",
+      "level_of_care": "Walk-In Outpatient",
+      "service_setting": "In-person",
+      "ages_served": "Unknown",
+      "locations": [
+        {
+          "city": "Plano",
+          "state": "TX",
+          "zip": "75025",
+          "address": "7308 Alma Drive"
+        },
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75069",
+          "address": "1515 Heritage Drive, Suite 105"
+        }
+      ],
+      "phone": "972-422-5939",
+      "notes": "Also listed: 844-544-5939. Hours: Mon–Thu 8 a.m.–5 p.m. No appointment needed; arrive 2–3 hours prior to closing for paperwork.",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Emergency & Crisis Mental Health Services list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "crisis-walkin-denton-mhmr-triage",
+      "entry_type": "Crisis Service",
+      "organization": "Denton County MHMR Psychiatric Triage Facility",
+      "program_name": "Psychiatric Triage (Walk-in)",
+      "level_of_care": "Psychiatric Triage",
+      "service_setting": "In-person",
+      "ages_served": "Unknown",
+      "locations": [
+        {
+          "city": "Denton",
+          "state": "TX",
+          "zip": "76201",
+          "address": "2509 Scripture Street, Suite 100"
+        }
+      ],
+      "phone": "940-381-9965",
+      "notes": "Open 24/7. No appointment needed.",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Emergency & Crisis Mental Health Services list",
+      "last_verified": "2025-12-20"
+    },
+    {
+      "program_id": "crisis-walkin-metrocare",
+      "entry_type": "Crisis Service",
+      "organization": "Metrocare Services",
+      "program_name": "Walk-in Services (Multiple Locations)",
+      "level_of_care": "Walk-In Outpatient",
+      "service_setting": "In-person",
+      "ages_served": "Child & Adolescent services available (locations vary)",
+      "locations": [
+        { "city": "Dallas County", "state": "TX", "zip": "", "address": "Multiple locations (Westmoreland, Samuell, Grand Prairie, Skillman, Midway)" }
+      ],
+      "phone": "877-283-2121",
+      "notes": "Offices open Monday–Friday at 7:30 a.m. for walk-in appointments; walk-in hours vary by location.",
+      "transportation_available": "Unknown",
+      "insurance_notes": "Unknown",
+      "verification_source": "Children’s Health Emergency & Crisis Mental Health Services list",
       "last_verified": "2025-12-20"
     }
   ]
 }
+
