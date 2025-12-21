@@ -805,11 +805,6 @@
           </p>
 
           <div class="hero-bullets">
-            <label class="chip" title="Show only youth/adolescent-serving entries when age info is available">
-              <input id="onlyYouthTop" type="checkbox" />
-              <span>Prioritize youth</span>
-            </label>
-
             <label class="chip" title="Show crisis services (hotlines, mobile crisis, walk-in urgent care)">
               <input id="showCrisisTop" type="checkbox" />
               <span>Show crisis resources</span>
@@ -831,7 +826,7 @@
           </div>
           <div class="floating-card">
             <strong>Family-friendly filters</strong>
-            <span>Location, youth focus, virtual, crisis toggle</span>
+            <span>Location, virtual, crisis toggle</span>
           </div>
           <div class="floating-card">
             <strong>Accuracy cue</strong>
@@ -878,11 +873,6 @@
       <div class="search-actions">
         <div class="toggles">
           <label class="toggle-chip">
-            <input id="onlyYouth" type="checkbox" />
-            <span>Prioritize youth</span>
-          </label>
-
-          <label class="toggle-chip">
             <input id="showCrisis" type="checkbox" />
             <span>Show crisis resources</span>
           </label>
@@ -903,29 +893,18 @@
     <div class="results-header" aria-label="Results summary">
       <div class="results-info">
         <div class="results-count" id="totalCount">0</div>
-        <div class="results-label">total matches (treatment + crisis)</div>
+        <div class="results-label" id="resultsLabel">matches</div>
       </div>
     </div>
 
     <section class="section" id="treatmentSection">
       <div class="sectionHead">
-        <h2>Treatment & Navigation</h2>
+        <h2 id="sectionTitle">Treatment & Navigation</h2>
         <div class="count" id="treatmentCount">0 results</div>
       </div>
       <div class="grid" id="treatmentGrid" aria-live="polite"></div>
       <div class="empty" id="treatmentEmpty" style="display:none;">
         No matches. Try removing filters, searching by city (e.g., “Plano”), or switching level of care.
-      </div>
-    </section>
-
-    <section class="section" id="crisisSection" style="display:none; margin-top:14px;">
-      <div class="sectionHead">
-        <h2>Crisis resources</h2>
-        <div class="count" id="crisisCount">0 results</div>
-      </div>
-      <div class="grid" id="crisisGrid" aria-live="polite"></div>
-      <div class="empty" id="crisisEmpty" style="display:none;">
-        No crisis resources match your filters.
       </div>
     </section>
 
@@ -946,12 +925,10 @@
       q: document.getElementById("q"),
       loc: document.getElementById("loc"),
       care: document.getElementById("care"),
-      onlyYouth: document.getElementById("onlyYouth"),
       showCrisis: document.getElementById("showCrisis"),
       onlyVirtual: document.getElementById("onlyVirtual"),
 
       // top chips mirror
-      onlyYouthTop: document.getElementById("onlyYouthTop"),
       showCrisisTop: document.getElementById("showCrisisTop"),
       onlyVirtualTop: document.getElementById("onlyVirtualTop"),
 
@@ -959,17 +936,15 @@
       viewAll: document.getElementById("viewAll"),
 
       treatmentSection: document.getElementById("treatmentSection"),
-      crisisSection: document.getElementById("crisisSection"),
 
       treatmentGrid: document.getElementById("treatmentGrid"),
-      crisisGrid: document.getElementById("crisisGrid"),
 
       treatmentCount: document.getElementById("treatmentCount"),
-      crisisCount: document.getElementById("crisisCount"),
       totalCount: document.getElementById("totalCount"),
+      resultsLabel: document.getElementById("resultsLabel"),
+      sectionTitle: document.getElementById("sectionTitle"),
 
       treatmentEmpty: document.getElementById("treatmentEmpty"),
-      crisisEmpty: document.getElementById("crisisEmpty"),
 
       loadWarn: document.getElementById("loadWarn")
     };
@@ -1006,18 +981,6 @@
       return locs.some(l => safeStr(l.city).toLowerCase() === "virtual");
     }
 
-    function youthLikely(p){
-      const a = safeStr(p.ages_served).toLowerCase();
-      if (!a) return false;
-      return (
-        a.includes("adolescent") ||
-        a.includes("child") ||
-        a.includes("youth") ||
-        a.includes("6+") || a.includes("5+") ||
-        a.includes("12") || a.includes("13") || a.includes("14") || a.includes("15") || a.includes("16") || a.includes("17")
-      );
-    }
-
     function buildLocationOptions(list){
       const set = new Set();
       list.forEach(p => {
@@ -1034,7 +997,6 @@
       const q = safeStr(els.q.value).toLowerCase();
       const loc = safeStr(els.loc.value).toLowerCase();
       const care = safeStr(els.care.value).toLowerCase();
-      const onlyYouth = els.onlyYouth.checked;
       const onlyVirtual = els.onlyVirtual.checked;
 
       const hay = [
@@ -1056,11 +1018,6 @@
       }
 
       if (onlyVirtual && !hasVirtual(p)) return false;
-
-      if (onlyYouth){
-        const a = safeStr(p.ages_served);
-        if (a && !youthLikely(p)) return false;
-      }
 
       return true;
     }
@@ -1242,46 +1199,52 @@
       if (!ready) return;
 
       const showCrisis = els.showCrisis.checked;
+
+      // Apply shared filters first (search/location/care/virtual)
       const filtered = programs.filter(matchesFilters);
 
       const treatment = filtered.filter(p => !isCrisis(p));
       const crisis = filtered.filter(p => isCrisis(p));
 
-      // If the open card is no longer in the filtered set, close it
+      // Mode switch: crisis replaces treatment list (no separate section)
+      const activeList = showCrisis ? crisis : treatment;
+      const activeLabel = showCrisis ? "Crisis resources" : "Treatment & Navigation";
+
+      // If the open card is no longer visible in the active list, close it
       if (openId){
-        const stillExists = filtered.some((p, idx) => stableIdFor(p, idx) === openId);
+        const stillExists = activeList.some((p, idx) => stableIdFor(p, idx) === openId);
         if (!stillExists) openId = null;
       }
 
-      els.totalCount.textContent = String(filtered.length);
+      // Header labels
+      els.sectionTitle.textContent = activeLabel;
+      els.resultsLabel.textContent = showCrisis ? "crisis matches" : "treatment matches";
+      els.totalCount.textContent = String(activeList.length);
 
-      // Treatment
+      // Render active list into the single grid
       els.treatmentGrid.innerHTML = "";
-      treatment.forEach((p, idx) => {
-        const card = createCard(p, idx);
+      activeList.forEach((p, idx) => {
+        // Offset index in crisis mode so ids remain stable across toggles
+        const realIdx = showCrisis ? (idx + 10000) : idx;
+        const card = createCard(p, realIdx);
         card.style.animationDelay = `${Math.min(idx, 18) * 18}ms`;
         els.treatmentGrid.appendChild(card);
       });
-      els.treatmentCount.textContent = `${treatment.length} result${treatment.length===1?"":"s"}`;
-      els.treatmentEmpty.style.display = treatment.length ? "none" : "block";
 
-      // Crisis
-      els.crisisSection.style.display = showCrisis ? "block" : "none";
-      if (showCrisis){
-        els.crisisGrid.innerHTML = "";
-        crisis.forEach((p, idx) => {
-          // offset idx to keep stable ids distinct between lists
-          const card = createCard(p, idx + 10000);
-          card.style.animationDelay = `${Math.min(idx, 18) * 18}ms`;
-          els.crisisGrid.appendChild(card);
-        });
-        els.crisisCount.textContent = `${crisis.length} result${crisis.length===1?"":"s"}`;
-        els.crisisEmpty.style.display = crisis.length ? "none" : "block";
+      els.treatmentCount.textContent = `${activeList.length} result${activeList.length===1?"":"s"}`;
+
+      // Empty message should adapt to mode
+      if (activeList.length){
+        els.treatmentEmpty.style.display = "none";
+      } else {
+        els.treatmentEmpty.style.display = "block";
+        els.treatmentEmpty.textContent = showCrisis
+          ? "No crisis resources match your filters."
+          : "No matches. Try removing filters, searching by city (e.g., “Plano”), or switching level of care.";
       }
     }
 
     function syncTopToggles(){
-      els.onlyYouthTop.checked = els.onlyYouth.checked;
       els.showCrisisTop.checked = els.showCrisis.checked;
       els.onlyVirtualTop.checked = els.onlyVirtual.checked;
     }
@@ -1305,21 +1268,30 @@
         on(els.loc, ev, scheduleRender);
         on(els.care, ev, scheduleRender);
 
-        on(els.onlyYouth, ev, () => { scheduleRender(); syncTopToggles(); });
         on(els.onlyVirtual, ev, () => { scheduleRender(); syncTopToggles(); });
-        on(els.showCrisis, ev, () => { scheduleRender(); syncTopToggles(); });
+        on(els.showCrisis, ev, () => {
+          scheduleRender();
+          syncTopToggles();
+          // Switch mode should bring results into view
+          const t = document.getElementById("treatmentSection");
+          window.scrollTo({ top: t.offsetTop - 10, behavior: "smooth" });
+        });
       });
 
       // Top chips mirror -> main toggles
-      on(els.onlyYouthTop, "change", () => { els.onlyYouth.checked = els.onlyYouthTop.checked; scheduleRender(); syncTopToggles(); });
-      on(els.showCrisisTop, "change", () => { els.showCrisis.checked = els.showCrisisTop.checked; scheduleRender(); syncTopToggles(); });
+      on(els.showCrisisTop, "change", () => {
+        els.showCrisis.checked = els.showCrisisTop.checked;
+        scheduleRender();
+        syncTopToggles();
+        const t = document.getElementById("treatmentSection");
+        window.scrollTo({ top: t.offsetTop - 10, behavior: "smooth" });
+      });
       on(els.onlyVirtualTop, "change", () => { els.onlyVirtual.checked = els.onlyVirtualTop.checked; scheduleRender(); syncTopToggles(); });
 
       on(els.reset, "click", () => {
         els.q.value = "";
         els.loc.value = "";
         els.care.value = "";
-        els.onlyYouth.checked = false;
         els.onlyVirtual.checked = false;
         els.showCrisis.checked = false;
         openId = null;
@@ -1331,7 +1303,6 @@
         els.q.value = "";
         els.loc.value = "";
         els.care.value = "";
-        els.onlyYouth.checked = false;
         els.onlyVirtual.checked = false;
         // Keep crisis off by default
         els.showCrisis.checked = false;
