@@ -3,6 +3,8 @@ let programs = [];
 let ready = false;
 let openId = null;
 
+const programDataMap = new Map();
+
 // ========== DOM Elements ==========
 const els = {
   q: document.getElementById("q"),
@@ -155,6 +157,11 @@ function initAgeDropdown(){
 
   btn.addEventListener("keydown", (e) => {
     const k = e.key;
+    if (k === "Escape") {
+      e.preventDefault();
+      close(false);
+      return;
+    }
     if (k === "ArrowDown" || k === "Enter" || k === " "){
       e.preventDefault();
       open();
@@ -455,6 +462,7 @@ function createCard(p, idx){
   const loc = locLabel(p);
   const care = safeStr(p.level_of_care) || "Unknown";
   const id = stableIdFor(p, idx);
+  programDataMap.set(id, p);
   const isOpen = (openId === id);
 
   const phone = safeStr(p.phone);
@@ -578,7 +586,7 @@ function createCard(p, idx){
       </div>
 
       <div class="actions">
-        ${tel ? `<a class="linkBtn ${crisis ? "danger" : "primary"}" href="tel:${escapeHtml(tel)}" onclick="trackCallAttempt(${escapeHtml(JSON.stringify(p))})">Call Now</a>` : ``}
+        ${tel ? `<a class="linkBtn ${crisis ? "danger" : "primary"}" href="tel:${escapeHtml(tel)}" data-program-id="${escapeHtml(id)}">Call Now</a>` : ``}
         ${maps ? `<a class="linkBtn" href="${escapeHtml(maps)}" target="_blank" rel="noopener">Directions</a>` : ``}
         ${website ? `<a class="linkBtn site" href="${escapeHtml(website)}" target="_blank" rel="noopener noreferrer">Website ↗</a>` : ``}
         ${(!tel && !maps && !website) ? `<span style="color:var(--muted);font-size:13px;font-weight:700;">No quick actions available for this listing.</span>` : ``}
@@ -617,7 +625,7 @@ function announceToScreenReader(message) {
   announcer.textContent = message;
   document.body.appendChild(announcer);
   
-  setTimeout(() => document.body.removeChild(announcer), 1000);
+  setTimeout(() => document.body.removeChild(announcer), 3000);
 }
 
 function updateStats() {
@@ -865,7 +873,15 @@ if('serviceWorker' in navigator) {
     });
   });
 }
-
+// Handle call tracking via event delegation
+document.addEventListener('click', (e) => {
+  const callBtn = e.target.closest('[data-program-id]');
+  if (callBtn && callBtn.href && callBtn.href.startsWith('tel:')) {
+    const programId = callBtn.dataset.programId;
+    const program = programDataMap.get(programId);
+    if (program) trackCallAttempt(program);
+  }
+});
 // Initialize
 initAgeDropdown();
 bind();
