@@ -1491,3 +1491,29 @@ footer{
 .linkBtn.site{
   background: rgba(255,255,255,.92);
 }
+/* Google Translate Styling */
+#google_translate_element {
+  margin-right: 12px;
+}
+
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+body {
+  top: 0 !important;
+}
+
+.goog-te-combo {
+  padding: 8px 12px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.goog-te-combo:hover {
+  background: rgba(255,255,255,0.15);
+}
