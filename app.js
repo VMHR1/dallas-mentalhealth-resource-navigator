@@ -554,7 +554,7 @@ function createCard(p, idx){
       </div>
       <div class="kv">
         <div class="k">Insurance</div>
-        <div class="v">\$\{escapeHtml\(safeStr\(p\.insurance_notes\) \|\| "Unknown"\)\}</div>
+        <div class="v">${escapeHtml\(safeStr\(p\.insurance_notes\) \|\| "Unknown"\)\}</div>
       </div>
 
       ${website ? `
