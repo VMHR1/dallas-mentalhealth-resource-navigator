@@ -1446,3 +1446,48 @@ footer{
     text-align: center;
   }
 }
+
+/* ---------------------------------------------
+   Website links (program cards)
+   Added: 2025-12-26
+---------------------------------------------- */
+
+/* Make long URLs/domains wrap safely inside the key/value rows */
+.kv .v{ word-break: break-word; overflow-wrap: anywhere; }
+
+/* Button-like website link used inside the expanded panel */
+.siteLink{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(122,167,255,.22);
+  background: rgba(122,167,255,.12);
+  text-decoration: none;
+  font-weight: 950;
+  box-shadow: 0 10px 22px rgba(15,23,42,.06);
+  transition: var(--transition);
+  min-height: 40px;
+}
+.siteLink:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 16px 34px rgba(15,23,42,.10);
+}
+.siteLink:focus{
+  outline: none;
+  box-shadow: var(--focus), 0 16px 34px rgba(15,23,42,.10);
+}
+
+/* Small domain hint next to website link (optional) */
+.siteDomain{
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Optional: make Website action button feel distinct but still neutral */
+.linkBtn.site{
+  background: rgba(255,255,255,.92);
+}
