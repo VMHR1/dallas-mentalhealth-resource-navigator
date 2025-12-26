@@ -2,13 +2,24 @@
   "metadata": {
     "generated_at": "2025-12-21",
     "notes": "All program records have a fact-checked verification_source URL and last_verified date as of 2025-12-21; navigation-only psychiatry placeholders removed.",
-    "generatedAt": "2025-12-22T05:30:38.701524Z"
+    "generatedAt": "2025-12-22T05:30:38.701524Z",
+    "insurance_verified_at": "2025-12-26",
+    "insurance_update_notes": "Added accepted_insurance object to each program; insurance was verified from provider websites where publicly stated. One program (Unity Behavioral Health) did not publicly list accepted insurance at time of verification.",
+    "insurance_verified_programs": 78,
+    "insurance_not_listed_programs": 1,
+    "insurance_not_applicable_entries": 13,
+    "website_links_added_on": "2025-12-26",
+    "website_links_method": "Parsed first URL from verification_source when present; else used accepted_insurance.source_url.",
+    "website_links_coverage": {
+      "with_website_url": 92,
+      "missing_website_url": 0
+    }
   },
   "programs": [
     {
       "program_id": "php-childrens-health-dallas",
       "entry_type": "Treatment Program",
-      "organization": "Children\u2019s Health",
+      "organization": "Children’s Health",
       "program_name": "Day Treatment / Partial Hospitalization Program",
       "level_of_care": "Partial Hospitalization (PHP)",
       "service_setting": "In-person",
@@ -24,9 +35,26 @@
       "phone": "214-456-8899",
       "notes": "Phone listed with option 1 in the directory.",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
-      "verification_source": "Children\u2019s Health Day Treatment Program page: https://www.childrens.com/specialties-services/specialty-centers-and-programs/psychiatry-day-treatment-program",
-      "last_verified": "2025-12-21"
+      "insurance_notes": "Plans: See Children’s Health contracted insurance plans (varies by service/location); verify plan/product | Types: Commercial (many), Medicaid/CHIP (some), Other government programs (varies) | Children’s Health directs families to its billing/insurance resources and contracted plans; confirm plan/product and department.",
+      "verification_source": "Children’s Health Day Treatment Program page: https://www.childrens.com/specialties-services/specialty-centers-and-programs/psychiatry-day-treatment-program",
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.childrens.com/patient-resources/billing-and-insurance",
+        "plans": [],
+        "types": [
+          "Commercial (many)",
+          "Medicaid/CHIP (some)",
+          "Other government programs (varies)"
+        ],
+        "notes": "Children’s Health directs families to its billing/insurance resources and contracted plans; confirm plan/product and department.",
+        "plans_raw": [
+          "See Children’s Health contracted insurance plans (varies by service/location); verify plan/product"
+        ]
+      },
+      "website_url": "https://www.childrens.com/specialties-services/specialty-centers-and-programs/psychiatry-day-treatment-program",
+      "website_domain": "childrens.com"
     },
     {
       "program_id": "php-dallas-behavioral-health-care-hospital-desoto",
@@ -35,7 +63,7 @@
       "program_name": "Day Treatment / PHP",
       "level_of_care": "Partial Hospitalization (PHP)",
       "service_setting": "In-person",
-      "ages_served": "13\u201317",
+      "ages_served": "13–17",
       "locations": [
         {
           "city": "DeSoto",
@@ -47,9 +75,55 @@
       "phone": "972-982-0897",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Ambetter, Blue Cross Blue Shield, Cigna, ComPsych, Magellan, Medicare, Medicaid, Molina, Optum, Superior, TRICARE, UMR, UnitedHealthcare | Types: Commercial, Medicare, Medicaid/CHIP plans (listed), Military (TRICARE) | Dallas Behavioral lists accepted insurance providers; confirm plan/product and authorization requirements.",
       "verification_source": "Dallas Behavioral official site (assessment line): https://www.dallasbehavioral.com/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.dallasbehavioral.com/programs/",
+        "plans": [
+          "Aetna",
+          "Ambetter",
+          "Blue Cross Blue Shield",
+          "Cigna",
+          "Compsych",
+          "Magellan",
+          "Medicaid",
+          "Medicare",
+          "Molina Healthcare",
+          "Optum",
+          "Superior",
+          "TRICARE",
+          "UMR",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Medicare",
+          "Medicaid/CHIP plans (listed)",
+          "Military (TRICARE)"
+        ],
+        "notes": "Dallas Behavioral lists accepted insurance providers; confirm plan/product and authorization requirements.",
+        "plans_raw": [
+          "Aetna",
+          "Ambetter",
+          "Blue Cross Blue Shield",
+          "Cigna",
+          "ComPsych",
+          "Magellan",
+          "Medicare",
+          "Medicaid",
+          "Molina",
+          "Optum",
+          "Superior",
+          "TRICARE",
+          "UMR",
+          "UnitedHealthcare"
+        ]
+      },
+      "website_url": "https://www.dallasbehavioral.com/",
+      "website_domain": "dallasbehavioral.com"
     },
     {
       "program_id": "php-texas-health-bh-center-richardson",
@@ -70,9 +144,28 @@
       "phone": "682-236-6023",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: See Texas Health 'Insurance Plans Accepted' list (many commercial, Medicare Advantage, and Medicaid/CHIP plans) | Types: Commercial, Medicare (incl. Medicare Advantage), Medicaid/CHIP (varies by plan/service area) | Texas Health publishes an extensive accepted-insurance list; confirm plan/product and facility/physician network before scheduling.",
       "verification_source": "Texas Health Behavioral Health Center Richardson page: https://www.texashealth.org/Locations/texas-health-cityline/THBHCR",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.texashealth.org/Costs-and-Billing/Insurance-Plans-Accepted",
+        "plans": [
+          "Medicare"
+        ],
+        "types": [
+          "Commercial",
+          "Medicare (incl. Medicare Advantage)",
+          "Medicaid/CHIP (varies by plan/service area)"
+        ],
+        "notes": "Texas Health publishes an extensive accepted-insurance list; confirm plan/product and facility/physician network before scheduling.",
+        "plans_raw": [
+          "See Texas Health 'Insurance Plans Accepted' list (many commercial, Medicare Advantage, and Medicaid/CHIP plans)"
+        ]
+      },
+      "website_url": "https://www.texashealth.org/Locations/texas-health-cityline/THBHCR",
+      "website_domain": "texashealth.org"
     },
     {
       "program_id": "php-reflections-dallas",
@@ -93,11 +186,33 @@
       "phone": "469-777-4688",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Evernorth (Cigna/Evernorth), Cigna, Magellan | Types: Commercial | Reflections shows major insurer networks on its site; confirm plan/product and authorization requirements with admissions.",
       "verification_source": "https://reflectionslifestyle.com/contact/",
       "last_verified": "2025-12-21",
       "website": "https://reflectionslifestyle.com/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://reflectionslifestyle.com/",
+        "plans": [
+          "Aetna",
+          "Cigna",
+          "Magellan"
+        ],
+        "types": [
+          "Commercial"
+        ],
+        "notes": "Reflections shows major insurer networks on its site; confirm plan/product and authorization requirements with admissions.",
+        "plans_raw": [
+          "Aetna",
+          "Evernorth (Cigna/Evernorth)",
+          "Cigna",
+          "Magellan"
+        ]
+      },
+      "website_url": "https://reflectionslifestyle.com/contact/",
+      "website_domain": "reflectionslifestyle.com"
     },
     {
       "program_id": "php-reflections-richardson",
@@ -118,11 +233,33 @@
       "phone": "469-777-4688",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Evernorth (Cigna/Evernorth), Cigna, Magellan | Types: Commercial | Reflections shows major insurer networks on its site; confirm plan/product and authorization requirements with admissions.",
       "verification_source": "https://reflectionslifestyle.com/contact/",
       "last_verified": "2025-12-21",
       "website": "https://reflectionslifestyle.com/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://reflectionslifestyle.com/",
+        "plans": [
+          "Aetna",
+          "Cigna",
+          "Magellan"
+        ],
+        "types": [
+          "Commercial"
+        ],
+        "notes": "Reflections shows major insurer networks on its site; confirm plan/product and authorization requirements with admissions.",
+        "plans_raw": [
+          "Aetna",
+          "Evernorth (Cigna/Evernorth)",
+          "Cigna",
+          "Magellan"
+        ]
+      },
+      "website_url": "https://reflectionslifestyle.com/contact/",
+      "website_domain": "reflectionslifestyle.com"
     },
     {
       "program_id": "php-changes-frisco",
@@ -143,11 +280,27 @@
       "phone": "469-850-2040",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers (in-network) | Types: Commercial (most major), Out-of-network sometimes possible | Mesa Springs states it is in-network with most major insurers and can sometimes work out-of-network; call to confirm coverage.",
       "verification_source": "https://mesasprings.com/locations/changes-frisco/",
       "last_verified": "2025-12-21",
       "website": "https://mesasprings.com/locations/changes-frisco/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.mesasprings.com/resources/accepted-insurance/",
+        "plans": [],
+        "types": [
+          "Commercial (most major)",
+          "Out-of-network sometimes possible"
+        ],
+        "notes": "Mesa Springs states it is in-network with most major insurers and can sometimes work out-of-network; call to confirm coverage.",
+        "plans_raw": [
+          "Most major insurance providers (in-network)"
+        ]
+      },
+      "website_url": "https://mesasprings.com/locations/changes-frisco/",
+      "website_domain": "mesasprings.com"
     },
     {
       "program_id": "php-changes-mckinney",
@@ -168,11 +321,27 @@
       "phone": "469-634-1270",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers (in-network) | Types: Commercial (most major), Out-of-network sometimes possible | Mesa Springs states it is in-network with most major insurers and can sometimes work out-of-network; call to confirm coverage.",
       "verification_source": "https://mesasprings.com/locations/changes-mckinney/",
       "last_verified": "2025-12-21",
       "website": "https://mesasprings.com/locations/changes-mckinney/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.mesasprings.com/resources/accepted-insurance/",
+        "plans": [],
+        "types": [
+          "Commercial (most major)",
+          "Out-of-network sometimes possible"
+        ],
+        "notes": "Mesa Springs states it is in-network with most major insurers and can sometimes work out-of-network; call to confirm coverage.",
+        "plans_raw": [
+          "Most major insurance providers (in-network)"
+        ]
+      },
+      "website_url": "https://mesasprings.com/locations/changes-mckinney/",
+      "website_domain": "mesasprings.com"
     },
     {
       "program_id": "php-texas-health-seay-plano",
@@ -193,11 +362,30 @@
       "phone": "682-236-6023",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: See Texas Health 'Insurance Plans Accepted' list (many commercial, Medicare Advantage, and Medicaid/CHIP plans) | Types: Commercial, Medicare (incl. Medicare Advantage), Medicaid/CHIP (varies by plan/service area) | Texas Health publishes an extensive accepted-insurance list; confirm plan/product and facility/physician network before scheduling.",
       "verification_source": "https://www.texashealth.org/Locations/texas-health-plano/THBHP",
       "last_verified": "2025-12-21",
       "website": "https://www.texashealth.org/Locations/texas-health-plano/THBHP",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.texashealth.org/Costs-and-Billing/Insurance-Plans-Accepted",
+        "plans": [
+          "Medicare"
+        ],
+        "types": [
+          "Commercial",
+          "Medicare (incl. Medicare Advantage)",
+          "Medicaid/CHIP (varies by plan/service area)"
+        ],
+        "notes": "Texas Health publishes an extensive accepted-insurance list; confirm plan/product and facility/physician network before scheduling.",
+        "plans_raw": [
+          "See Texas Health 'Insurance Plans Accepted' list (many commercial, Medicare Advantage, and Medicaid/CHIP plans)"
+        ]
+      },
+      "website_url": "https://www.texashealth.org/Locations/texas-health-plano/THBHP",
+      "website_domain": "texashealth.org"
     },
     {
       "program_id": "php-connections-mckinney",
@@ -218,11 +406,52 @@
       "phone": "940-360-4245",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Blue Cross Blue Shield, Aetna, Cigna, TRICARE, Magellan, Humana, Optum, UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.), Baylor Scott & White Health Plan, Bright HealthCare, Behavioral Health Systems | Types: Commercial, Military (TRICARE) | Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
       "verification_source": "https://connectionswellnessgroup.com/locations/mckinney/",
       "last_verified": "2025-12-21",
       "website": "https://connectionswellnessgroup.com/locations/mckinney/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://connectionswellnessgroup.com/faqs/",
+        "plans": [
+          "Aetna",
+          "Baylor Scott & White Health Plan",
+          "Behavioral Health Systems",
+          "Blue Cross Blue Shield",
+          "Bright Healthcare",
+          "Cigna",
+          "Humana",
+          "Magellan",
+          "Optum",
+          "TRICARE",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Military (TRICARE)"
+        ],
+        "not_accepted": [
+          "Oscar"
+        ],
+        "notes": "Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
+        "plans_raw": [
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Cigna",
+          "TRICARE",
+          "Magellan",
+          "Humana",
+          "Optum",
+          "UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.)",
+          "Baylor Scott & White Health Plan",
+          "Bright HealthCare",
+          "Behavioral Health Systems"
+        ]
+      },
+      "website_url": "https://connectionswellnessgroup.com/locations/mckinney/",
+      "website_domain": "connectionswellnessgroup.com"
     },
     {
       "program_id": "php-connections-plano",
@@ -243,11 +472,52 @@
       "phone": "469-613-3390",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Blue Cross Blue Shield, Aetna, Cigna, TRICARE, Magellan, Humana, Optum, UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.), Baylor Scott & White Health Plan, Bright HealthCare, Behavioral Health Systems | Types: Commercial, Military (TRICARE) | Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
       "verification_source": "https://connectionswellnessgroup.com/locations/plano/",
       "last_verified": "2025-12-21",
       "website": "https://connectionswellnessgroup.com/locations/plano/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://connectionswellnessgroup.com/faqs/",
+        "plans": [
+          "Aetna",
+          "Baylor Scott & White Health Plan",
+          "Behavioral Health Systems",
+          "Blue Cross Blue Shield",
+          "Bright Healthcare",
+          "Cigna",
+          "Humana",
+          "Magellan",
+          "Optum",
+          "TRICARE",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Military (TRICARE)"
+        ],
+        "not_accepted": [
+          "Oscar"
+        ],
+        "notes": "Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
+        "plans_raw": [
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Cigna",
+          "TRICARE",
+          "Magellan",
+          "Humana",
+          "Optum",
+          "UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.)",
+          "Baylor Scott & White Health Plan",
+          "Bright HealthCare",
+          "Behavioral Health Systems"
+        ]
+      },
+      "website_url": "https://connectionswellnessgroup.com/locations/plano/",
+      "website_domain": "connectionswellnessgroup.com"
     },
     {
       "program_id": "php-reflections-the-colony",
@@ -268,11 +538,33 @@
       "phone": "469-777-4688",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Evernorth (Cigna/Evernorth), Cigna, Magellan | Types: Commercial | Reflections shows major insurer networks on its site; confirm plan/product and authorization requirements with admissions.",
       "verification_source": "https://reflectionslifestyle.com/contact/",
       "last_verified": "2025-12-21",
       "website": "https://reflectionslifestyle.com/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://reflectionslifestyle.com/",
+        "plans": [
+          "Aetna",
+          "Cigna",
+          "Magellan"
+        ],
+        "types": [
+          "Commercial"
+        ],
+        "notes": "Reflections shows major insurer networks on its site; confirm plan/product and authorization requirements with admissions.",
+        "plans_raw": [
+          "Aetna",
+          "Evernorth (Cigna/Evernorth)",
+          "Cigna",
+          "Magellan"
+        ]
+      },
+      "website_url": "https://reflectionslifestyle.com/contact/",
+      "website_domain": "reflectionslifestyle.com"
     },
     {
       "program_id": "php-carrus-frisco",
@@ -281,7 +573,7 @@
       "program_name": "Day Treatment / PHP",
       "level_of_care": "Partial Hospitalization (PHP)",
       "service_setting": "In-person",
-      "ages_served": "8\u201317",
+      "ages_served": "8–17",
       "locations": [
         {
           "city": "Frisco",
@@ -293,11 +585,30 @@
       "phone": "469-200-5353",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers, Medicaid | Types: Commercial (most major), Medicaid | Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
       "verification_source": "https://www.carruscarebehavioral.com/friscotx",
       "last_verified": "2025-12-21",
       "website": "https://www.carruscarebehavioral.com/friscotx",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.carruscarebehavioral.com/",
+        "plans": [
+          "Medicaid"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicaid"
+        ],
+        "notes": "Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
+        "plans_raw": [
+          "Most major insurance providers",
+          "Medicaid"
+        ]
+      },
+      "website_url": "https://www.carruscarebehavioral.com/friscotx",
+      "website_domain": "carruscarebehavioral.com"
     },
     {
       "program_id": "php-carrus-mckinney",
@@ -306,7 +617,7 @@
       "program_name": "Day Treatment / PHP",
       "level_of_care": "Partial Hospitalization (PHP)",
       "service_setting": "In-person",
-      "ages_served": "8\u201317",
+      "ages_served": "8–17",
       "locations": [
         {
           "city": "McKinney",
@@ -318,11 +629,30 @@
       "phone": "903-870-1222",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers, Medicaid | Types: Commercial (most major), Medicaid | Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
       "verification_source": "https://www.carruscarebehavioral.com/mckinney",
       "last_verified": "2025-12-21",
       "website": "https://www.carruscarebehavioral.com/mckinney",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.carruscarebehavioral.com/",
+        "plans": [
+          "Medicaid"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicaid"
+        ],
+        "notes": "Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
+        "plans_raw": [
+          "Most major insurance providers",
+          "Medicaid"
+        ]
+      },
+      "website_url": "https://www.carruscarebehavioral.com/mckinney",
+      "website_domain": "carruscarebehavioral.com"
     },
     {
       "program_id": "php-carrus-plano",
@@ -331,7 +661,7 @@
       "program_name": "Day Treatment / PHP",
       "level_of_care": "Partial Hospitalization (PHP)",
       "service_setting": "In-person",
-      "ages_served": "8\u201317",
+      "ages_served": "8–17",
       "locations": [
         {
           "city": "Plano",
@@ -343,11 +673,30 @@
       "phone": "903-870-1222",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers, Medicaid | Types: Commercial (most major), Medicaid | Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
       "verification_source": "https://www.carruscarebehavioral.com/plano",
       "last_verified": "2025-12-21",
       "website": "https://www.carruscarebehavioral.com/plano",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.carruscarebehavioral.com/",
+        "plans": [
+          "Medicaid"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicaid"
+        ],
+        "notes": "Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
+        "plans_raw": [
+          "Most major insurance providers",
+          "Medicaid"
+        ]
+      },
+      "website_url": "https://www.carruscarebehavioral.com/plano",
+      "website_domain": "carruscarebehavioral.com"
     },
     {
       "program_id": "php-basepoint-mckinney",
@@ -368,11 +717,42 @@
       "phone": "972-357-1749",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation), Carelon Behavioral Health, Cigna, Magellan Health, Optum, UnitedHealthcare, UMR | Types: Commercial (most major) | BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
       "verification_source": "https://basepointacademy.com/contact/",
       "last_verified": "2025-12-21",
       "website": "https://basepointacademy.com/contact/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://basepointacademy.com/insurance-coverage/",
+        "plans": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan",
+          "Optum",
+          "UMR",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial (most major)"
+        ],
+        "notes": "BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
+        "plans_raw": [
+          "Aetna",
+          "Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation)",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan Health",
+          "Optum",
+          "UnitedHealthcare",
+          "UMR"
+        ]
+      },
+      "website_url": "https://basepointacademy.com/contact/",
+      "website_domain": "basepointacademy.com"
     },
     {
       "program_id": "php-basepoint-frisco",
@@ -393,11 +773,42 @@
       "phone": "972-357-1749",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation), Carelon Behavioral Health, Cigna, Magellan Health, Optum, UnitedHealthcare, UMR | Types: Commercial (most major) | BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
       "verification_source": "https://basepointacademy.com/contact/",
       "last_verified": "2025-12-21",
       "website": "https://basepointacademy.com/contact/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://basepointacademy.com/insurance-coverage/",
+        "plans": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan",
+          "Optum",
+          "UMR",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial (most major)"
+        ],
+        "notes": "BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
+        "plans_raw": [
+          "Aetna",
+          "Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation)",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan Health",
+          "Optum",
+          "UnitedHealthcare",
+          "UMR"
+        ]
+      },
+      "website_url": "https://basepointacademy.com/contact/",
+      "website_domain": "basepointacademy.com"
     },
     {
       "program_id": "php-connections-denton",
@@ -418,11 +829,52 @@
       "phone": "972-239-3578",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Blue Cross Blue Shield, Aetna, Cigna, TRICARE, Magellan, Humana, Optum, UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.), Baylor Scott & White Health Plan, Bright HealthCare, Behavioral Health Systems | Types: Commercial, Military (TRICARE) | Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
       "verification_source": "https://connectionswellnessgroup.com/locations/denton/",
       "last_verified": "2025-12-21",
       "website": "https://connectionswellnessgroup.com/locations/denton/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://connectionswellnessgroup.com/faqs/",
+        "plans": [
+          "Aetna",
+          "Baylor Scott & White Health Plan",
+          "Behavioral Health Systems",
+          "Blue Cross Blue Shield",
+          "Bright Healthcare",
+          "Cigna",
+          "Humana",
+          "Magellan",
+          "Optum",
+          "TRICARE",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Military (TRICARE)"
+        ],
+        "not_accepted": [
+          "Oscar"
+        ],
+        "notes": "Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
+        "plans_raw": [
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Cigna",
+          "TRICARE",
+          "Magellan",
+          "Humana",
+          "Optum",
+          "UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.)",
+          "Baylor Scott & White Health Plan",
+          "Bright HealthCare",
+          "Behavioral Health Systems"
+        ]
+      },
+      "website_url": "https://connectionswellnessgroup.com/locations/denton/",
+      "website_domain": "connectionswellnessgroup.com"
     },
     {
       "program_id": "php-branches-denton",
@@ -431,7 +883,7 @@
       "program_name": "Day Treatment / PHP",
       "level_of_care": "Partial Hospitalization (PHP)",
       "service_setting": "In-person",
-      "ages_served": "13\u201317",
+      "ages_served": "13–17",
       "locations": [
         {
           "city": "Denton",
@@ -443,11 +895,45 @@
       "phone": "844-963-4673",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Medicare, TRICARE, Cigna, Humana, Blue Cross Blue Shield, Aetna, Traditional Medicaid (under 21), CHIP (under 21) | Types: Commercial (most major), Medicare, Military (TRICARE), Medicaid/CHIP (under 21) | Millwood states it is in-network with most major insurers and notes Traditional Medicaid/CHIP for patients under 21; marketplace/managed Medicaid/managed Medicare may be covered.",
       "verification_source": "https://ubhdenton.com/treatment-services/teens/outpatient-services/",
       "last_verified": "2025-12-21",
       "website": "https://ubhdenton.com/treatment-services/teens/outpatient-services/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://millwoodhospital.com/admissions/insurance-information/",
+        "plans": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "CHIP",
+          "Cigna",
+          "Humana",
+          "Medicaid",
+          "Medicare",
+          "TRICARE"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicare",
+          "Military (TRICARE)",
+          "Medicaid/CHIP (under 21)"
+        ],
+        "notes": "Millwood states it is in-network with most major insurers and notes Traditional Medicaid/CHIP for patients under 21; marketplace/managed Medicaid/managed Medicare may be covered.",
+        "plans_raw": [
+          "Medicare",
+          "TRICARE",
+          "Cigna",
+          "Humana",
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Traditional Medicaid (under 21)",
+          "CHIP (under 21)"
+        ]
+      },
+      "website_url": "https://ubhdenton.com/treatment-services/teens/outpatient-services/",
+      "website_domain": "ubhdenton.com"
     },
     {
       "program_id": "php-bricolage-flower-mound",
@@ -468,11 +954,61 @@
       "phone": "469-218-7537",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Allegiance, Ambetter, Blue Cross Blue Shield, Cigna, ComPsych, Evolutions Healthcare, Humana, Meritain, Molina, MultiPlan, Optum, Oscar, Scott & White, Superior, Tricare, UnitedHealthcare | Types: Commercial, Medicaid/CHIP plans (listed), Military (TRICARE)",
       "verification_source": "https://www.bricolagebh.com/",
       "last_verified": "2025-12-21",
       "website": "https://www.bricolagebh.com/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.bricolagebh.com/patient-information/insurances-accepted",
+        "plans": [
+          "Aetna",
+          "Allegiance",
+          "Ambetter",
+          "Blue Cross Blue Shield",
+          "Cigna",
+          "Compsych",
+          "Evolutions Healthcare",
+          "Humana",
+          "Meritain",
+          "Molina Healthcare",
+          "Multiplan",
+          "Optum",
+          "Oscar Health",
+          "Scott & White",
+          "Superior",
+          "TRICARE",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Medicaid/CHIP plans (listed)",
+          "Military (TRICARE)"
+        ],
+        "plans_raw": [
+          "Aetna",
+          "Allegiance",
+          "Ambetter",
+          "Blue Cross Blue Shield",
+          "Cigna",
+          "ComPsych",
+          "Evolutions Healthcare",
+          "Humana",
+          "Meritain",
+          "Molina",
+          "MultiPlan",
+          "Optum",
+          "Oscar",
+          "Scott & White",
+          "Superior",
+          "Tricare",
+          "UnitedHealthcare"
+        ]
+      },
+      "website_url": "https://www.bricolagebh.com/",
+      "website_domain": "bricolagebh.com"
     },
     {
       "program_id": "php-carrus-flower-mound",
@@ -481,7 +1017,7 @@
       "program_name": "Day Treatment / PHP",
       "level_of_care": "Partial Hospitalization (PHP)",
       "service_setting": "In-person",
-      "ages_served": "8\u201317",
+      "ages_served": "8–17",
       "locations": [
         {
           "city": "Flower Mound",
@@ -493,11 +1029,30 @@
       "phone": "469-423-9050",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers, Medicaid | Types: Commercial (most major), Medicaid | Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
       "verification_source": "https://carrushealth.com/our-locations/carrus-behavioral-hospital/",
       "last_verified": "2025-12-21",
       "website": "https://carrushealth.com/our-locations/carrus-behavioral-hospital/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.carruscarebehavioral.com/",
+        "plans": [
+          "Medicaid"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicaid"
+        ],
+        "notes": "Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
+        "plans_raw": [
+          "Most major insurance providers",
+          "Medicaid"
+        ]
+      },
+      "website_url": "https://carrushealth.com/our-locations/carrus-behavioral-hospital/",
+      "website_domain": "carrushealth.com"
     },
     {
       "program_id": "php-texas-health-arlington",
@@ -518,9 +1073,28 @@
       "phone": "682-236-6023",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: See Texas Health 'Insurance Plans Accepted' list (many commercial, Medicare Advantage, and Medicaid/CHIP plans) | Types: Commercial, Medicare (incl. Medicare Advantage), Medicaid/CHIP (varies by plan/service area) | Texas Health publishes an extensive accepted-insurance list; confirm plan/product and facility/physician network before scheduling.",
       "verification_source": "https://www.texashealth.org/Locations/texas-health-arlington-memorial/THBHCAMH",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.texashealth.org/Costs-and-Billing/Insurance-Plans-Accepted",
+        "plans": [
+          "Medicare"
+        ],
+        "types": [
+          "Commercial",
+          "Medicare (incl. Medicare Advantage)",
+          "Medicaid/CHIP (varies by plan/service area)"
+        ],
+        "notes": "Texas Health publishes an extensive accepted-insurance list; confirm plan/product and facility/physician network before scheduling.",
+        "plans_raw": [
+          "See Texas Health 'Insurance Plans Accepted' list (many commercial, Medicare Advantage, and Medicaid/CHIP plans)"
+        ]
+      },
+      "website_url": "https://www.texashealth.org/Locations/texas-health-arlington-memorial/THBHCAMH",
+      "website_domain": "texashealth.org"
     },
     {
       "program_id": "php-texas-health-springwood-bedford",
@@ -541,9 +1115,28 @@
       "phone": "682-236-6023",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: See Texas Health 'Insurance Plans Accepted' list (many commercial, Medicare Advantage, and Medicaid/CHIP plans) | Types: Commercial, Medicare (incl. Medicare Advantage), Medicaid/CHIP (varies by plan/service area) | Texas Health publishes an extensive accepted-insurance list; confirm plan/product and facility/physician network before scheduling.",
       "verification_source": "https://www.texashealth.org/Locations/texas-health-heb/THBHHEB",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.texashealth.org/Costs-and-Billing/Insurance-Plans-Accepted",
+        "plans": [
+          "Medicare"
+        ],
+        "types": [
+          "Commercial",
+          "Medicare (incl. Medicare Advantage)",
+          "Medicaid/CHIP (varies by plan/service area)"
+        ],
+        "notes": "Texas Health publishes an extensive accepted-insurance list; confirm plan/product and facility/physician network before scheduling.",
+        "plans_raw": [
+          "See Texas Health 'Insurance Plans Accepted' list (many commercial, Medicare Advantage, and Medicaid/CHIP plans)"
+        ]
+      },
+      "website_url": "https://www.texashealth.org/Locations/texas-health-heb/THBHHEB",
+      "website_domain": "texashealth.org"
     },
     {
       "program_id": "php-branches-fort-worth",
@@ -564,16 +1157,50 @@
       "phone": "844-963-4673",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Medicare, TRICARE, Cigna, Humana, Blue Cross Blue Shield, Aetna, Traditional Medicaid (under 21), CHIP (under 21) | Types: Commercial (most major), Medicare, Military (TRICARE), Medicaid/CHIP (under 21) | Millwood states it is in-network with most major insurers and notes Traditional Medicaid/CHIP for patients under 21; marketplace/managed Medicaid/managed Medicare may be covered.",
       "verification_source": "https://millwoodhospital.com/locations/branches-excel-fort-worth/",
       "last_verified": "2025-12-21",
       "website": "https://millwoodhospital.com/locations/branches-excel-fort-worth/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://millwoodhospital.com/admissions/insurance-information/",
+        "plans": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "CHIP",
+          "Cigna",
+          "Humana",
+          "Medicaid",
+          "Medicare",
+          "TRICARE"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicare",
+          "Military (TRICARE)",
+          "Medicaid/CHIP (under 21)"
+        ],
+        "notes": "Millwood states it is in-network with most major insurers and notes Traditional Medicaid/CHIP for patients under 21; marketplace/managed Medicaid/managed Medicare may be covered.",
+        "plans_raw": [
+          "Medicare",
+          "TRICARE",
+          "Cigna",
+          "Humana",
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Traditional Medicaid (under 21)",
+          "CHIP (under 21)"
+        ]
+      },
+      "website_url": "https://millwoodhospital.com/locations/branches-excel-fort-worth/",
+      "website_domain": "millwoodhospital.com"
     },
     {
       "program_id": "php-mesa-springs-innovations-arlington",
       "entry_type": "Treatment Program",
-      "organization": "Mesa Springs \u2013 Innovations (Arlington)",
+      "organization": "Mesa Springs – Innovations (Arlington)",
       "program_name": "Day Treatment / PHP",
       "level_of_care": "Partial Hospitalization (PHP)",
       "service_setting": "In-person",
@@ -589,16 +1216,32 @@
       "phone": "682-320-2800",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers (in-network) | Types: Commercial (most major), Out-of-network sometimes possible | Mesa Springs states it is in-network with most major insurers and can sometimes work out-of-network; call to confirm coverage.",
       "verification_source": "https://www.mesasprings.com/locations/innovations-locations/arlington-tx/",
       "last_verified": "2025-12-21",
       "website": "https://www.mesasprings.com/locations/innovations-locations/arlington-tx/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.mesasprings.com/resources/accepted-insurance/",
+        "plans": [],
+        "types": [
+          "Commercial (most major)",
+          "Out-of-network sometimes possible"
+        ],
+        "notes": "Mesa Springs states it is in-network with most major insurers and can sometimes work out-of-network; call to confirm coverage.",
+        "plans_raw": [
+          "Most major insurance providers (in-network)"
+        ]
+      },
+      "website_url": "https://www.mesasprings.com/locations/innovations-locations/arlington-tx/",
+      "website_domain": "mesasprings.com"
     },
     {
       "program_id": "php-mesa-springs-innovations-fort-worth",
       "entry_type": "Treatment Program",
-      "organization": "Mesa Springs \u2013 Innovations (Fort Worth)",
+      "organization": "Mesa Springs – Innovations (Fort Worth)",
       "program_name": "Day Treatment / PHP",
       "level_of_care": "Partial Hospitalization (PHP)",
       "service_setting": "In-person",
@@ -614,11 +1257,27 @@
       "phone": "817-841-8002",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers (in-network) | Types: Commercial (most major), Out-of-network sometimes possible | Mesa Springs states it is in-network with most major insurers and can sometimes work out-of-network; call to confirm coverage.",
       "verification_source": "https://www.mesasprings.com/locations/innovations-locations/fort-worth-camp-bowie-blvd/",
       "last_verified": "2025-12-21",
       "website": "https://www.mesasprings.com/locations/innovations-locations/fort-worth-camp-bowie-blvd/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.mesasprings.com/resources/accepted-insurance/",
+        "plans": [],
+        "types": [
+          "Commercial (most major)",
+          "Out-of-network sometimes possible"
+        ],
+        "notes": "Mesa Springs states it is in-network with most major insurers and can sometimes work out-of-network; call to confirm coverage.",
+        "plans_raw": [
+          "Most major insurance providers (in-network)"
+        ]
+      },
+      "website_url": "https://www.mesasprings.com/locations/innovations-locations/fort-worth-camp-bowie-blvd/",
+      "website_domain": "mesasprings.com"
     },
     {
       "program_id": "php-mind-above-matter-keller",
@@ -639,9 +1298,58 @@
       "phone": "817-662-6179",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Blue Cross Blue Shield, ChampVA, Cigna, Magellan, Meritain Health, Optum, TRICARE, UMR, UnitedHealthcare, Aetna Better Health, Ambetter from Superior HealthPlan, Cook Children’s Health Plan, Molina Medicaid, Parkland Community Health Plan, Superior HealthPlan, WellPoint | Types: Commercial, Medicaid/CHIP plans (listed), Military/Veterans (TRICARE, ChampVA)",
       "verification_source": "https://mindabovematter.com/contact-us/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.mindabovematter.com/help-faqs",
+        "plans": [
+          "Aetna",
+          "Ambetter",
+          "Blue Cross Blue Shield",
+          "Champva",
+          "Cigna",
+          "Cook Childrens Health Plan",
+          "Magellan",
+          "Medicaid",
+          "Meritain Health",
+          "Optum",
+          "Parkland Community Health Plan",
+          "Superior HealthPlan",
+          "TRICARE",
+          "UMR",
+          "UnitedHealthcare",
+          "Wellpoint"
+        ],
+        "types": [
+          "Commercial",
+          "Medicaid/CHIP plans (listed)",
+          "Military/Veterans (TRICARE, ChampVA)"
+        ],
+        "plans_raw": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "ChampVA",
+          "Cigna",
+          "Magellan",
+          "Meritain Health",
+          "Optum",
+          "TRICARE",
+          "UMR",
+          "UnitedHealthcare",
+          "Aetna Better Health",
+          "Ambetter from Superior HealthPlan",
+          "Cook Children’s Health Plan",
+          "Molina Medicaid",
+          "Parkland Community Health Plan",
+          "Superior HealthPlan",
+          "WellPoint"
+        ]
+      },
+      "website_url": "https://mindabovematter.com/contact-us/",
+      "website_domain": "mindabovematter.com"
     },
     {
       "program_id": "php-mind-above-matter-burleson",
@@ -662,9 +1370,58 @@
       "phone": "817-662-6179",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Blue Cross Blue Shield, ChampVA, Cigna, Magellan, Meritain Health, Optum, TRICARE, UMR, UnitedHealthcare, Aetna Better Health, Ambetter from Superior HealthPlan, Cook Children’s Health Plan, Molina Medicaid, Parkland Community Health Plan, Superior HealthPlan, WellPoint | Types: Commercial, Medicaid/CHIP plans (listed), Military/Veterans (TRICARE, ChampVA)",
       "verification_source": "https://mindabovematter.com/contact-us/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.mindabovematter.com/help-faqs",
+        "plans": [
+          "Aetna",
+          "Ambetter",
+          "Blue Cross Blue Shield",
+          "Champva",
+          "Cigna",
+          "Cook Childrens Health Plan",
+          "Magellan",
+          "Medicaid",
+          "Meritain Health",
+          "Optum",
+          "Parkland Community Health Plan",
+          "Superior HealthPlan",
+          "TRICARE",
+          "UMR",
+          "UnitedHealthcare",
+          "Wellpoint"
+        ],
+        "types": [
+          "Commercial",
+          "Medicaid/CHIP plans (listed)",
+          "Military/Veterans (TRICARE, ChampVA)"
+        ],
+        "plans_raw": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "ChampVA",
+          "Cigna",
+          "Magellan",
+          "Meritain Health",
+          "Optum",
+          "TRICARE",
+          "UMR",
+          "UnitedHealthcare",
+          "Aetna Better Health",
+          "Ambetter from Superior HealthPlan",
+          "Cook Children’s Health Plan",
+          "Molina Medicaid",
+          "Parkland Community Health Plan",
+          "Superior HealthPlan",
+          "WellPoint"
+        ]
+      },
+      "website_url": "https://mindabovematter.com/contact-us/",
+      "website_domain": "mindabovematter.com"
     },
     {
       "program_id": "php-connections-keller",
@@ -685,11 +1442,52 @@
       "phone": "817-770-0208",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Blue Cross Blue Shield, Aetna, Cigna, TRICARE, Magellan, Humana, Optum, UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.), Baylor Scott & White Health Plan, Bright HealthCare, Behavioral Health Systems | Types: Commercial, Military (TRICARE) | Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
       "verification_source": "https://connectionswellnessgroup.com/locations/",
       "last_verified": "2025-12-21",
       "website": "https://connectionswellnessgroup.com/locations/keller/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://connectionswellnessgroup.com/faqs/",
+        "plans": [
+          "Aetna",
+          "Baylor Scott & White Health Plan",
+          "Behavioral Health Systems",
+          "Blue Cross Blue Shield",
+          "Bright Healthcare",
+          "Cigna",
+          "Humana",
+          "Magellan",
+          "Optum",
+          "TRICARE",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Military (TRICARE)"
+        ],
+        "not_accepted": [
+          "Oscar"
+        ],
+        "notes": "Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
+        "plans_raw": [
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Cigna",
+          "TRICARE",
+          "Magellan",
+          "Humana",
+          "Optum",
+          "UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.)",
+          "Baylor Scott & White Health Plan",
+          "Bright HealthCare",
+          "Behavioral Health Systems"
+        ]
+      },
+      "website_url": "https://connectionswellnessgroup.com/locations/",
+      "website_domain": "connectionswellnessgroup.com"
     },
     {
       "program_id": "php-connections-mansfield",
@@ -710,11 +1508,52 @@
       "phone": "817-500-5984",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Blue Cross Blue Shield, Aetna, Cigna, TRICARE, Magellan, Humana, Optum, UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.), Baylor Scott & White Health Plan, Bright HealthCare, Behavioral Health Systems | Types: Commercial, Military (TRICARE) | Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
       "verification_source": "https://connectionswellnessgroup.com/locations/",
       "last_verified": "2025-12-21",
       "website": "https://connectionswellnessgroup.com/locations/mansfield/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://connectionswellnessgroup.com/faqs/",
+        "plans": [
+          "Aetna",
+          "Baylor Scott & White Health Plan",
+          "Behavioral Health Systems",
+          "Blue Cross Blue Shield",
+          "Bright Healthcare",
+          "Cigna",
+          "Humana",
+          "Magellan",
+          "Optum",
+          "TRICARE",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Military (TRICARE)"
+        ],
+        "not_accepted": [
+          "Oscar"
+        ],
+        "notes": "Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
+        "plans_raw": [
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Cigna",
+          "TRICARE",
+          "Magellan",
+          "Humana",
+          "Optum",
+          "UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.)",
+          "Baylor Scott & White Health Plan",
+          "Bright HealthCare",
+          "Behavioral Health Systems"
+        ]
+      },
+      "website_url": "https://connectionswellnessgroup.com/locations/",
+      "website_domain": "connectionswellnessgroup.com"
     },
     {
       "program_id": "php-carrus-mansfield",
@@ -723,7 +1562,7 @@
       "program_name": "Day Treatment / PHP",
       "level_of_care": "Partial Hospitalization (PHP)",
       "service_setting": "In-person",
-      "ages_served": "8\u201317",
+      "ages_served": "8–17",
       "locations": [
         {
           "city": "Mansfield",
@@ -735,11 +1574,30 @@
       "phone": "903-870-1222",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers, Medicaid | Types: Commercial (most major), Medicaid | Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
       "verification_source": "https://www.carruscarebehavioral.com/mansfield",
       "last_verified": "2025-12-21",
       "website": "https://www.carruscarebehavioral.com/mansfield",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.carruscarebehavioral.com/",
+        "plans": [
+          "Medicaid"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicaid"
+        ],
+        "notes": "Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
+        "plans_raw": [
+          "Most major insurance providers",
+          "Medicaid"
+        ]
+      },
+      "website_url": "https://www.carruscarebehavioral.com/mansfield",
+      "website_domain": "carruscarebehavioral.com"
     },
     {
       "program_id": "php-carrus-keller",
@@ -748,7 +1606,7 @@
       "program_name": "Day Treatment / PHP",
       "level_of_care": "Partial Hospitalization (PHP)",
       "service_setting": "In-person",
-      "ages_served": "8\u201317",
+      "ages_served": "8–17",
       "locations": [
         {
           "city": "Keller",
@@ -760,20 +1618,39 @@
       "phone": "903-870-1222",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers, Medicaid | Types: Commercial (most major), Medicaid | Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
       "verification_source": "https://www.carruscarebehavioral.com/keller",
       "last_verified": "2025-12-21",
       "website": "https://www.carruscarebehavioral.com/keller",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.carruscarebehavioral.com/",
+        "plans": [
+          "Medicaid"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicaid"
+        ],
+        "notes": "Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
+        "plans_raw": [
+          "Most major insurance providers",
+          "Medicaid"
+        ]
+      },
+      "website_url": "https://www.carruscarebehavioral.com/keller",
+      "website_domain": "carruscarebehavioral.com"
     },
     {
       "program_id": "php-cook-childrens-fort-worth",
       "entry_type": "Treatment Program",
-      "organization": "Cook Children\u2019s",
+      "organization": "Cook Children’s",
       "program_name": "Day Treatment / PHP",
       "level_of_care": "Partial Hospitalization (PHP)",
       "service_setting": "In-person",
-      "ages_served": "5\u201317",
+      "ages_served": "5–17",
       "locations": [
         {
           "city": "Fort Worth",
@@ -785,9 +1662,27 @@
       "phone": "682-885-3917",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: See Cook Children’s 'Insurance Plans' list (includes many commercial plans and some Medicaid/CHIP products) | Types: Commercial (many), Medicaid/CHIP (some products) | Cook Children’s recommends contacting the insurer to verify coverage; not all products are contracted for each listed plan.",
       "verification_source": "https://www.cookchildrens.org/services/behavioral-health/contact-us/psychiatry-fort-worth/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.cookchildrens.org/patients-families/billing-insurance/insurance-plans/",
+        "plans": [
+          "Medicaid"
+        ],
+        "types": [
+          "Commercial (many)",
+          "Medicaid/CHIP (some products)"
+        ],
+        "notes": "Cook Children’s recommends contacting the insurer to verify coverage; not all products are contracted for each listed plan.",
+        "plans_raw": [
+          "See Cook Children’s 'Insurance Plans' list (includes many commercial plans and some Medicaid/CHIP products)"
+        ]
+      },
+      "website_url": "https://www.cookchildrens.org/services/behavioral-health/contact-us/psychiatry-fort-worth/",
+      "website_domain": "cookchildrens.org"
     },
     {
       "program_id": "php-branches-excel-fort-worth",
@@ -808,9 +1703,43 @@
       "phone": "844-963-4673",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Medicare, TRICARE, Cigna, Humana, Blue Cross Blue Shield, Aetna, Traditional Medicaid (under 21), CHIP (under 21) | Types: Commercial (most major), Medicare, Military (TRICARE), Medicaid/CHIP (under 21) | Millwood states it is in-network with most major insurers and notes Traditional Medicaid/CHIP for patients under 21; marketplace/managed Medicaid/managed Medicare may be covered.",
       "verification_source": "https://millwoodhospital.com/locations/branches-excel-fort-worth/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://millwoodhospital.com/admissions/insurance-information/",
+        "plans": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "CHIP",
+          "Cigna",
+          "Humana",
+          "Medicaid",
+          "Medicare",
+          "TRICARE"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicare",
+          "Military (TRICARE)",
+          "Medicaid/CHIP (under 21)"
+        ],
+        "notes": "Millwood states it is in-network with most major insurers and notes Traditional Medicaid/CHIP for patients under 21; marketplace/managed Medicaid/managed Medicare may be covered.",
+        "plans_raw": [
+          "Medicare",
+          "TRICARE",
+          "Cigna",
+          "Humana",
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Traditional Medicaid (under 21)",
+          "CHIP (under 21)"
+        ]
+      },
+      "website_url": "https://millwoodhospital.com/locations/branches-excel-fort-worth/",
+      "website_domain": "millwoodhospital.com"
     },
     {
       "program_id": "php-basepoint-forney",
@@ -831,11 +1760,42 @@
       "phone": "972-357-1749",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation), Carelon Behavioral Health, Cigna, Magellan Health, Optum, UnitedHealthcare, UMR | Types: Commercial (most major) | BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
       "verification_source": "https://basepointacademy.com/contact/",
       "last_verified": "2025-12-21",
       "website": "https://basepointacademy.com/contact/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://basepointacademy.com/insurance-coverage/",
+        "plans": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan",
+          "Optum",
+          "UMR",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial (most major)"
+        ],
+        "notes": "BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
+        "plans_raw": [
+          "Aetna",
+          "Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation)",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan Health",
+          "Optum",
+          "UnitedHealthcare",
+          "UMR"
+        ]
+      },
+      "website_url": "https://basepointacademy.com/contact/",
+      "website_domain": "basepointacademy.com"
     },
     {
       "program_id": "php-connections-rockwall",
@@ -856,9 +1816,50 @@
       "phone": "469-545-0160",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Blue Cross Blue Shield, Aetna, Cigna, TRICARE, Magellan, Humana, Optum, UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.), Baylor Scott & White Health Plan, Bright HealthCare, Behavioral Health Systems | Types: Commercial, Military (TRICARE) | Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
       "verification_source": "https://connectionswellnessgroup.com/locations/rockwall/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://connectionswellnessgroup.com/faqs/",
+        "plans": [
+          "Aetna",
+          "Baylor Scott & White Health Plan",
+          "Behavioral Health Systems",
+          "Blue Cross Blue Shield",
+          "Bright Healthcare",
+          "Cigna",
+          "Humana",
+          "Magellan",
+          "Optum",
+          "TRICARE",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Military (TRICARE)"
+        ],
+        "not_accepted": [
+          "Oscar"
+        ],
+        "notes": "Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
+        "plans_raw": [
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Cigna",
+          "TRICARE",
+          "Magellan",
+          "Humana",
+          "Optum",
+          "UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.)",
+          "Baylor Scott & White Health Plan",
+          "Bright HealthCare",
+          "Behavioral Health Systems"
+        ]
+      },
+      "website_url": "https://connectionswellnessgroup.com/locations/rockwall/",
+      "website_domain": "connectionswellnessgroup.com"
     },
     {
       "program_id": "php-carrus-sherman",
@@ -867,7 +1868,7 @@
       "program_name": "Day Treatment / PHP",
       "level_of_care": "Partial Hospitalization (PHP)",
       "service_setting": "In-person",
-      "ages_served": "12\u201317",
+      "ages_served": "12–17",
       "locations": [
         {
           "city": "Sherman",
@@ -879,11 +1880,30 @@
       "phone": "903-870-1222",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers, Medicaid | Types: Commercial (most major), Medicaid | Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
       "verification_source": "https://www.carruscarebehavioral.com/sherman",
       "last_verified": "2025-12-21",
       "website": "https://www.carruscarebehavioral.com/sherman",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.carruscarebehavioral.com/",
+        "plans": [
+          "Medicaid"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicaid"
+        ],
+        "notes": "Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
+        "plans_raw": [
+          "Most major insurance providers",
+          "Medicaid"
+        ]
+      },
+      "website_url": "https://www.carruscarebehavioral.com/sherman",
+      "website_domain": "carruscarebehavioral.com"
     },
     {
       "program_id": "php-virtual-basepoint",
@@ -904,9 +1924,40 @@
       "phone": "972-357-1749",
       "notes": "Listed as a virtual program.",
       "transportation_available": "N/A",
-      "insurance_notes": "Accepts commercial insurance",
+      "insurance_notes": "Plans: Aetna, Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation), Carelon Behavioral Health, Cigna, Magellan Health, Optum, UnitedHealthcare, UMR | Types: Commercial (most major) | BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
       "verification_source": "https://basepointacademy.com/contact/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://basepointacademy.com/insurance-coverage/",
+        "plans": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan",
+          "Optum",
+          "UMR",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial (most major)"
+        ],
+        "notes": "BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
+        "plans_raw": [
+          "Aetna",
+          "Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation)",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan Health",
+          "Optum",
+          "UnitedHealthcare",
+          "UMR"
+        ]
+      },
+      "website_url": "https://basepointacademy.com/contact/",
+      "website_domain": "basepointacademy.com"
     },
     {
       "program_id": "php-virtual-connections",
@@ -927,15 +1978,56 @@
       "phone": "877-747-4294",
       "notes": "Listed as a virtual program.",
       "transportation_available": "N/A",
-      "insurance_notes": "Accepts commercial insurance",
+      "insurance_notes": "Plans: Blue Cross Blue Shield, Aetna, Cigna, TRICARE, Magellan, Humana, Optum, UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.), Baylor Scott & White Health Plan, Bright HealthCare, Behavioral Health Systems | Types: Commercial, Military (TRICARE) | Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
       "verification_source": "https://connectionswellnessgroup.com/services/virtual-care/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://connectionswellnessgroup.com/faqs/",
+        "plans": [
+          "Aetna",
+          "Baylor Scott & White Health Plan",
+          "Behavioral Health Systems",
+          "Blue Cross Blue Shield",
+          "Bright Healthcare",
+          "Cigna",
+          "Humana",
+          "Magellan",
+          "Optum",
+          "TRICARE",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Military (TRICARE)"
+        ],
+        "not_accepted": [
+          "Oscar"
+        ],
+        "notes": "Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
+        "plans_raw": [
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Cigna",
+          "TRICARE",
+          "Magellan",
+          "Humana",
+          "Optum",
+          "UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.)",
+          "Baylor Scott & White Health Plan",
+          "Bright HealthCare",
+          "Behavioral Health Systems"
+        ]
+      },
+      "website_url": "https://connectionswellnessgroup.com/services/virtual-care/",
+      "website_domain": "connectionswellnessgroup.com"
     },
     {
       "program_id": "iop-childrens-sparc-dallas",
       "entry_type": "Treatment Program",
-      "organization": "Children\u2019s Medical Center",
-      "program_name": "SPARC Program (Suicide Prevention and Resilience at Children\u2019s)",
+      "organization": "Children’s Medical Center",
+      "program_name": "SPARC Program (Suicide Prevention and Resilience at Children’s)",
       "level_of_care": "Intensive Outpatient (IOP)",
       "service_setting": "In-person",
       "ages_served": "12+",
@@ -950,9 +2042,26 @@
       "phone": "214-456-3600",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: See Children’s Health contracted insurance plans (varies by service/location); verify plan/product | Types: Commercial (many), Medicaid/CHIP (some), Other government programs (varies) | Children’s Health directs families to its billing/insurance resources and contracted plans; confirm plan/product and department.",
       "verification_source": "https://www.childrens.com/specialties-services/specialty-centers-and-programs/psychiatry-and-psychology/who-do-i-call",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.childrens.com/patient-resources/billing-and-insurance",
+        "plans": [],
+        "types": [
+          "Commercial (many)",
+          "Medicaid/CHIP (some)",
+          "Other government programs (varies)"
+        ],
+        "notes": "Children’s Health directs families to its billing/insurance resources and contracted plans; confirm plan/product and department.",
+        "plans_raw": [
+          "See Children’s Health contracted insurance plans (varies by service/location); verify plan/product"
+        ]
+      },
+      "website_url": "https://www.childrens.com/specialties-services/specialty-centers-and-programs/psychiatry-and-psychology/who-do-i-call",
+      "website_domain": "childrens.com"
     },
     {
       "program_id": "iop-southern-area-dallas",
@@ -973,9 +2082,31 @@
       "phone": "972-283-9090",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Medicaid, Medicare, Most major private insurance plans | Types: Commercial (most major), Medicaid, Medicare | SABHC lists payment options including Medicaid, Medicare, and most major private insurance.",
       "verification_source": "https://sabhc.org/iop/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://sabhc.org/iop/",
+        "plans": [
+          "Medicaid",
+          "Medicare"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicaid",
+          "Medicare"
+        ],
+        "notes": "SABHC lists payment options including Medicaid, Medicare, and most major private insurance.",
+        "plans_raw": [
+          "Medicaid",
+          "Medicare",
+          "Most major private insurance plans"
+        ]
+      },
+      "website_url": "https://sabhc.org/iop/",
+      "website_domain": "sabhc.org"
     },
     {
       "program_id": "iop-unity-richardson",
@@ -996,9 +2127,19 @@
       "phone": "469-940-6900",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Insurance info not listed on website; call to verify.",
       "verification_source": "https://unitybehavioral.com/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "not_listed_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://unitybehavioral.com/",
+        "plans": [],
+        "types": [],
+        "notes": "No accepted-insurance list found on their public site at time of verification."
+      },
+      "website_url": "https://unitybehavioral.com/",
+      "website_domain": "unitybehavioral.com"
     },
     {
       "program_id": "iop-texas-health-bh-center-richardson",
@@ -1019,9 +2160,28 @@
       "phone": "682-236-6023",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: See Texas Health 'Insurance Plans Accepted' list (many commercial, Medicare Advantage, and Medicaid/CHIP plans) | Types: Commercial, Medicare (incl. Medicare Advantage), Medicaid/CHIP (varies by plan/service area) | Texas Health publishes an extensive accepted-insurance list; confirm plan/product and facility/physician network before scheduling.",
       "verification_source": "https://www.texashealth.org/Locations/texas-health-cityline/THBHCR",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.texashealth.org/Costs-and-Billing/Insurance-Plans-Accepted",
+        "plans": [
+          "Medicare"
+        ],
+        "types": [
+          "Commercial",
+          "Medicare (incl. Medicare Advantage)",
+          "Medicaid/CHIP (varies by plan/service area)"
+        ],
+        "notes": "Texas Health publishes an extensive accepted-insurance list; confirm plan/product and facility/physician network before scheduling.",
+        "plans_raw": [
+          "See Texas Health 'Insurance Plans Accepted' list (many commercial, Medicare Advantage, and Medicaid/CHIP plans)"
+        ]
+      },
+      "website_url": "https://www.texashealth.org/Locations/texas-health-cityline/THBHCR",
+      "website_domain": "texashealth.org"
     },
     {
       "program_id": "iop-dallas-behavioral-health-care-hospital-desoto",
@@ -1030,7 +2190,7 @@
       "program_name": "IOP",
       "level_of_care": "Intensive Outpatient (IOP)",
       "service_setting": "In-person",
-      "ages_served": "13\u201317",
+      "ages_served": "13–17",
       "locations": [
         {
           "city": "DeSoto",
@@ -1042,9 +2202,55 @@
       "phone": "972-982-0897",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Ambetter, Blue Cross Blue Shield, Cigna, ComPsych, Magellan, Medicare, Medicaid, Molina, Optum, Superior, TRICARE, UMR, UnitedHealthcare | Types: Commercial, Medicare, Medicaid/CHIP plans (listed), Military (TRICARE) | Dallas Behavioral lists accepted insurance providers; confirm plan/product and authorization requirements.",
       "verification_source": "https://www.dallasbehavioral.com/programs/intensive-outpatient-care",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.dallasbehavioral.com/programs/",
+        "plans": [
+          "Aetna",
+          "Ambetter",
+          "Blue Cross Blue Shield",
+          "Cigna",
+          "Compsych",
+          "Magellan",
+          "Medicaid",
+          "Medicare",
+          "Molina Healthcare",
+          "Optum",
+          "Superior",
+          "TRICARE",
+          "UMR",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Medicare",
+          "Medicaid/CHIP plans (listed)",
+          "Military (TRICARE)"
+        ],
+        "notes": "Dallas Behavioral lists accepted insurance providers; confirm plan/product and authorization requirements.",
+        "plans_raw": [
+          "Aetna",
+          "Ambetter",
+          "Blue Cross Blue Shield",
+          "Cigna",
+          "ComPsych",
+          "Magellan",
+          "Medicare",
+          "Medicaid",
+          "Molina",
+          "Optum",
+          "Superior",
+          "TRICARE",
+          "UMR",
+          "UnitedHealthcare"
+        ]
+      },
+      "website_url": "https://www.dallasbehavioral.com/programs/intensive-outpatient-care",
+      "website_domain": "dallasbehavioral.com"
     },
     {
       "program_id": "iop-reflections-dallas",
@@ -1065,11 +2271,33 @@
       "phone": "469-777-4688",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Evernorth (Cigna/Evernorth), Cigna, Magellan | Types: Commercial | Reflections shows major insurer networks on its site; confirm plan/product and authorization requirements with admissions.",
       "verification_source": "https://reflectionslifestyle.com/contact/",
       "last_verified": "2025-12-21",
       "website": "https://reflectionslifestyle.com/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://reflectionslifestyle.com/",
+        "plans": [
+          "Aetna",
+          "Cigna",
+          "Magellan"
+        ],
+        "types": [
+          "Commercial"
+        ],
+        "notes": "Reflections shows major insurer networks on its site; confirm plan/product and authorization requirements with admissions.",
+        "plans_raw": [
+          "Aetna",
+          "Evernorth (Cigna/Evernorth)",
+          "Cigna",
+          "Magellan"
+        ]
+      },
+      "website_url": "https://reflectionslifestyle.com/contact/",
+      "website_domain": "reflectionslifestyle.com"
     },
     {
       "program_id": "iop-changes-frisco",
@@ -1090,11 +2318,27 @@
       "phone": "469-850-2040",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers (in-network) | Types: Commercial (most major), Out-of-network sometimes possible | Mesa Springs states it is in-network with most major insurers and can sometimes work out-of-network; call to confirm coverage.",
       "verification_source": "https://mesasprings.com/locations/changes-frisco/",
       "last_verified": "2025-12-21",
       "website": "https://mesasprings.com/locations/changes-frisco/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.mesasprings.com/resources/accepted-insurance/",
+        "plans": [],
+        "types": [
+          "Commercial (most major)",
+          "Out-of-network sometimes possible"
+        ],
+        "notes": "Mesa Springs states it is in-network with most major insurers and can sometimes work out-of-network; call to confirm coverage.",
+        "plans_raw": [
+          "Most major insurance providers (in-network)"
+        ]
+      },
+      "website_url": "https://mesasprings.com/locations/changes-frisco/",
+      "website_domain": "mesasprings.com"
     },
     {
       "program_id": "iop-changes-mckinney",
@@ -1115,11 +2359,27 @@
       "phone": "469-634-1270",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers (in-network) | Types: Commercial (most major), Out-of-network sometimes possible | Mesa Springs states it is in-network with most major insurers and can sometimes work out-of-network; call to confirm coverage.",
       "verification_source": "https://mesasprings.com/locations/changes-mckinney/",
       "last_verified": "2025-12-21",
       "website": "https://mesasprings.com/locations/changes-mckinney/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.mesasprings.com/resources/accepted-insurance/",
+        "plans": [],
+        "types": [
+          "Commercial (most major)",
+          "Out-of-network sometimes possible"
+        ],
+        "notes": "Mesa Springs states it is in-network with most major insurers and can sometimes work out-of-network; call to confirm coverage.",
+        "plans_raw": [
+          "Most major insurance providers (in-network)"
+        ]
+      },
+      "website_url": "https://mesasprings.com/locations/changes-mckinney/",
+      "website_domain": "mesasprings.com"
     },
     {
       "program_id": "iop-texas-health-bh-center-frisco",
@@ -1140,9 +2400,28 @@
       "phone": "682-236-6023",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: See Texas Health 'Insurance Plans Accepted' list (many commercial, Medicare Advantage, and Medicaid/CHIP plans) | Types: Commercial, Medicare (incl. Medicare Advantage), Medicaid/CHIP (varies by plan/service area) | Texas Health publishes an extensive accepted-insurance list; confirm plan/product and facility/physician network before scheduling.",
       "verification_source": "https://www.texashealth.org/Locations/texas-health-frisco/THBHCFR",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.texashealth.org/Costs-and-Billing/Insurance-Plans-Accepted",
+        "plans": [
+          "Medicare"
+        ],
+        "types": [
+          "Commercial",
+          "Medicare (incl. Medicare Advantage)",
+          "Medicaid/CHIP (varies by plan/service area)"
+        ],
+        "notes": "Texas Health publishes an extensive accepted-insurance list; confirm plan/product and facility/physician network before scheduling.",
+        "plans_raw": [
+          "See Texas Health 'Insurance Plans Accepted' list (many commercial, Medicare Advantage, and Medicaid/CHIP plans)"
+        ]
+      },
+      "website_url": "https://www.texashealth.org/Locations/texas-health-frisco/THBHCFR",
+      "website_domain": "texashealth.org"
     },
     {
       "program_id": "iop-texas-health-seay-plano",
@@ -1163,11 +2442,30 @@
       "phone": "682-236-6023",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: See Texas Health 'Insurance Plans Accepted' list (many commercial, Medicare Advantage, and Medicaid/CHIP plans) | Types: Commercial, Medicare (incl. Medicare Advantage), Medicaid/CHIP (varies by plan/service area) | Texas Health publishes an extensive accepted-insurance list; confirm plan/product and facility/physician network before scheduling.",
       "verification_source": "https://www.texashealth.org/Locations/texas-health-plano/THBHP",
       "last_verified": "2025-12-21",
       "website": "https://www.texashealth.org/Locations/texas-health-plano/THBHP",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.texashealth.org/Costs-and-Billing/Insurance-Plans-Accepted",
+        "plans": [
+          "Medicare"
+        ],
+        "types": [
+          "Commercial",
+          "Medicare (incl. Medicare Advantage)",
+          "Medicaid/CHIP (varies by plan/service area)"
+        ],
+        "notes": "Texas Health publishes an extensive accepted-insurance list; confirm plan/product and facility/physician network before scheduling.",
+        "plans_raw": [
+          "See Texas Health 'Insurance Plans Accepted' list (many commercial, Medicare Advantage, and Medicaid/CHIP plans)"
+        ]
+      },
+      "website_url": "https://www.texashealth.org/Locations/texas-health-plano/THBHP",
+      "website_domain": "texashealth.org"
     },
     {
       "program_id": "iop-connections-plano",
@@ -1188,11 +2486,52 @@
       "phone": "469-613-3390",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Blue Cross Blue Shield, Aetna, Cigna, TRICARE, Magellan, Humana, Optum, UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.), Baylor Scott & White Health Plan, Bright HealthCare, Behavioral Health Systems | Types: Commercial, Military (TRICARE) | Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
       "verification_source": "https://connectionswellnessgroup.com/locations/plano/",
       "last_verified": "2025-12-21",
       "website": "https://connectionswellnessgroup.com/locations/plano/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://connectionswellnessgroup.com/faqs/",
+        "plans": [
+          "Aetna",
+          "Baylor Scott & White Health Plan",
+          "Behavioral Health Systems",
+          "Blue Cross Blue Shield",
+          "Bright Healthcare",
+          "Cigna",
+          "Humana",
+          "Magellan",
+          "Optum",
+          "TRICARE",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Military (TRICARE)"
+        ],
+        "not_accepted": [
+          "Oscar"
+        ],
+        "notes": "Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
+        "plans_raw": [
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Cigna",
+          "TRICARE",
+          "Magellan",
+          "Humana",
+          "Optum",
+          "UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.)",
+          "Baylor Scott & White Health Plan",
+          "Bright HealthCare",
+          "Behavioral Health Systems"
+        ]
+      },
+      "website_url": "https://connectionswellnessgroup.com/locations/plano/",
+      "website_domain": "connectionswellnessgroup.com"
     },
     {
       "program_id": "iop-connections-mckinney",
@@ -1213,11 +2552,52 @@
       "phone": "940-360-4245",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Blue Cross Blue Shield, Aetna, Cigna, TRICARE, Magellan, Humana, Optum, UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.), Baylor Scott & White Health Plan, Bright HealthCare, Behavioral Health Systems | Types: Commercial, Military (TRICARE) | Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
       "verification_source": "https://connectionswellnessgroup.com/locations/mckinney/",
       "last_verified": "2025-12-21",
       "website": "https://connectionswellnessgroup.com/locations/mckinney/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://connectionswellnessgroup.com/faqs/",
+        "plans": [
+          "Aetna",
+          "Baylor Scott & White Health Plan",
+          "Behavioral Health Systems",
+          "Blue Cross Blue Shield",
+          "Bright Healthcare",
+          "Cigna",
+          "Humana",
+          "Magellan",
+          "Optum",
+          "TRICARE",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Military (TRICARE)"
+        ],
+        "not_accepted": [
+          "Oscar"
+        ],
+        "notes": "Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
+        "plans_raw": [
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Cigna",
+          "TRICARE",
+          "Magellan",
+          "Humana",
+          "Optum",
+          "UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.)",
+          "Baylor Scott & White Health Plan",
+          "Bright HealthCare",
+          "Behavioral Health Systems"
+        ]
+      },
+      "website_url": "https://connectionswellnessgroup.com/locations/mckinney/",
+      "website_domain": "connectionswellnessgroup.com"
     },
     {
       "program_id": "iop-connections-denton",
@@ -1238,11 +2618,52 @@
       "phone": "972-239-3578",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Blue Cross Blue Shield, Aetna, Cigna, TRICARE, Magellan, Humana, Optum, UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.), Baylor Scott & White Health Plan, Bright HealthCare, Behavioral Health Systems | Types: Commercial, Military (TRICARE) | Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
       "verification_source": "https://connectionswellnessgroup.com/locations/denton/",
       "last_verified": "2025-12-21",
       "website": "https://connectionswellnessgroup.com/locations/denton/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://connectionswellnessgroup.com/faqs/",
+        "plans": [
+          "Aetna",
+          "Baylor Scott & White Health Plan",
+          "Behavioral Health Systems",
+          "Blue Cross Blue Shield",
+          "Bright Healthcare",
+          "Cigna",
+          "Humana",
+          "Magellan",
+          "Optum",
+          "TRICARE",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Military (TRICARE)"
+        ],
+        "not_accepted": [
+          "Oscar"
+        ],
+        "notes": "Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
+        "plans_raw": [
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Cigna",
+          "TRICARE",
+          "Magellan",
+          "Humana",
+          "Optum",
+          "UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.)",
+          "Baylor Scott & White Health Plan",
+          "Bright HealthCare",
+          "Behavioral Health Systems"
+        ]
+      },
+      "website_url": "https://connectionswellnessgroup.com/locations/denton/",
+      "website_domain": "connectionswellnessgroup.com"
     },
     {
       "program_id": "iop-reflections-richardson",
@@ -1263,11 +2684,33 @@
       "phone": "469-777-4688",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Evernorth (Cigna/Evernorth), Cigna, Magellan | Types: Commercial | Reflections shows major insurer networks on its site; confirm plan/product and authorization requirements with admissions.",
       "verification_source": "https://reflectionslifestyle.com/contact/",
       "last_verified": "2025-12-21",
       "website": "https://reflectionslifestyle.com/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://reflectionslifestyle.com/",
+        "plans": [
+          "Aetna",
+          "Cigna",
+          "Magellan"
+        ],
+        "types": [
+          "Commercial"
+        ],
+        "notes": "Reflections shows major insurer networks on its site; confirm plan/product and authorization requirements with admissions.",
+        "plans_raw": [
+          "Aetna",
+          "Evernorth (Cigna/Evernorth)",
+          "Cigna",
+          "Magellan"
+        ]
+      },
+      "website_url": "https://reflectionslifestyle.com/contact/",
+      "website_domain": "reflectionslifestyle.com"
     },
     {
       "program_id": "iop-bricolage-flower-mound",
@@ -1288,11 +2731,61 @@
       "phone": "469-218-7537",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Allegiance, Ambetter, Blue Cross Blue Shield, Cigna, ComPsych, Evolutions Healthcare, Humana, Meritain, Molina, MultiPlan, Optum, Oscar, Scott & White, Superior, Tricare, UnitedHealthcare | Types: Commercial, Medicaid/CHIP plans (listed), Military (TRICARE)",
       "verification_source": "https://www.bricolagebh.com/",
       "last_verified": "2025-12-21",
       "website": "https://www.bricolagebh.com/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.bricolagebh.com/patient-information/insurances-accepted",
+        "plans": [
+          "Aetna",
+          "Allegiance",
+          "Ambetter",
+          "Blue Cross Blue Shield",
+          "Cigna",
+          "Compsych",
+          "Evolutions Healthcare",
+          "Humana",
+          "Meritain",
+          "Molina Healthcare",
+          "Multiplan",
+          "Optum",
+          "Oscar Health",
+          "Scott & White",
+          "Superior",
+          "TRICARE",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Medicaid/CHIP plans (listed)",
+          "Military (TRICARE)"
+        ],
+        "plans_raw": [
+          "Aetna",
+          "Allegiance",
+          "Ambetter",
+          "Blue Cross Blue Shield",
+          "Cigna",
+          "ComPsych",
+          "Evolutions Healthcare",
+          "Humana",
+          "Meritain",
+          "Molina",
+          "MultiPlan",
+          "Optum",
+          "Oscar",
+          "Scott & White",
+          "Superior",
+          "Tricare",
+          "UnitedHealthcare"
+        ]
+      },
+      "website_url": "https://www.bricolagebh.com/",
+      "website_domain": "bricolagebh.com"
     },
     {
       "program_id": "iop-carrus-flower-mound",
@@ -1301,7 +2794,7 @@
       "program_name": "IOP",
       "level_of_care": "Intensive Outpatient (IOP)",
       "service_setting": "In-person",
-      "ages_served": "8\u201317",
+      "ages_served": "8–17",
       "locations": [
         {
           "city": "Flower Mound",
@@ -1313,11 +2806,30 @@
       "phone": "469-423-9050",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers, Medicaid | Types: Commercial (most major), Medicaid | Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
       "verification_source": "https://carrushealth.com/our-locations/carrus-behavioral-hospital/",
       "last_verified": "2025-12-21",
       "website": "https://carrushealth.com/our-locations/carrus-behavioral-hospital/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.carruscarebehavioral.com/",
+        "plans": [
+          "Medicaid"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicaid"
+        ],
+        "notes": "Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
+        "plans_raw": [
+          "Most major insurance providers",
+          "Medicaid"
+        ]
+      },
+      "website_url": "https://carrushealth.com/our-locations/carrus-behavioral-hospital/",
+      "website_domain": "carrushealth.com"
     },
     {
       "program_id": "iop-reflections-the-colony",
@@ -1326,7 +2838,7 @@
       "program_name": "IOP",
       "level_of_care": "Intensive Outpatient (IOP)",
       "service_setting": "In-person",
-      "ages_served": "11\u201317",
+      "ages_served": "11–17",
       "locations": [
         {
           "city": "The Colony",
@@ -1338,11 +2850,33 @@
       "phone": "469-777-4688",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Evernorth (Cigna/Evernorth), Cigna, Magellan | Types: Commercial | Reflections shows major insurer networks on its site; confirm plan/product and authorization requirements with admissions.",
       "verification_source": "https://reflectionslifestyle.com/contact/",
       "last_verified": "2025-12-21",
       "website": "https://reflectionslifestyle.com/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://reflectionslifestyle.com/",
+        "plans": [
+          "Aetna",
+          "Cigna",
+          "Magellan"
+        ],
+        "types": [
+          "Commercial"
+        ],
+        "notes": "Reflections shows major insurer networks on its site; confirm plan/product and authorization requirements with admissions.",
+        "plans_raw": [
+          "Aetna",
+          "Evernorth (Cigna/Evernorth)",
+          "Cigna",
+          "Magellan"
+        ]
+      },
+      "website_url": "https://reflectionslifestyle.com/contact/",
+      "website_domain": "reflectionslifestyle.com"
     },
     {
       "program_id": "iop-branches-denton",
@@ -1351,7 +2885,7 @@
       "program_name": "IOP",
       "level_of_care": "Intensive Outpatient (IOP)",
       "service_setting": "In-person",
-      "ages_served": "13\u201317",
+      "ages_served": "13–17",
       "locations": [
         {
           "city": "Denton",
@@ -1363,11 +2897,45 @@
       "phone": "844-963-4673",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Medicare, TRICARE, Cigna, Humana, Blue Cross Blue Shield, Aetna, Traditional Medicaid (under 21), CHIP (under 21) | Types: Commercial (most major), Medicare, Military (TRICARE), Medicaid/CHIP (under 21) | Millwood states it is in-network with most major insurers and notes Traditional Medicaid/CHIP for patients under 21; marketplace/managed Medicaid/managed Medicare may be covered.",
       "verification_source": "https://ubhdenton.com/treatment-services/teens/outpatient-services/",
       "last_verified": "2025-12-21",
       "website": "https://ubhdenton.com/treatment-services/teens/outpatient-services/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://millwoodhospital.com/admissions/insurance-information/",
+        "plans": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "CHIP",
+          "Cigna",
+          "Humana",
+          "Medicaid",
+          "Medicare",
+          "TRICARE"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicare",
+          "Military (TRICARE)",
+          "Medicaid/CHIP (under 21)"
+        ],
+        "notes": "Millwood states it is in-network with most major insurers and notes Traditional Medicaid/CHIP for patients under 21; marketplace/managed Medicaid/managed Medicare may be covered.",
+        "plans_raw": [
+          "Medicare",
+          "TRICARE",
+          "Cigna",
+          "Humana",
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Traditional Medicaid (under 21)",
+          "CHIP (under 21)"
+        ]
+      },
+      "website_url": "https://ubhdenton.com/treatment-services/teens/outpatient-services/",
+      "website_domain": "ubhdenton.com"
     },
     {
       "program_id": "iop-carrus-plano",
@@ -1376,7 +2944,7 @@
       "program_name": "IOP",
       "level_of_care": "Intensive Outpatient (IOP)",
       "service_setting": "In-person",
-      "ages_served": "8\u201317",
+      "ages_served": "8–17",
       "locations": [
         {
           "city": "Plano",
@@ -1388,11 +2956,30 @@
       "phone": "903-870-1222",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers, Medicaid | Types: Commercial (most major), Medicaid | Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
       "verification_source": "https://www.carruscarebehavioral.com/plano",
       "last_verified": "2025-12-21",
       "website": "https://www.carruscarebehavioral.com/plano",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.carruscarebehavioral.com/",
+        "plans": [
+          "Medicaid"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicaid"
+        ],
+        "notes": "Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
+        "plans_raw": [
+          "Most major insurance providers",
+          "Medicaid"
+        ]
+      },
+      "website_url": "https://www.carruscarebehavioral.com/plano",
+      "website_domain": "carruscarebehavioral.com"
     },
     {
       "program_id": "iop-basepoint-mckinney",
@@ -1413,11 +3000,42 @@
       "phone": "972-357-1749",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation), Carelon Behavioral Health, Cigna, Magellan Health, Optum, UnitedHealthcare, UMR | Types: Commercial (most major) | BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
       "verification_source": "https://basepointacademy.com/contact/",
       "last_verified": "2025-12-21",
       "website": "https://basepointacademy.com/contact/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://basepointacademy.com/insurance-coverage/",
+        "plans": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan",
+          "Optum",
+          "UMR",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial (most major)"
+        ],
+        "notes": "BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
+        "plans_raw": [
+          "Aetna",
+          "Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation)",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan Health",
+          "Optum",
+          "UnitedHealthcare",
+          "UMR"
+        ]
+      },
+      "website_url": "https://basepointacademy.com/contact/",
+      "website_domain": "basepointacademy.com"
     },
     {
       "program_id": "iop-basepoint-frisco",
@@ -1438,11 +3056,42 @@
       "phone": "972-357-1749",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation), Carelon Behavioral Health, Cigna, Magellan Health, Optum, UnitedHealthcare, UMR | Types: Commercial (most major) | BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
       "verification_source": "https://basepointacademy.com/contact/",
       "last_verified": "2025-12-21",
       "website": "https://basepointacademy.com/contact/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://basepointacademy.com/insurance-coverage/",
+        "plans": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan",
+          "Optum",
+          "UMR",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial (most major)"
+        ],
+        "notes": "BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
+        "plans_raw": [
+          "Aetna",
+          "Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation)",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan Health",
+          "Optum",
+          "UnitedHealthcare",
+          "UMR"
+        ]
+      },
+      "website_url": "https://basepointacademy.com/contact/",
+      "website_domain": "basepointacademy.com"
     },
     {
       "program_id": "iop-carrus-mckinney",
@@ -1451,7 +3100,7 @@
       "program_name": "IOP",
       "level_of_care": "Intensive Outpatient (IOP)",
       "service_setting": "In-person",
-      "ages_served": "8\u201317",
+      "ages_served": "8–17",
       "locations": [
         {
           "city": "McKinney",
@@ -1463,11 +3112,30 @@
       "phone": "903-870-1222",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers, Medicaid | Types: Commercial (most major), Medicaid | Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
       "verification_source": "https://www.carruscarebehavioral.com/mckinney",
       "last_verified": "2025-12-21",
       "website": "https://www.carruscarebehavioral.com/mckinney",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.carruscarebehavioral.com/",
+        "plans": [
+          "Medicaid"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicaid"
+        ],
+        "notes": "Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
+        "plans_raw": [
+          "Most major insurance providers",
+          "Medicaid"
+        ]
+      },
+      "website_url": "https://www.carruscarebehavioral.com/mckinney",
+      "website_domain": "carruscarebehavioral.com"
     },
     {
       "program_id": "iop-reflections-the-colony-10plus",
@@ -1488,11 +3156,33 @@
       "phone": "469-777-4688",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Evernorth (Cigna/Evernorth), Cigna, Magellan | Types: Commercial | Reflections shows major insurer networks on its site; confirm plan/product and authorization requirements with admissions.",
       "verification_source": "https://reflectionslifestyle.com/contact/",
       "last_verified": "2025-12-21",
       "website": "https://reflectionslifestyle.com/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://reflectionslifestyle.com/",
+        "plans": [
+          "Aetna",
+          "Cigna",
+          "Magellan"
+        ],
+        "types": [
+          "Commercial"
+        ],
+        "notes": "Reflections shows major insurer networks on its site; confirm plan/product and authorization requirements with admissions.",
+        "plans_raw": [
+          "Aetna",
+          "Evernorth (Cigna/Evernorth)",
+          "Cigna",
+          "Magellan"
+        ]
+      },
+      "website_url": "https://reflectionslifestyle.com/contact/",
+      "website_domain": "reflectionslifestyle.com"
     },
     {
       "program_id": "iop-carrus-frisco",
@@ -1501,7 +3191,7 @@
       "program_name": "IOP",
       "level_of_care": "Intensive Outpatient (IOP)",
       "service_setting": "In-person",
-      "ages_served": "12\u201317",
+      "ages_served": "12–17",
       "locations": [
         {
           "city": "Frisco",
@@ -1513,11 +3203,30 @@
       "phone": "469-200-5353",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers, Medicaid | Types: Commercial (most major), Medicaid | Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
       "verification_source": "https://www.carruscarebehavioral.com/friscotx",
       "last_verified": "2025-12-21",
       "website": "https://www.carruscarebehavioral.com/friscotx",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.carruscarebehavioral.com/",
+        "plans": [
+          "Medicaid"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicaid"
+        ],
+        "notes": "Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
+        "plans_raw": [
+          "Most major insurance providers",
+          "Medicaid"
+        ]
+      },
+      "website_url": "https://www.carruscarebehavioral.com/friscotx",
+      "website_domain": "carruscarebehavioral.com"
     },
     {
       "program_id": "iop-branches-fort-worth",
@@ -1538,16 +3247,50 @@
       "phone": "844-963-4673",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Medicare, TRICARE, Cigna, Humana, Blue Cross Blue Shield, Aetna, Traditional Medicaid (under 21), CHIP (under 21) | Types: Commercial (most major), Medicare, Military (TRICARE), Medicaid/CHIP (under 21) | Millwood states it is in-network with most major insurers and notes Traditional Medicaid/CHIP for patients under 21; marketplace/managed Medicaid/managed Medicare may be covered.",
       "verification_source": "https://millwoodhospital.com/locations/branches-excel-fort-worth/",
       "last_verified": "2025-12-21",
       "website": "https://millwoodhospital.com/locations/branches-excel-fort-worth/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://millwoodhospital.com/admissions/insurance-information/",
+        "plans": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "CHIP",
+          "Cigna",
+          "Humana",
+          "Medicaid",
+          "Medicare",
+          "TRICARE"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicare",
+          "Military (TRICARE)",
+          "Medicaid/CHIP (under 21)"
+        ],
+        "notes": "Millwood states it is in-network with most major insurers and notes Traditional Medicaid/CHIP for patients under 21; marketplace/managed Medicaid/managed Medicare may be covered.",
+        "plans_raw": [
+          "Medicare",
+          "TRICARE",
+          "Cigna",
+          "Humana",
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Traditional Medicaid (under 21)",
+          "CHIP (under 21)"
+        ]
+      },
+      "website_url": "https://millwoodhospital.com/locations/branches-excel-fort-worth/",
+      "website_domain": "millwoodhospital.com"
     },
     {
       "program_id": "iop-mesa-springs-fort-worth",
       "entry_type": "Treatment Program",
-      "organization": "Mesa Springs \u2013 Innovations (Fort Worth)",
+      "organization": "Mesa Springs – Innovations (Fort Worth)",
       "program_name": "IOP",
       "level_of_care": "Intensive Outpatient (IOP)",
       "service_setting": "In-person",
@@ -1563,16 +3306,32 @@
       "phone": "817-841-8002",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers (in-network) | Types: Commercial (most major), Out-of-network sometimes possible | Mesa Springs states it is in-network with most major insurers and can sometimes work out-of-network; call to confirm coverage.",
       "verification_source": "https://www.mesasprings.com/locations/innovations-locations/fort-worth-camp-bowie-blvd/",
       "last_verified": "2025-12-21",
       "website": "https://www.mesasprings.com/locations/innovations-locations/fort-worth-camp-bowie-blvd/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.mesasprings.com/resources/accepted-insurance/",
+        "plans": [],
+        "types": [
+          "Commercial (most major)",
+          "Out-of-network sometimes possible"
+        ],
+        "notes": "Mesa Springs states it is in-network with most major insurers and can sometimes work out-of-network; call to confirm coverage.",
+        "plans_raw": [
+          "Most major insurance providers (in-network)"
+        ]
+      },
+      "website_url": "https://www.mesasprings.com/locations/innovations-locations/fort-worth-camp-bowie-blvd/",
+      "website_domain": "mesasprings.com"
     },
     {
       "program_id": "iop-mesa-springs-arlington",
       "entry_type": "Treatment Program",
-      "organization": "Mesa Springs \u2013 Innovations (Arlington)",
+      "organization": "Mesa Springs – Innovations (Arlington)",
       "program_name": "IOP",
       "level_of_care": "Intensive Outpatient (IOP)",
       "service_setting": "In-person",
@@ -1588,11 +3347,27 @@
       "phone": "682-320-2800",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers (in-network) | Types: Commercial (most major), Out-of-network sometimes possible | Mesa Springs states it is in-network with most major insurers and can sometimes work out-of-network; call to confirm coverage.",
       "verification_source": "https://www.mesasprings.com/locations/innovations-locations/arlington-tx/",
       "last_verified": "2025-12-21",
       "website": "https://www.mesasprings.com/locations/innovations-locations/arlington-tx/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.mesasprings.com/resources/accepted-insurance/",
+        "plans": [],
+        "types": [
+          "Commercial (most major)",
+          "Out-of-network sometimes possible"
+        ],
+        "notes": "Mesa Springs states it is in-network with most major insurers and can sometimes work out-of-network; call to confirm coverage.",
+        "plans_raw": [
+          "Most major insurance providers (in-network)"
+        ]
+      },
+      "website_url": "https://www.mesasprings.com/locations/innovations-locations/arlington-tx/",
+      "website_domain": "mesasprings.com"
     },
     {
       "program_id": "iop-mind-above-matter-keller",
@@ -1613,9 +3388,58 @@
       "phone": "817-662-6179",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Blue Cross Blue Shield, ChampVA, Cigna, Magellan, Meritain Health, Optum, TRICARE, UMR, UnitedHealthcare, Aetna Better Health, Ambetter from Superior HealthPlan, Cook Children’s Health Plan, Molina Medicaid, Parkland Community Health Plan, Superior HealthPlan, WellPoint | Types: Commercial, Medicaid/CHIP plans (listed), Military/Veterans (TRICARE, ChampVA)",
       "verification_source": "https://mindabovematter.com/contact-us/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.mindabovematter.com/help-faqs",
+        "plans": [
+          "Aetna",
+          "Ambetter",
+          "Blue Cross Blue Shield",
+          "Champva",
+          "Cigna",
+          "Cook Childrens Health Plan",
+          "Magellan",
+          "Medicaid",
+          "Meritain Health",
+          "Optum",
+          "Parkland Community Health Plan",
+          "Superior HealthPlan",
+          "TRICARE",
+          "UMR",
+          "UnitedHealthcare",
+          "Wellpoint"
+        ],
+        "types": [
+          "Commercial",
+          "Medicaid/CHIP plans (listed)",
+          "Military/Veterans (TRICARE, ChampVA)"
+        ],
+        "plans_raw": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "ChampVA",
+          "Cigna",
+          "Magellan",
+          "Meritain Health",
+          "Optum",
+          "TRICARE",
+          "UMR",
+          "UnitedHealthcare",
+          "Aetna Better Health",
+          "Ambetter from Superior HealthPlan",
+          "Cook Children’s Health Plan",
+          "Molina Medicaid",
+          "Parkland Community Health Plan",
+          "Superior HealthPlan",
+          "WellPoint"
+        ]
+      },
+      "website_url": "https://mindabovematter.com/contact-us/",
+      "website_domain": "mindabovematter.com"
     },
     {
       "program_id": "iop-mind-above-matter-burleson",
@@ -1636,9 +3460,58 @@
       "phone": "817-662-6179",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Blue Cross Blue Shield, ChampVA, Cigna, Magellan, Meritain Health, Optum, TRICARE, UMR, UnitedHealthcare, Aetna Better Health, Ambetter from Superior HealthPlan, Cook Children’s Health Plan, Molina Medicaid, Parkland Community Health Plan, Superior HealthPlan, WellPoint | Types: Commercial, Medicaid/CHIP plans (listed), Military/Veterans (TRICARE, ChampVA)",
       "verification_source": "https://mindabovematter.com/contact-us/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.mindabovematter.com/help-faqs",
+        "plans": [
+          "Aetna",
+          "Ambetter",
+          "Blue Cross Blue Shield",
+          "Champva",
+          "Cigna",
+          "Cook Childrens Health Plan",
+          "Magellan",
+          "Medicaid",
+          "Meritain Health",
+          "Optum",
+          "Parkland Community Health Plan",
+          "Superior HealthPlan",
+          "TRICARE",
+          "UMR",
+          "UnitedHealthcare",
+          "Wellpoint"
+        ],
+        "types": [
+          "Commercial",
+          "Medicaid/CHIP plans (listed)",
+          "Military/Veterans (TRICARE, ChampVA)"
+        ],
+        "plans_raw": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "ChampVA",
+          "Cigna",
+          "Magellan",
+          "Meritain Health",
+          "Optum",
+          "TRICARE",
+          "UMR",
+          "UnitedHealthcare",
+          "Aetna Better Health",
+          "Ambetter from Superior HealthPlan",
+          "Cook Children’s Health Plan",
+          "Molina Medicaid",
+          "Parkland Community Health Plan",
+          "Superior HealthPlan",
+          "WellPoint"
+        ]
+      },
+      "website_url": "https://mindabovematter.com/contact-us/",
+      "website_domain": "mindabovematter.com"
     },
     {
       "program_id": "iop-connections-keller",
@@ -1659,11 +3532,52 @@
       "phone": "817-770-0208",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Blue Cross Blue Shield, Aetna, Cigna, TRICARE, Magellan, Humana, Optum, UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.), Baylor Scott & White Health Plan, Bright HealthCare, Behavioral Health Systems | Types: Commercial, Military (TRICARE) | Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
       "verification_source": "https://connectionswellnessgroup.com/locations/",
       "last_verified": "2025-12-21",
       "website": "https://connectionswellnessgroup.com/locations/keller/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://connectionswellnessgroup.com/faqs/",
+        "plans": [
+          "Aetna",
+          "Baylor Scott & White Health Plan",
+          "Behavioral Health Systems",
+          "Blue Cross Blue Shield",
+          "Bright Healthcare",
+          "Cigna",
+          "Humana",
+          "Magellan",
+          "Optum",
+          "TRICARE",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Military (TRICARE)"
+        ],
+        "not_accepted": [
+          "Oscar"
+        ],
+        "notes": "Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
+        "plans_raw": [
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Cigna",
+          "TRICARE",
+          "Magellan",
+          "Humana",
+          "Optum",
+          "UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.)",
+          "Baylor Scott & White Health Plan",
+          "Bright HealthCare",
+          "Behavioral Health Systems"
+        ]
+      },
+      "website_url": "https://connectionswellnessgroup.com/locations/",
+      "website_domain": "connectionswellnessgroup.com"
     },
     {
       "program_id": "iop-connections-mansfield",
@@ -1684,11 +3598,52 @@
       "phone": "817-500-5984",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Blue Cross Blue Shield, Aetna, Cigna, TRICARE, Magellan, Humana, Optum, UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.), Baylor Scott & White Health Plan, Bright HealthCare, Behavioral Health Systems | Types: Commercial, Military (TRICARE) | Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
       "verification_source": "https://connectionswellnessgroup.com/locations/",
       "last_verified": "2025-12-21",
       "website": "https://connectionswellnessgroup.com/locations/mansfield/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://connectionswellnessgroup.com/faqs/",
+        "plans": [
+          "Aetna",
+          "Baylor Scott & White Health Plan",
+          "Behavioral Health Systems",
+          "Blue Cross Blue Shield",
+          "Bright Healthcare",
+          "Cigna",
+          "Humana",
+          "Magellan",
+          "Optum",
+          "TRICARE",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Military (TRICARE)"
+        ],
+        "not_accepted": [
+          "Oscar"
+        ],
+        "notes": "Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
+        "plans_raw": [
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Cigna",
+          "TRICARE",
+          "Magellan",
+          "Humana",
+          "Optum",
+          "UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.)",
+          "Baylor Scott & White Health Plan",
+          "Bright HealthCare",
+          "Behavioral Health Systems"
+        ]
+      },
+      "website_url": "https://connectionswellnessgroup.com/locations/",
+      "website_domain": "connectionswellnessgroup.com"
     },
     {
       "program_id": "iop-virtual-charlie-health",
@@ -1709,9 +3664,42 @@
       "phone": "986-206-0414",
       "notes": "Listed as a virtual program.",
       "transportation_available": "N/A",
-      "insurance_notes": "Accepts commercial insurance and Medicaid plans",
+      "insurance_notes": "Plans: UnitedHealthcare, Cigna, Blue Cross Blue Shield, Aetna, Anthem, Humana, TRICARE, Medicaid (in select states) | Types: Commercial (most major), Military (TRICARE), Medicaid (select states) | Charlie Health FAQ lists major in-network insurers; Medicaid coverage depends on state/program—verify with admissions.",
       "verification_source": "https://www.charliehealth.com/contact-us",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.charliehealth.com/faqs",
+        "plans": [
+          "Aetna",
+          "Anthem",
+          "Blue Cross Blue Shield",
+          "Cigna",
+          "Humana",
+          "Medicaid",
+          "TRICARE",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Military (TRICARE)",
+          "Medicaid (select states)"
+        ],
+        "notes": "Charlie Health FAQ lists major in-network insurers; Medicaid coverage depends on state/program—verify with admissions.",
+        "plans_raw": [
+          "UnitedHealthcare",
+          "Cigna",
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Anthem",
+          "Humana",
+          "TRICARE",
+          "Medicaid (in select states)"
+        ]
+      },
+      "website_url": "https://www.charliehealth.com/contact-us",
+      "website_domain": "charliehealth.com"
     },
     {
       "program_id": "iop-virtual-basepoint",
@@ -1732,9 +3720,40 @@
       "phone": "972-357-1749",
       "notes": "Listed as a virtual program.",
       "transportation_available": "N/A",
-      "insurance_notes": "Accepts commercial insurance",
+      "insurance_notes": "Plans: Aetna, Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation), Carelon Behavioral Health, Cigna, Magellan Health, Optum, UnitedHealthcare, UMR | Types: Commercial (most major) | BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
       "verification_source": "https://basepointacademy.com/contact/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://basepointacademy.com/insurance-coverage/",
+        "plans": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan",
+          "Optum",
+          "UMR",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial (most major)"
+        ],
+        "notes": "BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
+        "plans_raw": [
+          "Aetna",
+          "Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation)",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan Health",
+          "Optum",
+          "UnitedHealthcare",
+          "UMR"
+        ]
+      },
+      "website_url": "https://basepointacademy.com/contact/",
+      "website_domain": "basepointacademy.com"
     },
     {
       "program_id": "iop-virtual-connections",
@@ -1755,9 +3774,50 @@
       "phone": "877-747-4294",
       "notes": "Listed as a virtual program.",
       "transportation_available": "N/A",
-      "insurance_notes": "Accepts commercial insurance",
+      "insurance_notes": "Plans: Blue Cross Blue Shield, Aetna, Cigna, TRICARE, Magellan, Humana, Optum, UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.), Baylor Scott & White Health Plan, Bright HealthCare, Behavioral Health Systems | Types: Commercial, Military (TRICARE) | Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
       "verification_source": "https://connectionswellnessgroup.com/services/virtual-care/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://connectionswellnessgroup.com/faqs/",
+        "plans": [
+          "Aetna",
+          "Baylor Scott & White Health Plan",
+          "Behavioral Health Systems",
+          "Blue Cross Blue Shield",
+          "Bright Healthcare",
+          "Cigna",
+          "Humana",
+          "Magellan",
+          "Optum",
+          "TRICARE",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Military (TRICARE)"
+        ],
+        "not_accepted": [
+          "Oscar"
+        ],
+        "notes": "Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
+        "plans_raw": [
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Cigna",
+          "TRICARE",
+          "Magellan",
+          "Humana",
+          "Optum",
+          "UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.)",
+          "Baylor Scott & White Health Plan",
+          "Bright HealthCare",
+          "Behavioral Health Systems"
+        ]
+      },
+      "website_url": "https://connectionswellnessgroup.com/services/virtual-care/",
+      "website_domain": "connectionswellnessgroup.com"
     },
     {
       "program_id": "iop-basepoint-forney",
@@ -1778,11 +3838,42 @@
       "phone": "972-357-1749",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation), Carelon Behavioral Health, Cigna, Magellan Health, Optum, UnitedHealthcare, UMR | Types: Commercial (most major) | BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
       "verification_source": "https://basepointacademy.com/contact/",
       "last_verified": "2025-12-21",
       "website": "https://basepointacademy.com/contact/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://basepointacademy.com/insurance-coverage/",
+        "plans": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan",
+          "Optum",
+          "UMR",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial (most major)"
+        ],
+        "notes": "BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
+        "plans_raw": [
+          "Aetna",
+          "Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation)",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan Health",
+          "Optum",
+          "UnitedHealthcare",
+          "UMR"
+        ]
+      },
+      "website_url": "https://basepointacademy.com/contact/",
+      "website_domain": "basepointacademy.com"
     },
     {
       "program_id": "iop-texas-health-rockwall",
@@ -1803,9 +3894,28 @@
       "phone": "682-236-6023",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: See Texas Health 'Insurance Plans Accepted' list (many commercial, Medicare Advantage, and Medicaid/CHIP plans) | Types: Commercial, Medicare (incl. Medicare Advantage), Medicaid/CHIP (varies by plan/service area) | Texas Health publishes an extensive accepted-insurance list; confirm plan/product and facility/physician network before scheduling.",
       "verification_source": "https://www.texashealth.org/Locations/texas-health-rockwall/THBHCRW",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.texashealth.org/Costs-and-Billing/Insurance-Plans-Accepted",
+        "plans": [
+          "Medicare"
+        ],
+        "types": [
+          "Commercial",
+          "Medicare (incl. Medicare Advantage)",
+          "Medicaid/CHIP (varies by plan/service area)"
+        ],
+        "notes": "Texas Health publishes an extensive accepted-insurance list; confirm plan/product and facility/physician network before scheduling.",
+        "plans_raw": [
+          "See Texas Health 'Insurance Plans Accepted' list (many commercial, Medicare Advantage, and Medicaid/CHIP plans)"
+        ]
+      },
+      "website_url": "https://www.texashealth.org/Locations/texas-health-rockwall/THBHCRW",
+      "website_domain": "texashealth.org"
     },
     {
       "program_id": "iop-connections-rockwall",
@@ -1826,9 +3936,50 @@
       "phone": "469-545-0160",
       "notes": "",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Blue Cross Blue Shield, Aetna, Cigna, TRICARE, Magellan, Humana, Optum, UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.), Baylor Scott & White Health Plan, Bright HealthCare, Behavioral Health Systems | Types: Commercial, Military (TRICARE) | Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
       "verification_source": "https://connectionswellnessgroup.com/locations/rockwall/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://connectionswellnessgroup.com/faqs/",
+        "plans": [
+          "Aetna",
+          "Baylor Scott & White Health Plan",
+          "Behavioral Health Systems",
+          "Blue Cross Blue Shield",
+          "Bright Healthcare",
+          "Cigna",
+          "Humana",
+          "Magellan",
+          "Optum",
+          "TRICARE",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial",
+          "Military (TRICARE)"
+        ],
+        "not_accepted": [
+          "Oscar"
+        ],
+        "notes": "Connections notes they do not accept Oscar plans; TRICARE PHP/IOP may require referral for in-network benefits.",
+        "plans_raw": [
+          "Blue Cross Blue Shield",
+          "Aetna",
+          "Cigna",
+          "TRICARE",
+          "Magellan",
+          "Humana",
+          "Optum",
+          "UnitedHealthcare (incl. UMR, All Savers, United Shared Services, etc.)",
+          "Baylor Scott & White Health Plan",
+          "Bright HealthCare",
+          "Behavioral Health Systems"
+        ]
+      },
+      "website_url": "https://connectionswellnessgroup.com/locations/rockwall/",
+      "website_domain": "connectionswellnessgroup.com"
     },
     {
       "program_id": "iop-carrus-sherman",
@@ -1837,7 +3988,7 @@
       "program_name": "IOP",
       "level_of_care": "Intensive Outpatient (IOP)",
       "service_setting": "In-person",
-      "ages_served": "12\u201317",
+      "ages_served": "12–17",
       "locations": [
         {
           "city": "Sherman",
@@ -1849,11 +4000,30 @@
       "phone": "903-870-1222",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers, Medicaid | Types: Commercial (most major), Medicaid | Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
       "verification_source": "https://www.carruscarebehavioral.com/sherman",
       "last_verified": "2025-12-21",
       "website": "https://www.carruscarebehavioral.com/sherman",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.carruscarebehavioral.com/",
+        "plans": [
+          "Medicaid"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicaid"
+        ],
+        "notes": "Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
+        "plans_raw": [
+          "Most major insurance providers",
+          "Medicaid"
+        ]
+      },
+      "website_url": "https://www.carruscarebehavioral.com/sherman",
+      "website_domain": "carruscarebehavioral.com"
     },
     {
       "program_id": "iop-carrus-mansfield",
@@ -1862,7 +4032,7 @@
       "program_name": "IOP",
       "level_of_care": "Intensive Outpatient (IOP)",
       "service_setting": "In-person",
-      "ages_served": "8\u201317",
+      "ages_served": "8–17",
       "locations": [
         {
           "city": "Mansfield",
@@ -1874,11 +4044,30 @@
       "phone": "903-870-1222",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers, Medicaid | Types: Commercial (most major), Medicaid | Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
       "verification_source": "https://www.carruscarebehavioral.com/mansfield",
       "last_verified": "2025-12-21",
       "website": "https://www.carruscarebehavioral.com/mansfield",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.carruscarebehavioral.com/",
+        "plans": [
+          "Medicaid"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicaid"
+        ],
+        "notes": "Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
+        "plans_raw": [
+          "Most major insurance providers",
+          "Medicaid"
+        ]
+      },
+      "website_url": "https://www.carruscarebehavioral.com/mansfield",
+      "website_domain": "carruscarebehavioral.com"
     },
     {
       "program_id": "iop-carrus-keller",
@@ -1887,7 +4076,7 @@
       "program_name": "IOP",
       "level_of_care": "Intensive Outpatient (IOP)",
       "service_setting": "In-person",
-      "ages_served": "8\u201317",
+      "ages_served": "8–17",
       "locations": [
         {
           "city": "Keller",
@@ -1899,11 +4088,30 @@
       "phone": "903-870-1222",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Most major insurance providers, Medicaid | Types: Commercial (most major), Medicaid | Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
       "verification_source": "https://www.carruscarebehavioral.com/keller",
       "last_verified": "2025-12-21",
       "website": "https://www.carruscarebehavioral.com/keller",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://www.carruscarebehavioral.com/",
+        "plans": [
+          "Medicaid"
+        ],
+        "types": [
+          "Commercial (most major)",
+          "Medicaid"
+        ],
+        "notes": "Carrus states it is in-network with most major insurance and Medicaid; call to verify plan-specific coverage.",
+        "plans_raw": [
+          "Most major insurance providers",
+          "Medicaid"
+        ]
+      },
+      "website_url": "https://www.carruscarebehavioral.com/keller",
+      "website_domain": "carruscarebehavioral.com"
     },
     {
       "program_id": "iop-basepoint-arlington",
@@ -1912,7 +4120,7 @@
       "program_name": "IOP",
       "level_of_care": "Intensive Outpatient (IOP)",
       "service_setting": "In-person",
-      "ages_served": "11\u201317",
+      "ages_served": "11–17",
       "locations": [
         {
           "city": "Arlington",
@@ -1924,9 +4132,40 @@
       "phone": "972-357-1749",
       "notes": "",
       "transportation_available": "Yes",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "Plans: Aetna, Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation), Carelon Behavioral Health, Cigna, Magellan Health, Optum, UnitedHealthcare, UMR | Types: Commercial (most major) | BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
       "verification_source": "https://basepointacademy.com/contact/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "verified_on_website",
+        "last_verified": "2025-12-26",
+        "source_url": "https://basepointacademy.com/insurance-coverage/",
+        "plans": [
+          "Aetna",
+          "Blue Cross Blue Shield",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan",
+          "Optum",
+          "UMR",
+          "UnitedHealthcare"
+        ],
+        "types": [
+          "Commercial (most major)"
+        ],
+        "notes": "BasePoint states it accepts most major insurance plans; plan coverage varies—use their insurance verification.",
+        "plans_raw": [
+          "Aetna",
+          "Blue Cross Blue Shield (incl. BCBS of Texas; BCBS Federal Employee Program is listed in insurance navigation)",
+          "Carelon Behavioral Health",
+          "Cigna",
+          "Magellan Health",
+          "Optum",
+          "UnitedHealthcare",
+          "UMR"
+        ]
+      },
+      "website_url": "https://basepointacademy.com/contact/",
+      "website_domain": "basepointacademy.com"
     },
     {
       "program_id": "crisis-mcot-ntbha",
@@ -1947,9 +4186,15 @@
       "phone": "1-866-260-8000",
       "notes": "For Dallas, Ellis, Hunt, Kaufman, Navarro, or Rockwall County.",
       "transportation_available": "N/A",
-      "insurance_notes": "N/A",
+      "insurance_notes": "N/A (not an insurance-billed service)",
       "verification_source": "Texas HHS crisis services + City of Dallas RIGHT Care: https://www.hhs.texas.gov/services/mental-health-substance-use/mental-health-crisis-services ; https://dallascityhall.com/departments/officeemergencymanagement/Pages/RIGHT-Care-Program.aspx",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "not_applicable",
+        "last_verified": "2025-12-26"
+      },
+      "website_url": "https://www.hhs.texas.gov/services/mental-health-substance-use/mental-health-crisis-services",
+      "website_domain": "hhs.texas.gov"
     },
     {
       "program_id": "crisis-mcot-lifepath",
@@ -1970,9 +4215,15 @@
       "phone": "877-422-5939",
       "notes": "For Collin County.",
       "transportation_available": "N/A",
-      "insurance_notes": "N/A",
+      "insurance_notes": "N/A (not an insurance-billed service)",
       "verification_source": "https://www.lifepathsystems.org/get-help/crisis-services/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "not_applicable",
+        "last_verified": "2025-12-26"
+      },
+      "website_url": "https://www.lifepathsystems.org/get-help/crisis-services/",
+      "website_domain": "lifepathsystems.org"
     },
     {
       "program_id": "crisis-mcot-denton-mhmr",
@@ -1993,9 +4244,15 @@
       "phone": "800-762-0157",
       "notes": "For Denton County.",
       "transportation_available": "N/A",
-      "insurance_notes": "N/A",
+      "insurance_notes": "N/A (not an insurance-billed service)",
       "verification_source": "https://www.dentoncounty.gov/466/Involuntary-Mental-Health-Commitments",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "not_applicable",
+        "last_verified": "2025-12-26"
+      },
+      "website_url": "https://www.dentoncounty.gov/466/Involuntary-Mental-Health-Commitments",
+      "website_domain": "dentoncounty.gov"
     },
     {
       "program_id": "crisis-mcot-icare-tarrant",
@@ -2016,11 +4273,17 @@
       "phone": "800-866-2465",
       "notes": "Call or text. For Tarrant County.",
       "transportation_available": "N/A",
-      "insurance_notes": "N/A",
+      "insurance_notes": "N/A (not an insurance-billed service)",
       "verification_source": "https://mhmrtarrant.org/",
       "last_verified": "2025-12-21",
       "website": "https://mhmrtarrant.org/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "not_applicable",
+        "last_verified": "2025-12-26"
+      },
+      "website_url": "https://mhmrtarrant.org/",
+      "website_domain": "mhmrtarrant.org"
     },
     {
       "program_id": "crisis-mcot-lakes-regional",
@@ -2041,9 +4304,15 @@
       "phone": "877-466-0660",
       "notes": "For Camp, Delta, Franklin, Hunt, Hopkins, Lamar, Morris, Navarro, or Titus County.",
       "transportation_available": "N/A",
-      "insurance_notes": "N/A",
+      "insurance_notes": "N/A (not an insurance-billed service)",
       "verification_source": "https://www.lakesregional.org/get-help/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "not_applicable",
+        "last_verified": "2025-12-26"
+      },
+      "website_url": "https://www.lakesregional.org/get-help/",
+      "website_domain": "lakesregional.org"
     },
     {
       "program_id": "crisis-988",
@@ -2064,9 +4333,15 @@
       "phone": "988",
       "notes": "Call or text 988.",
       "transportation_available": "N/A",
-      "insurance_notes": "N/A",
+      "insurance_notes": "N/A (not an insurance-billed service)",
       "verification_source": "Official 988 Lifeline site: https://988lifeline.org/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "not_applicable",
+        "last_verified": "2025-12-26"
+      },
+      "website_url": "https://988lifeline.org/",
+      "website_domain": "988lifeline.org"
     },
     {
       "program_id": "crisis-trevor",
@@ -2087,11 +4362,17 @@
       "phone": "1-866-488-7386",
       "notes": "Text START to 678-678.",
       "transportation_available": "N/A",
-      "insurance_notes": "N/A",
+      "insurance_notes": "N/A (not an insurance-billed service)",
       "verification_source": "https://www.thetrevorproject.org/get-help/",
       "last_verified": "2025-12-21",
       "website": "https://www.thetrevorproject.org/get-help/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "not_applicable",
+        "last_verified": "2025-12-26"
+      },
+      "website_url": "https://www.thetrevorproject.org/get-help/",
+      "website_domain": "thetrevorproject.org"
     },
     {
       "program_id": "crisis-sccntx",
@@ -2112,11 +4393,17 @@
       "phone": "214-828-1000",
       "notes": "",
       "transportation_available": "N/A",
-      "insurance_notes": "N/A",
+      "insurance_notes": "N/A (not an insurance-billed service)",
       "verification_source": "https://www.sccenter.org/",
       "last_verified": "2025-12-21",
       "website": "https://www.sccenter.org/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "not_applicable",
+        "last_verified": "2025-12-26"
+      },
+      "website_url": "https://www.sccenter.org/",
+      "website_domain": "sccenter.org"
     },
     {
       "program_id": "crisis-textline-741741",
@@ -2137,11 +4424,17 @@
       "phone": "Text HOME to 741741",
       "notes": "Text HOME to 741741. (English section also lists HOLA; your request was English-only.)",
       "transportation_available": "N/A",
-      "insurance_notes": "N/A",
+      "insurance_notes": "N/A (not an insurance-billed service)",
       "verification_source": "https://www.crisistextline.org/",
       "last_verified": "2025-12-21",
       "website": "https://www.crisistextline.org/",
-      "data_quality": "Verified on official provider site"
+      "data_quality": "Verified on official provider site",
+      "accepted_insurance": {
+        "status": "not_applicable",
+        "last_verified": "2025-12-26"
+      },
+      "website_url": "https://www.crisistextline.org/",
+      "website_domain": "crisistextline.org"
     },
     {
       "program_id": "crisis-walkin-southern-area-urgent-care",
@@ -2160,11 +4453,17 @@
         }
       ],
       "phone": "972-283-9090",
-      "notes": "Hours: Mon\u2013Fri 2\u201310 p.m., Sat 1\u20137 p.m., Sun 2\u20137 p.m.",
+      "notes": "Hours: Mon–Fri 2–10 p.m., Sat 1–7 p.m., Sun 2–7 p.m.",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "N/A (not an insurance-billed service)",
       "verification_source": "https://sabhc.org/contact-us/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "not_applicable",
+        "last_verified": "2025-12-26"
+      },
+      "website_url": "https://sabhc.org/contact-us/",
+      "website_domain": "sabhc.org"
     },
     {
       "program_id": "crisis-walkin-lifepath-outpatient-clinic",
@@ -2189,11 +4488,17 @@
         }
       ],
       "phone": "972-422-5939",
-      "notes": "Also listed: 844-544-5939. Hours: Mon\u2013Thu 8 a.m.\u20135 p.m. No appointment needed; arrive 2\u20133 hours prior to closing for paperwork.",
+      "notes": "Also listed: 844-544-5939. Hours: Mon–Thu 8 a.m.–5 p.m. No appointment needed; arrive 2–3 hours prior to closing for paperwork.",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "N/A (not an insurance-billed service)",
       "verification_source": "https://www.lifepathsystems.org/connect-with-us/contact-us/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "not_applicable",
+        "last_verified": "2025-12-26"
+      },
+      "website_url": "https://www.lifepathsystems.org/connect-with-us/contact-us/",
+      "website_domain": "lifepathsystems.org"
     },
     {
       "program_id": "crisis-walkin-denton-mhmr-triage",
@@ -2214,9 +4519,15 @@
       "phone": "940-381-9965",
       "notes": "Open 24/7. No appointment needed.",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "N/A (not an insurance-billed service)",
       "verification_source": "https://www.dentoncounty.gov/466/Involuntary-Mental-Health-Commitments",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "not_applicable",
+        "last_verified": "2025-12-26"
+      },
+      "website_url": "https://www.dentoncounty.gov/466/Involuntary-Mental-Health-Commitments",
+      "website_domain": "dentoncounty.gov"
     },
     {
       "program_id": "crisis-walkin-metrocare",
@@ -2235,11 +4546,17 @@
         }
       ],
       "phone": "877-283-2121",
-      "notes": "Offices open Monday\u2013Friday at 7:30 a.m. for walk-in appointments; walk-in hours vary by location.",
+      "notes": "Offices open Monday–Friday at 7:30 a.m. for walk-in appointments; walk-in hours vary by location.",
       "transportation_available": "Unknown",
-      "insurance_notes": "Unknown",
+      "insurance_notes": "N/A (not an insurance-billed service)",
       "verification_source": "https://www.metrocareservices.org/contact-us/",
-      "last_verified": "2025-12-21"
+      "last_verified": "2025-12-21",
+      "accepted_insurance": {
+        "status": "not_applicable",
+        "last_verified": "2025-12-26"
+      },
+      "website_url": "https://www.metrocareservices.org/contact-us/",
+      "website_domain": "metrocareservices.org"
     }
   ]
 }
