@@ -520,7 +520,7 @@ function createCard(p, idx){
     <div class="cardTop">
       <div style="min-width:0">
         <p class="pname">${escapeHtml(safeStr(p.program_name) || "Program")}</p>
-        <p class="org">${escapeHtml(safeStr(p.organization) || "")}</p>
+        <p class="org">/$/{escapeHtml(safeStr(p.organization) || "")}</p>
       </div>
 
       <button class="expandBtn" type="button"
