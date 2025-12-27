@@ -2,6 +2,9 @@
 let programs = [];
 let ready = false;
 let openId = null;
+let currentSort = 'relevance';
+let favorites = new Set(JSON.parse(localStorage.getItem('favorites') || '[]'));
+let recentSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
 
 const programDataMap = new Map();
 
@@ -30,7 +33,17 @@ const els = {
   advancedFilters: document.getElementById("advancedFilters"),
   viewCrisisResources: document.getElementById("viewCrisisResources"),
   viewTreatmentOptions: document.getElementById("viewTreatmentOptions"),
-  programCount: document.getElementById("programCount")
+  programCount: document.getElementById("programCount"),
+  sortSelect: document.getElementById("sortSelect"),
+  viewFavorites: document.getElementById("viewFavorites"),
+  viewHistory: document.getElementById("viewHistory"),
+  exportResults: document.getElementById("exportResults"),
+  favoritesCount: document.getElementById("favoritesCount"),
+  favoritesModal: document.getElementById("favoritesModal"),
+  historyModal: document.getElementById("historyModal"),
+  favoritesList: document.getElementById("favoritesList"),
+  historyList: document.getElementById("historyList"),
+  toast: document.getElementById("toast")
 };
 
 // ========== Smart Search Parser ==========
@@ -39,25 +52,61 @@ function parseSmartSearch(query) {
   const filters = {
     loc: '',
     age: '',
+    minAge: null, // For "13 and up" type searches
     care: '',
     showCrisis: false
   };
   
-  // Location detection
-  const cities = ['dallas', 'plano', 'frisco', 'mckinney', 'richardson', 'denton', 'arlington', 'fort worth', 'mansfield', 'keller', 'desoto', 'rockwall', 'sherman', 'forney', 'burleson', 'flower mound', 'the colony', 'bedford'];
-  cities.forEach(city => {
-    if(q.includes(city)) {
-      filters.loc = city.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-    }
-  });
+  // Location detection - handle both "desoto" and "de soto"
+  const cities = [
+    'dallas', 'plano', 'frisco', 'mckinney', 'richardson', 'denton', 
+    'arlington', 'fort worth', 'mansfield', 'keller', 'desoto', 'de soto',
+    'rockwall', 'sherman', 'forney', 'burleson', 'flower mound', 
+    'the colony', 'bedford', 'lewisville', 'carrollton', 'garland', 
+    'mesquite', 'irving', 'grand prairie', 'corsicana'
+  ];
   
-  // Age detection
-  const ageMatch = q.match(/\b(\d{1,2})\s*(?:year|yr|y\.o\.|yo)?\s*(?:old)?\b/);
-  if(ageMatch) filters.age = ageMatch[1];
+  // Check for city matches (prioritize longer matches first)
+  const sortedCities = cities.sort((a, b) => b.length - a.length);
+  for (const city of sortedCities) {
+    if(q.includes(city)) {
+      // Normalize city name - handle "de soto" -> "De Soto", "desoto" -> "De Soto"
+      if (city === 'desoto' || city === 'de soto') {
+        filters.loc = 'De Soto';
+      } else {
+        filters.loc = city.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      }
+      break; // Use first (longest) match
+    }
+  }
+  
+  // Age detection - handle multiple patterns
+  // Pattern 1: "13 and up" or "13+" or "13 years and up"
+  const andUpMatch = q.match(/\b(\d{1,2})\s*(?:\+|and\s*up|years?\s*and\s*up|yrs?\s*and\s*up|and\s*older)\b/i);
+  if (andUpMatch) {
+    filters.minAge = Number(andUpMatch[1]);
+    // Set age to the minimum for filtering purposes
+    filters.age = andUpMatch[1];
+  } else {
+    // Pattern 2: Exact age like "13 year old" or "13"
+    const ageMatch = q.match(/\b(\d{1,2})\s*(?:year|yr|y\.o\.|yo)?\s*(?:old)?\b/);
+    if(ageMatch) {
+      filters.age = ageMatch[1];
+    }
+  }
   
   // Level of care detection
-  if(q.includes('php') || q.includes('partial')) filters.care = 'Partial Hospitalization (PHP)';
-  if(q.includes('iop') || q.includes('intensive out')) filters.care = 'Intensive Outpatient (IOP)';
+  if(q.includes('php') || q.includes('partial hospitalization')) {
+    filters.care = 'Partial Hospitalization (PHP)';
+  } else if(q.includes('iop') || q.includes('intensive outpatient')) {
+    filters.care = 'Intensive Outpatient (IOP)';
+  } else if(q.includes('outpatient') && !q.includes('intensive')) {
+    filters.care = 'Outpatient';
+  } else if(q.includes('navigation')) {
+    filters.care = 'Navigation';
+  }
+  
+  // Crisis detection
   if(q.includes('crisis') || q.includes('emergency') || q.includes('urgent')) {
     filters.showCrisis = true;
   }
@@ -337,27 +386,68 @@ function matchesFilters(p){
   const care = safeStr(els.care.value).toLowerCase();
   const onlyVirtual = els.onlyVirtual.checked;
 
-  const hay = [
-    p.program_name, p.organization, p.level_of_care,
-    p.entry_type, p.service_setting, p.ages_served,
-    locLabel(p),
-    (p.notes || "")
-  ].map(safeStr).join(" ").toLowerCase();
+  // Parse smart search to get additional filters
+  const parsed = parseSmartSearch(els.q.value);
+  const searchMinAge = parsed.minAge;
 
-  if (q && !hay.includes(q)) return false;
+  // Text search - check if query terms appear in program fields
+  if (q) {
+    // Remove location, age, and care level terms from search query for text matching
+    const searchTerms = q
+      .replace(/\b(php|partial hospitalization|iop|intensive outpatient|outpatient|navigation)\b/gi, '')
+      .replace(/\b\d+\s*(?:\+|and\s*up|years?\s*and\s*up|yrs?\s*and\s*up|and\s*older|year|yr|y\.o\.|yo|old)\b/gi, '')
+      .replace(/\b(dallas|plano|frisco|mckinney|richardson|denton|arlington|fort worth|mansfield|keller|desoto|de soto|rockwall|sherman|forney|burleson|flower mound|the colony|bedford|lewisville|carrollton|garland|mesquite|irving|grand prairie|corsicana)\b/gi, '')
+      .trim();
+    
+    if (searchTerms) {
+      const hay = [
+        p.program_name, p.organization, p.level_of_care,
+        p.entry_type, p.service_setting, p.ages_served,
+        locLabel(p),
+        (p.notes || "")
+      ].map(safeStr).join(" ").toLowerCase();
+      
+      // Check if all remaining search terms appear
+      const terms = searchTerms.split(/\s+/).filter(t => t.length > 0);
+      if (terms.length > 0 && !terms.every(term => hay.includes(term))) {
+        return false;
+      }
+    }
+  }
 
-  if (loc){
+  // Location filter - use parsed location or dropdown value
+  const locationToCheck = parsed.loc ? parsed.loc.toLowerCase() : loc;
+  if (locationToCheck) {
     const cities = (p.locations || []).map(l => safeStr(l.city).toLowerCase());
-    if (!cities.some(c => c === loc)) return false;
+    // Handle "De Soto" matching both "De Soto" and "Desoto"
+    const normalizedLocation = locationToCheck.replace(/\s+/g, ' ').trim();
+    if (normalizedLocation === 'de soto') {
+      if (!cities.some(c => c === 'de soto' || c === 'desoto')) return false;
+    } else {
+      if (!cities.some(c => c === normalizedLocation)) return false;
+    }
   }
 
-  if (care){
-    if (safeStr(p.level_of_care).toLowerCase() !== care) return false;
+  // Level of care filter - use parsed care or dropdown value
+  const careToCheck = parsed.care ? parsed.care.toLowerCase() : care;
+  if (careToCheck) {
+    if (safeStr(p.level_of_care).toLowerCase() !== careToCheck) return false;
   }
 
-  if (ageVal){
-    const age = Number(ageVal);
-    if (!Number.isFinite(age) || !programServesAge(p, age)) return false;
+  // Age filter - handle both exact age and "and up" patterns
+  const ageToCheck = ageVal || (parsed.age || '');
+  if (ageToCheck) {
+    const age = Number(ageToCheck);
+    if (Number.isFinite(age)) {
+      if (searchMinAge !== null) {
+        // "13 and up" - check if program serves this age or higher
+        // Program must serve at least age 13
+        if (!programServesAge(p, age)) return false;
+      } else {
+        // Exact age match
+        if (!programServesAge(p, age)) return false;
+      }
+    }
   }
 
   if (onlyVirtual && !hasVirtual(p)) return false;
@@ -546,6 +636,21 @@ function createCard(p, idx){
 
     ${availabilityBadge}
 
+    <div class="card-actions">
+      <button type="button" class="card-action-btn favorite ${isFavorite(id) ? 'active' : ''}" data-favorite="${escapeHtml(id)}" aria-label="${isFavorite(id) ? 'Remove from saved' : 'Save program'}">
+        <span class="icon">${isFavorite(id) ? '⭐' : '☆'}</span>
+        <span>${isFavorite(id) ? 'Saved' : 'Save'}</span>
+      </button>
+      <button type="button" class="card-action-btn" data-share="${escapeHtml(id)}" aria-label="Share program">
+        <span class="icon">🔗</span>
+        <span>Share</span>
+      </button>
+      <button type="button" class="card-action-btn" data-print="${escapeHtml(id)}" aria-label="Print program details">
+        <span class="icon">🖨️</span>
+        <span>Print</span>
+      </button>
+    </div>
+
     <div class="accuracyStrip">${escapeHtml(accuracyLine)}</div>
 
     <div class="panel" id="panel_${escapeHtml(id)}">
@@ -588,8 +693,7 @@ function createCard(p, idx){
       <div class="actions">
         ${tel ? `<a class="linkBtn ${crisis ? "danger" : "primary"}" href="tel:${escapeHtml(tel)}" data-program-id="${escapeHtml(id)}">Call Now</a>` : ``}
         ${maps ? `<a class="linkBtn" href="${escapeHtml(maps)}" target="_blank" rel="noopener">Directions</a>` : ``}
-        ${website ? `<a class="linkBtn site" href="${escapeHtml(website)}" target="_blank" rel="noopener noreferrer">Website ↗</a>` : ``}
-        ${(!tel && !maps && !website) ? `<span style="color:var(--muted);font-size:13px;font-weight:700;">No quick actions available for this listing.</span>` : ``}
+        ${(!tel && !maps) ? `<span style="color:var(--muted);font-size:13px;font-weight:700;">No quick actions available for this listing.</span>` : ``}
       </div>
     </div>
   `;
@@ -631,6 +735,300 @@ function updateStats() {
   });
   
   els.programCount.textContent = programs.length;
+  updateFavoritesCount();
+}
+
+function updateFavoritesCount() {
+  const count = favorites.size;
+  els.favoritesCount.textContent = count;
+  els.favoritesCount.style.display = count > 0 ? 'block' : 'none';
+}
+
+function saveFavorites() {
+  localStorage.setItem('favorites', JSON.stringify(Array.from(favorites)));
+  updateFavoritesCount();
+}
+
+function toggleFavorite(programId) {
+  if (favorites.has(programId)) {
+    favorites.delete(programId);
+    showToast('Removed from saved programs', 'success');
+  } else {
+    favorites.add(programId);
+    showToast('Saved to your programs', 'success');
+  }
+  saveFavorites();
+  render();
+}
+
+function isFavorite(programId) {
+  return favorites.has(programId);
+}
+
+function showToast(message, type = 'success') {
+  els.toast.textContent = message;
+  els.toast.className = `toast ${type} show`;
+  setTimeout(() => {
+    els.toast.classList.remove('show');
+  }, 3000);
+}
+
+function showModal(modalEl) {
+  modalEl.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function hideModal(modalEl) {
+  modalEl.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+function sortPrograms(list) {
+  const sorted = [...list];
+  
+  switch(currentSort) {
+    case 'name':
+      sorted.sort((a, b) => {
+        const nameA = safeStr(a.program_name || a.organization).toLowerCase();
+        const nameB = safeStr(b.program_name || b.organization).toLowerCase();
+        return nameA.localeCompare(nameB);
+      });
+      break;
+    case 'verified':
+      sorted.sort((a, b) => {
+        const dateA = a.last_verified ? new Date(a.last_verified) : new Date(0);
+        const dateB = b.last_verified ? new Date(b.last_verified) : new Date(0);
+        return dateB - dateA;
+      });
+      break;
+    case 'location':
+      sorted.sort((a, b) => {
+        const locA = locLabel(a);
+        const locB = locLabel(b);
+        return locA.localeCompare(locB);
+      });
+      break;
+    case 'relevance':
+    default:
+      // Keep original order (already filtered by relevance)
+      break;
+  }
+  
+  return sorted;
+}
+
+function shareProgram(programId) {
+  const program = programDataMap.get(programId);
+  if (!program) return;
+  
+  const url = `${window.location.origin}${window.location.pathname}?program=${encodeURIComponent(programId)}`;
+  
+  if (navigator.share) {
+    navigator.share({
+      title: `${safeStr(program.program_name)} - ${safeStr(program.organization)}`,
+      text: `Mental health program: ${safeStr(program.program_name)}`,
+      url: url
+    }).catch(() => {
+      copyToClipboard(url);
+    });
+  } else {
+    copyToClipboard(url);
+  }
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Link copied to clipboard', 'success');
+    }).catch(() => {
+      fallbackCopy(text);
+    });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  try {
+    document.execCommand('copy');
+    showToast('Link copied to clipboard', 'success');
+  } catch (err) {
+    showToast('Could not copy link', 'error');
+  }
+  document.body.removeChild(textarea);
+}
+
+function printProgram(programId) {
+  const program = programDataMap.get(programId);
+  if (!program) return;
+  
+  const printWindow = window.open('', '_blank');
+  
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>${escapeHtml(safeStr(program.program_name))}</title>
+      <style>
+        body { font-family: system-ui, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        h1 { margin: 0 0 10px; }
+        .info { margin: 10px 0; }
+        .label { font-weight: bold; color: #666; }
+      </style>
+    </head>
+    <body>
+      <h1>${escapeHtml(safeStr(program.program_name))}</h1>
+      <div class="info"><span class="label">Organization:</span> ${escapeHtml(safeStr(program.organization))}</div>
+      <div class="info"><span class="label">Level of Care:</span> ${escapeHtml(safeStr(program.level_of_care))}</div>
+      <div class="info"><span class="label">Location:</span> ${escapeHtml(locLabel(program))}</div>
+      <div class="info"><span class="label">Phone:</span> ${escapeHtml(safeStr(program.phone))}</div>
+      ${program.website_url ? `<div class="info"><span class="label">Website:</span> <a href="${escapeHtml(safeUrl(program.website_url))}">${escapeHtml(safeUrl(program.website_url))}</a></div>` : ''}
+      <div class="info"><span class="label">Ages Served:</span> ${escapeHtml(safeStr(program.ages_served))}</div>
+      <div class="info"><span class="label">Service Setting:</span> ${escapeHtml(safeStr(program.service_setting))}</div>
+      ${program.notes ? `<div class="info"><span class="label">Notes:</span> ${escapeHtml(safeStr(program.notes))}</div>` : ''}
+      <div style="margin-top: 30px; font-size: 12px; color: #666;">
+        Printed from Texas Youth Mental Health Resource Finder
+      </div>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.focus();
+  setTimeout(() => printWindow.print(), 250);
+}
+
+function exportResults() {
+  const showCrisis = els.showCrisis.checked;
+  const filtered = programs.filter(matchesFilters);
+  const activeList = showCrisis ? filtered.filter(p => isCrisis(p)) : filtered.filter(p => !isCrisis(p));
+  const sorted = sortPrograms(activeList);
+  
+  const exportData = sorted.map(p => ({
+    program_name: p.program_name,
+    organization: p.organization,
+    level_of_care: p.level_of_care,
+    location: locLabel(p),
+    phone: p.phone,
+    website: p.website_url || p.website || '',
+    ages_served: p.ages_served,
+    service_setting: p.service_setting,
+    insurance_notes: p.insurance_notes,
+    notes: p.notes
+  }));
+  
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `mental-health-programs-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Results exported', 'success');
+}
+
+function addRecentSearch(query) {
+  if (!query || query.trim().length < 3) return;
+  const trimmed = query.trim();
+  recentSearches = recentSearches.filter(s => s !== trimmed);
+  recentSearches.unshift(trimmed);
+  recentSearches = recentSearches.slice(0, 5); // Reduced from 10 to 5
+  localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+  renderRecentSearches();
+}
+
+let scheduleRenderFn = null;
+
+function renderRecentSearches() {
+  const container = document.querySelector('.recent-searches');
+  if (!container) return;
+  
+  if (recentSearches.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+  
+  container.style.display = 'block';
+  // Only show the 3 most recent
+  const recentToShow = recentSearches.slice(0, 3);
+  container.innerHTML = `
+    <p class="recent-searches-title">Recent</p>
+    <div class="recent-search-tags">
+      ${recentToShow.map(search => `
+        <button type="button" class="recent-search-tag" data-search="${escapeHtml(search)}" title="Click to search again">
+          ${escapeHtml(search)}
+        </button>
+      `).join('')}
+    </div>
+  `;
+  
+  container.querySelectorAll('.recent-search-tag').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const search = btn.dataset.search;
+      els.q.value = search;
+      if (scheduleRenderFn) {
+        scheduleRenderFn();
+      } else {
+        render();
+      }
+      const t = document.getElementById("treatmentSection");
+      if (t) window.scrollTo({ top: t.offsetTop - 10, behavior: "smooth" });
+    });
+  });
+}
+
+function renderFavorites() {
+  const favoritePrograms = programs.filter(p => {
+    const id = stableIdFor(p, programs.indexOf(p));
+    return favorites.has(id);
+  });
+  
+  if (favoritePrograms.length === 0) {
+    els.favoritesList.innerHTML = '<p style="color: var(--muted); text-align: center; padding: 40px 20px;">No saved programs yet. Click the star icon on any program card to save it.</p>';
+    return;
+  }
+  
+  els.favoritesList.innerHTML = '<div class="grid"></div>';
+  const grid = els.favoritesList.querySelector('.grid');
+  
+  favoritePrograms.forEach((p, idx) => {
+    const card = createCard(p, idx);
+    grid.appendChild(card);
+  });
+  
+  // Setup event delegation for favorites grid
+  setupCardEventDelegation(grid);
+}
+
+function renderCallHistory() {
+  const calls = JSON.parse(localStorage.getItem('callHistory') || '[]');
+  
+  if (calls.length === 0) {
+    els.historyList.innerHTML = '<p style="color: var(--muted); text-align: center; padding: 40px 20px;">No call history yet. Call buttons will appear here after you use them.</p>';
+    return;
+  }
+  
+  els.historyList.innerHTML = calls.map(call => {
+    const date = new Date(call.timestamp);
+    return `
+      <div class="card" style="margin-bottom: 12px;">
+        <div class="cardTop">
+          <div>
+            <p class="pname">${escapeHtml(call.program)}</p>
+            <p class="org">${escapeHtml(call.org)}</p>
+          </div>
+        </div>
+        <div class="meta">
+          <span>Called: ${date.toLocaleDateString()} at ${date.toLocaleTimeString()}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 function render(){
@@ -643,8 +1041,11 @@ function render(){
   const treatment = filtered.filter(p => !isCrisis(p));
   const crisis = filtered.filter(p => isCrisis(p));
 
-  const activeList = showCrisis ? crisis : treatment;
+  let activeList = showCrisis ? crisis : treatment;
   const activeLabel = showCrisis ? "Crisis Resources" : "Treatment Programs";
+
+  // Apply sorting
+  activeList = sortPrograms(activeList);
 
   if (openId){
     const stillExists = activeList.some((p, idx) => stableIdFor(p, idx) === openId);
@@ -691,30 +1092,32 @@ function bind(){
       render();
     });
   }
+  
+  // Make scheduleRender accessible globally
+  scheduleRenderFn = scheduleRender;
 
-  ["input","change"].forEach(ev => {
-    if (ev === "input") {
-      let searchDebounce = null;
-      on(els.q, ev, () => {
-        if (searchDebounce) clearTimeout(searchDebounce);
-        searchDebounce = setTimeout(() => {
-          scheduleRender();
-        }, 300);
-      });
-    } else {
-      on(els.q, ev, scheduleRender);
-    }
-// Debounced search
+  // Debounced search
   let searchDebounce = null;
   on(els.q, "input", () => {
     if (searchDebounce) clearTimeout(searchDebounce);
-    searchDebounce = setTimeout(scheduleRender, 300);
+    searchDebounce = setTimeout(() => {
+      addRecentSearch(els.q.value);
+      scheduleRender();
+    }, 300);
   });
-  on(els.q, "change", scheduleRender);
+  on(els.q, "change", () => {
+    addRecentSearch(els.q.value);
+    scheduleRender();
+  });
   
   on(els.loc, "change", scheduleRender);
   on(els.age, "change", scheduleRender);
   on(els.care, "change", scheduleRender);
+  
+  // Sort functionality
+  on(els.sortSelect, "change", (e) => {
+    currentSort = e.target.value;
+    scheduleRender();
   });
 
   on(els.showCrisisTop, "change", () => {
@@ -804,6 +1207,46 @@ function bind(){
       if (cur) setCardOpen(cur, false);
       openId = null;
     }
+    // Close modals with Escape
+    if (e.key === "Escape") {
+      if (els.favoritesModal.getAttribute('aria-hidden') === 'false') {
+        hideModal(els.favoritesModal);
+      }
+      if (els.historyModal.getAttribute('aria-hidden') === 'false') {
+        hideModal(els.historyModal);
+      }
+    }
+  });
+
+  // Favorites modal
+  on(els.viewFavorites, "click", () => {
+    renderFavorites();
+    showModal(els.favoritesModal);
+  });
+
+  // Call history modal
+  on(els.viewHistory, "click", () => {
+    renderCallHistory();
+    showModal(els.historyModal);
+  });
+
+  // Export results
+  on(els.exportResults, "click", exportResults);
+
+  // Modal close buttons
+  els.favoritesModal.querySelectorAll('.modal-close').forEach(btn => {
+    on(btn, "click", () => hideModal(els.favoritesModal));
+  });
+  els.historyModal.querySelectorAll('.modal-close').forEach(btn => {
+    on(btn, "click", () => hideModal(els.historyModal));
+  });
+
+  // Close modals when clicking outside
+  on(els.favoritesModal, "click", (e) => {
+    if (e.target === els.favoritesModal) hideModal(els.favoritesModal);
+  });
+  on(els.historyModal, "click", (e) => {
+    if (e.target === els.historyModal) hideModal(els.historyModal);
   });
 
   syncTopToggles();
@@ -875,8 +1318,9 @@ document.addEventListener('click', (e) => {
     if (program) trackCallAttempt(program);
   }
 });
-// Handle expand button clicks via event delegation
-els.treatmentGrid.addEventListener('click', (e) => {
+// Handle expand button clicks via event delegation (for main grid and favorites modal)
+function setupCardEventDelegation(container) {
+  container.addEventListener('click', (e) => {
   const expandBtn = e.target.closest('.expandBtn');
   if (expandBtn) {
     const card = expandBtn.closest('.card');
@@ -884,8 +1328,44 @@ els.treatmentGrid.addEventListener('click', (e) => {
       const id = card.dataset.id;
       toggleOpen(id);
     }
+    return;
   }
-});
+
+  // Handle card action buttons
+  const favoriteBtn = e.target.closest('[data-favorite]');
+  if (favoriteBtn) {
+    e.preventDefault();
+    const id = favoriteBtn.dataset.favorite;
+    toggleFavorite(id);
+    // Update button state
+    const card = favoriteBtn.closest('.card');
+    if (card) {
+      const newCard = createCard(programDataMap.get(id), Array.from(programDataMap.keys()).indexOf(id));
+      card.replaceWith(newCard);
+    }
+    return;
+  }
+
+  const shareBtn = e.target.closest('[data-share]');
+  if (shareBtn) {
+    e.preventDefault();
+    const id = shareBtn.dataset.share;
+    shareProgram(id);
+    return;
+  }
+
+  const printBtn = e.target.closest('[data-print]');
+  if (printBtn) {
+    e.preventDefault();
+    const id = printBtn.dataset.print;
+    printProgram(id);
+    return;
+  }
+  });
+}
+
+// Setup event delegation for main grid
+setupCardEventDelegation(els.treatmentGrid);
 
 els.treatmentGrid.addEventListener('keydown', (e) => {
   const expandBtn = e.target.closest('.expandBtn');
@@ -908,15 +1388,53 @@ document.addEventListener('click', (e) => {
     render();
   } else if (action === 'show-virtual') {
     els.onlyVirtual.checked = true;
+    els.onlyVirtualTop.checked = true;
+    syncTopToggles();
     render();
+  } else if (action === 'view-all') {
+    els.q.value = '';
+    els.loc.value = '';
+    els.age.value = '';
+    if (window.__ageDropdownSync) window.__ageDropdownSync();
+    els.care.value = '';
+    els.onlyVirtual.checked = false;
+    els.showCrisis.checked = false;
+    syncTopToggles();
+    openId = null;
+    render();
+    const t = document.getElementById("treatmentSection");
+    if (t) window.scrollTo({ top: t.offsetTop - 10, behavior: "smooth" });
   }
 });
+
+// Handle URL parameters for shared programs
+function handleURLParams() {
+  const params = new URLSearchParams(window.location.search);
+  const programId = params.get('program');
+  if (programId && ready) {
+    // Find and open the program
+    programs.forEach((p, idx) => {
+      const id = stableIdFor(p, idx);
+      if (id === programId) {
+        openId = id;
+        render();
+        setTimeout(() => {
+          const card = document.querySelector(`.card[data-id="${CSS.escape(id)}"]`);
+          if (card) {
+            setCardOpen(card, true);
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 500);
+      }
+    });
+  }
+}
 
 // Initialize
 initAgeDropdown();
 bind();
-loadPrograms();
-// Initialize
-initAgeDropdown();
-bind();
-loadPrograms();
+loadPrograms().then(() => {
+  handleURLParams();
+  renderRecentSearches();
+  updateFavoritesCount();
+});

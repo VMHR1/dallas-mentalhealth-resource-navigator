@@ -256,12 +256,38 @@
           </div>
         </div>
       </div>
+
+      <div class="recent-searches" style="display:none;"></div>
     </section>
 
     <div class="results-header" aria-label="Results summary">
       <div class="results-info">
         <div class="results-count" id="totalCount">0</div>
         <div class="results-label" id="resultsLabel">matches</div>
+      </div>
+      <div class="results-actions">
+        <div class="sort-group">
+          <label for="sortSelect" class="sr-only">Sort by</label>
+          <select id="sortSelect" class="sort-select" aria-label="Sort results">
+            <option value="relevance">Sort by relevance</option>
+            <option value="name">Sort by name</option>
+            <option value="verified">Recently verified</option>
+            <option value="location">Location</option>
+          </select>
+        </div>
+        <button type="button" class="btn-icon" id="viewFavorites" title="View saved programs" aria-label="View saved programs">
+          <span class="icon">⭐</span>
+          <span class="btn-text">Saved</span>
+          <span class="badge-count" id="favoritesCount">0</span>
+        </button>
+        <button type="button" class="btn-icon" id="viewHistory" title="View call history" aria-label="View call history">
+          <span class="icon">📞</span>
+          <span class="btn-text">History</span>
+        </button>
+        <button type="button" class="btn-icon" id="exportResults" title="Export search results" aria-label="Export search results">
+          <span class="icon">📥</span>
+          <span class="btn-text">Export</span>
+        </button>
       </div>
     </div>
 
@@ -280,15 +306,19 @@
           <li><strong>Try nearby cities:</strong> Many programs serve multiple areas</li>
           <li><strong>Check virtual options:</strong> Telehealth expands access significantly</li>
           <li><strong>Consider similar levels:</strong> IOP and PHP often have similar goals</li>
+          <li><strong>Clear all filters:</strong> Start fresh and browse all available programs</li>
         </ul>
         <div class="empty-actions">
-  <button data-action="clear-filters">
-    Clear Location & Age
-  </button>
-  <button data-action="show-virtual">
-    Show Virtual Programs
-  </button>
-</div>
+          <button data-action="clear-filters" class="btn-primary">
+            Clear Location & Age
+          </button>
+          <button data-action="show-virtual" class="btn-primary">
+            Show Virtual Programs
+          </button>
+          <button data-action="view-all" class="btn-primary">
+            View All Programs
+          </button>
+        </div>
       </div>
     </section>
 
@@ -296,6 +326,31 @@
       This directory is informational and does not provide clinical advice. If you or someone is in immediate danger, call 911.
     </footer>
   </div>
+
+  <!-- Favorites Modal -->
+  <div id="favoritesModal" class="modal" role="dialog" aria-labelledby="favoritesModalTitle" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="favoritesModalTitle">Saved Programs</h2>
+        <button type="button" class="modal-close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body" id="favoritesList"></div>
+    </div>
+  </div>
+
+  <!-- Call History Modal -->
+  <div id="historyModal" class="modal" role="dialog" aria-labelledby="historyModalTitle" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="historyModalTitle">Call History</h2>
+        <button type="button" class="modal-close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body" id="historyList"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <script src="app.js"></script>
 </body>
