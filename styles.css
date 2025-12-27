@@ -24,7 +24,11 @@
 }
 
 *{box-sizing:border-box}
-html,body{height:100%}
+html{
+  height:100%;
+  overflow-x: hidden;
+  width: 100%;
+}
 body{
   margin:0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
@@ -32,6 +36,8 @@ body{
   background: var(--bg0);
   overflow-x:hidden;
   line-height:1.6;
+  width: 100%;
+  max-width: 100vw;
 }
 
 .bg-gradient{
@@ -91,6 +97,8 @@ a{color:inherit}
   max-width: 1180px;
   margin: 0 auto;
   padding: 0 18px;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .crisis-banner{
@@ -101,6 +109,9 @@ a{color:inherit}
   color: #fff;
   border-bottom: 1px solid rgba(255,255,255,.20);
   box-shadow: 0 10px 30px rgba(239,68,68,.18);
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 .crisis-banner .inner{
   max-width: 1180px;
@@ -115,6 +126,9 @@ a{color:inherit}
   letter-spacing: -.01em;
   text-align:center;
   font-size: 13px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 .crisis-banner a{
   color:#fff;
@@ -138,6 +152,7 @@ header{
   justify-content:space-between;
   gap: 18px;
   flex-wrap:wrap;
+  max-width: 100%;
 }
 
 .brand{
@@ -208,10 +223,16 @@ header{
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
+  width: 100%;
+  max-width: 100%;
 }
 
 @media (max-width: 760px){
-  .triage-grid{ grid-template-columns: 1fr; }
+  .triage-grid{ 
+    grid-template-columns: 1fr; 
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 .triage-card{
@@ -222,6 +243,9 @@ header{
   box-shadow: var(--shadow-lg);
   text-align: center;
   transition: var(--transition);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .triage-card:hover{
@@ -306,12 +330,17 @@ header{
   background: linear-gradient(135deg, rgba(79,209,197,.08), rgba(122,167,255,.08));
   border-radius: var(--radius-lg);
   border: 1px solid var(--stroke2);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .trust-grid{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
+  width: 100%;
+  max-width: 100%;
 }
 
 .trust-item{
@@ -347,8 +376,16 @@ header{
   gap: 18px;
   align-items: stretch;
   margin-top: 16px;
+  width: 100%;
+  max-width: 100%;
 }
-@media (max-width: 980px){ .hero{ grid-template-columns: 1fr; } }
+@media (max-width: 980px){ 
+  .hero{ 
+    grid-template-columns: 1fr; 
+    width: 100%;
+    max-width: 100%;
+  } 
+}
 
 .hero-copy{
   border-radius: var(--radius-lg);
@@ -469,6 +506,9 @@ h1{
   padding: 18px;
   position: relative;
   z-index: 10;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
@@ -479,6 +519,12 @@ h1{
     margin-top: -34px;
     margin-bottom: 12px;
     border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    width: 100%;
+    max-width: 100%;
+    margin-left: -12px;
+    margin-right: -12px;
+    padding-left: 12px;
+    padding-right: 12px;
   }
   
   /* Ensure crisis banner doesn't overlap */
@@ -509,6 +555,7 @@ h1{
   gap: 12px;
   align-items: end;
   flex-wrap: wrap;
+  max-width: 100%;
 }
 
 .input-group-primary{
@@ -568,8 +615,15 @@ h1{
   grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 12px;
   align-items:end;
+  max-width: 100%;
 }
-@media (max-width: 980px){ .search-grid{ grid-template-columns: 1fr; } }
+@media (max-width: 980px){ 
+  .search-grid{ 
+    grid-template-columns: 1fr; 
+    width: 100%;
+    max-width: 100%;
+  } 
+}
 
 .input-group label{
   display:block;
@@ -969,6 +1023,7 @@ a.btnlike:focus{
   margin: 16px 0 10px;
   padding: 10px 2px 12px;
   border-bottom: 1px solid rgba(15,23,42,.08);
+  max-width: 100%;
 }
 .results-info{
   display:flex;
@@ -1024,22 +1079,31 @@ a.btnlike:focus{
   gap: 14px;
   padding: 14px 14px 16px;
   align-items:flex-start;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 .grid > .card, .grid > .skeleton{
   flex: 1 1 calc(33.333% - 14px);
   max-width: calc(33.333% - 14px);
+  min-width: 0;
   align-self:flex-start;
 }
 @media (max-width: 980px){
   .grid > .card, .grid > .skeleton{
     flex-basis: calc(50% - 14px);
     max-width: calc(50% - 14px);
+    min-width: 0;
   }
 }
 @media (max-width: 640px){
+  .grid{
+    gap: 12px;
+    padding: 12px;
+  }
   .grid > .card, .grid > .skeleton{
     flex-basis: 100%;
     max-width: 100%;
+    min-width: 0;
   }
 }
 
@@ -1057,6 +1121,10 @@ a.btnlike:focus{
   contain: content;
   content-visibility: auto;
   contain-intrinsic-size: 240px;
+  max-width: 100%;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 .card::before{
   content:"";
@@ -1102,6 +1170,8 @@ a.btnlike:focus{
   gap: 8px;
   flex-wrap:wrap;
   margin: 0 0 10px;
+  width: 100%;
+  max-width: 100%;
 }
 .badge{
   font-size: 11px;
@@ -1150,6 +1220,8 @@ a.btnlike:focus{
   align-items:flex-start;
   justify-content: space-between;
   gap: 10px;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .pname{
@@ -1246,10 +1318,13 @@ a.btnlike:focus{
   gap: 10px;
   padding: 9px 0;
   border-bottom: 1px dashed rgba(15,23,42,.10);
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 .kv:last-child{ border-bottom:none; }
 .k{ color: var(--muted2); font-size: 11px; text-transform:uppercase; letter-spacing:.09em; font-weight: 900;}
-.v{ color: var(--ink); font-size: 13px; line-height:1.45; }
+.v{ color: var(--ink); font-size: 13px; line-height:1.45; word-wrap: break-word; overflow-wrap: break-word; }
 
 .actions{
   margin-top: 12px;
@@ -1257,6 +1332,7 @@ a.btnlike:focus{
   gap: 10px;
   flex-wrap:wrap;
   align-items:center;
+  max-width: 100%;
 }
 .linkBtn{
   display:inline-flex;
@@ -1497,18 +1573,22 @@ footer{
   gap: 10px;
   padding-right: 100px; /* Add space for the "Recently Updated" badge */
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 /* Responsive adjustment for smaller screens */
 @media (max-width: 640px){
   .cardTop{
-    padding-right: 95px;
+    padding-right: 85px;
+    gap: 8px;
   }
   
   .card[data-recent="true"]::after{
     font-size: 8px;
     padding: 3px 6px;
-    max-width: 85px;
+    max-width: 80px;
     top: 8px;
     right: 8px;
   }
@@ -1623,6 +1703,7 @@ footer{
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+  max-width: 100%;
 }
 
 .sort-group{
@@ -1724,6 +1805,8 @@ footer{
   opacity: 0;
   visibility: hidden;
   transition: opacity .25s ease, visibility .25s ease;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal[aria-hidden="false"]{
@@ -1742,6 +1825,8 @@ footer{
   flex-direction: column;
   transform: scale(.95) translateY(20px);
   transition: transform .25s ease;
+  overflow: hidden;
+  margin: auto;
 }
 
 .modal[aria-hidden="false"] .modal-content{
@@ -1754,6 +1839,8 @@ footer{
   justify-content: space-between;
   padding: 20px 24px;
   border-bottom: 1px solid var(--stroke);
+  flex-shrink: 0;
+  min-width: 0;
 }
 
 .modal-header h2{
@@ -1761,6 +1848,10 @@ footer{
   font-size: 20px;
   font-weight: 950;
   letter-spacing: -.02em;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  flex: 1;
+  min-width: 0;
 }
 
 .modal-close{
@@ -1778,6 +1869,8 @@ footer{
   justify-content: center;
   transition: var(--transition);
   padding: 0;
+  flex-shrink: 0;
+  min-width: 36px;
 }
 
 .modal-close:hover{
@@ -1789,7 +1882,10 @@ footer{
 .modal-body{
   padding: 24px;
   overflow-y: auto;
+  overflow-x: hidden;
   flex: 1;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal-body .card{
@@ -1967,11 +2063,15 @@ footer{
 .comparison-modal-content {
   max-width: 90vw;
   width: 100%;
+  overflow: hidden;
 }
 
 .comparison-table-wrapper {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  width: 100%;
+  max-width: 100%;
+  position: relative;
 }
 
 .comparison-table {
@@ -1979,6 +2079,7 @@ footer{
   border-collapse: collapse;
   font-size: 14px;
   table-layout: auto;
+  min-width: 600px;
 }
 
 .comparison-table th,
@@ -1989,6 +2090,7 @@ footer{
   vertical-align: top;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  max-width: 300px;
 }
 
 .comparison-table th {
@@ -2155,36 +2257,49 @@ footer{
 @media (max-width: 768px) {
   .comparison-modal-content {
     max-width: 95vw;
+    width: calc(100vw - 20px);
+  }
+  
+  .comparison-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    margin: 0 -18px;
+    padding: 0 18px;
   }
   
   .comparison-table {
     font-size: 12px;
+    min-width: 500px;
   }
   
   .comparison-table th,
   .comparison-table td {
     padding: 10px 12px;
+    max-width: 200px;
   }
   
   .comparison-label-header,
   .comparison-label {
-    min-width: 140px;
-    width: 140px;
+    min-width: 120px;
+    width: 120px;
     font-size: 11px;
   }
   
   .comparison-program-header,
   .comparison-value {
-    min-width: 200px;
-    max-width: 250px;
+    min-width: 180px;
+    max-width: 220px;
   }
   
   .comparison-header strong {
     font-size: 13px;
+    word-wrap: break-word;
   }
   
   .comparison-org {
     font-size: 11px;
+    word-wrap: break-word;
   }
 }
 
@@ -2199,6 +2314,8 @@ footer{
   align-items: center;
   justify-content: center;
   padding: 20px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .privacy-content {
@@ -2209,6 +2326,8 @@ footer{
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
+  overflow-x: hidden;
+  margin: auto;
 }
 
 .privacy-header {
@@ -2401,8 +2520,30 @@ body.high-contrast textarea {
   }
 }
 
-/* Mobile Improvements */
+/* ========== Mobile Improvements ========== */
+
+/* Prevent horizontal scrolling globally */
 @media (max-width: 640px){
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+  
+  /* Ensure all containers respect viewport */
+  .container {
+    padding: 0 12px;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  /* Prevent images and media from overflowing */
+  img, video, iframe, embed, object {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Fix results header */
   .results-header{
     flex-direction: column;
     align-items: stretch;
@@ -2413,16 +2554,190 @@ body.high-contrast textarea {
     justify-content: flex-start;
   }
   
+  /* Fix modal sizing */
   .modal-content{
     max-height: 90vh;
     margin: 10px;
+    max-width: calc(100vw - 20px);
+    width: calc(100vw - 20px);
   }
   
+  .modal {
+    padding: 10px;
+  }
+  
+  .modal-header {
+    padding: 16px 18px;
+  }
+  
+  .modal-body {
+    padding: 18px;
+  }
+  
+  /* Fix toast positioning */
   .toast{
     bottom: 16px;
     right: 16px;
     left: 16px;
     max-width: none;
+    width: calc(100vw - 32px);
+  }
+  
+  /* Fix header content wrapping */
+  .header-content {
+    flex-wrap: wrap;
+  }
+  
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 12px;
+  }
+  
+  /* Fix search section */
+  .search-section {
+    padding: 14px;
+    margin-left: -12px;
+    margin-right: -12px;
+    width: calc(100% + 24px);
+    max-width: calc(100vw - 0px);
+  }
+  
+  /* Fix grid layouts */
+  .grid {
+    gap: 12px;
+    padding: 12px;
+  }
+  
+  /* Fix card overflow */
+  .card {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+  
+  /* Fix kv grid to single column */
+  .kv {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  
+  .kv .k {
+    margin-bottom: 4px;
+  }
+  
+  /* Fix badge row */
+  .badgeRow {
+    max-width: 100%;
+  }
+  
+  /* Fix triage cards */
+  .triage-card {
+    padding: 20px;
+  }
+  
+  /* Fix trust strip */
+  .trust-strip {
+    padding: 16px;
+    margin-left: -12px;
+    margin-right: -12px;
+    width: calc(100% + 24px);
+  }
+  
+  /* Fix hero section */
+  .hero {
+    margin-top: 12px;
+  }
+  
+  .hero-copy {
+    padding: 18px;
+  }
+  
+  /* Fix comparison table wrapper */
+  .comparison-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Fix floating cards */
+  .floating-card {
+    width: min(200px, 80%);
+    font-size: 11px;
+  }
+  
+  /* Fix program detail grid */
+  .program-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .program-detail-label {
+    margin-bottom: 4px;
+  }
+  
+  /* Fix program detail header */
+  .program-detail-header {
+    padding: 18px;
+  }
+  
+  .program-detail-title {
+    font-size: 22px;
+  }
+  
+  .program-detail-org {
+    font-size: 16px;
+  }
+  
+  /* Fix section overflow */
+  .section {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Fix input groups */
+  .input-group {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .input-group-primary {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Fix dropdown menu positioning */
+  .dd-menu {
+    max-width: calc(100vw - 24px);
+    left: 0;
+    right: 0;
+  }
+  
+  /* Fix search suggestions */
+  .search-suggestions {
+    max-width: calc(100vw - 24px);
+    left: 0;
+    right: 0;
+  }
+  
+  /* Fix hero bullets */
+  .hero-bullets {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Fix filter presets */
+  .filter-presets {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .filter-preset-btn {
+    white-space: nowrap;
   }
 }
 
