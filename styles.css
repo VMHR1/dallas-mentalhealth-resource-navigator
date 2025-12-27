@@ -1573,7 +1573,6 @@ footer{
   gap: 10px;
   padding-right: 100px; /* Add space for the "Recently Updated" badge */
   position: relative;
-  width: 100%;
   max-width: 100%;
   min-width: 0;
 }
@@ -1581,16 +1580,40 @@ footer{
 /* Responsive adjustment for smaller screens */
 @media (max-width: 640px){
   .cardTop{
-    padding-right: 85px;
+    padding-right: 90px;
     gap: 8px;
   }
   
   .card[data-recent="true"]::after{
-    font-size: 8px;
-    padding: 3px 6px;
-    max-width: 80px;
+    font-size: 9px;
+    padding: 4px 8px;
+    max-width: 85px;
     top: 8px;
     right: 8px;
+    position: absolute;
+    z-index: 10;
+  }
+  
+  /* Ensure card content doesn't overlap with badge */
+  .card[data-recent="true"] .cardTop {
+    padding-right: 90px;
+  }
+  
+  .card[data-recent="true"] .pname,
+  .card[data-recent="true"] .org {
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  .card[data-recent="true"] .badgeRow {
+    max-width: 100%;
+  }
+  
+  /* Ensure expand button doesn't overlap */
+  .card[data-recent="true"] .expandBtn {
+    position: relative;
+    z-index: 5;
   }
 }
 
@@ -2599,8 +2622,28 @@ body.high-contrast textarea {
     padding: 14px;
     margin-left: -12px;
     margin-right: -12px;
+    margin-top: -34px;
+    margin-bottom: 8px;
     width: calc(100% + 24px);
     max-width: calc(100vw - 0px);
+  }
+  
+  /* Fix gap between search and results */
+  .results-header {
+    margin-top: 4px;
+    margin-bottom: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  
+  /* Fix gap between sections */
+  .section {
+    margin-top: 8px;
+  }
+  
+  /* Reduce gaps in cards on mobile */
+  .card {
+    margin-bottom: 0;
   }
   
   /* Fix grid layouts */
