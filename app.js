@@ -5,6 +5,7 @@ let openId = null;
 let currentSort = 'relevance';
 let favorites = new Set(JSON.parse(localStorage.getItem('favorites') || '[]'));
 let recentSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+let comparisonSet = new Set(JSON.parse(localStorage.getItem('comparison') || '[]'));
 
 const programDataMap = new Map();
 
@@ -43,7 +44,11 @@ const els = {
   historyModal: document.getElementById("historyModal"),
   favoritesList: document.getElementById("favoritesList"),
   historyList: document.getElementById("historyList"),
-  toast: document.getElementById("toast")
+  toast: document.getElementById("toast"),
+  insurance: document.getElementById("insurance"),
+  viewComparison: document.getElementById("viewComparison"),
+  comparisonModal: document.getElementById("comparisonModal"),
+  comparisonList: document.getElementById("comparisonList")
 };
 
 // ========== Smart Search Parser ==========
@@ -100,6 +105,8 @@ function parseSmartSearch(query) {
     filters.care = 'Partial Hospitalization (PHP)';
   } else if(q.includes('iop') || q.includes('intensive outpatient')) {
     filters.care = 'Intensive Outpatient (IOP)';
+  } else if(q.includes('outpatient') && !q.includes('intensive')) {
+    filters.care = 'Outpatient';
   } else if(q.includes('navigation')) {
     filters.care = 'Navigation';
   }
@@ -113,10 +120,9 @@ function parseSmartSearch(query) {
 }
 
 // ========== Age Dropdown Custom Component ==========
-// Removed - now using regular select dropdown to match other filters
 function initAgeDropdown(){
-  // No longer needed - age uses regular select
-  return;
+  const root = document.querySelector('.dropdown[data-dd="age"]');
+  if (!root) return;
 
   const btn = root.querySelector('#ageBtn');
   const valueEl = root.querySelector('#ageBtnValue');
@@ -378,6 +384,66 @@ function buildLocationOptions(list){
   els.loc.innerHTML = '<option value="">Any</option>' + cities.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
 }
 
+function buildInsuranceOptions(list){
+  const typesSet = new Set();
+  const plansSet = new Set();
+  
+  list.forEach(p => {
+    const insurance = p.accepted_insurance || {};
+    
+    // Extract insurance types
+    if (Array.isArray(insurance.types)) {
+      insurance.types.forEach(type => {
+        const cleanType = safeStr(type).trim();
+        if (cleanType) {
+          // Normalize common variations
+          const normalized = cleanType
+            .replace(/\(many\)/gi, '')
+            .replace(/\(some\)/gi, '')
+            .replace(/\(varies\)/gi, '')
+            .replace(/\(listed\)/gi, '')
+            .replace(/\(most major\)/gi, '')
+            .trim();
+          if (normalized) typesSet.add(normalized);
+        }
+      });
+    }
+    
+    // Extract insurance plans
+    if (Array.isArray(insurance.plans)) {
+      insurance.plans.forEach(plan => {
+        const cleanPlan = safeStr(plan).trim();
+        if (cleanPlan) plansSet.add(cleanPlan);
+      });
+    }
+  });
+  
+  const types = Array.from(typesSet).sort((a,b)=>a.localeCompare(b));
+  const plans = Array.from(plansSet).sort((a,b)=>a.localeCompare(b));
+  
+  let html = '<option value="">Any insurance</option>';
+  
+  // Add insurance types section
+  if (types.length > 0) {
+    html += '<optgroup label="Insurance Types">';
+    types.forEach(type => {
+      html += `<option value="type:${escapeHtml(type)}">${escapeHtml(type)}</option>`;
+    });
+    html += '</optgroup>';
+  }
+  
+  // Add insurance plans section
+  if (plans.length > 0) {
+    html += '<optgroup label="Insurance Plans">';
+    plans.forEach(plan => {
+      html += `<option value="plan:${escapeHtml(plan)}">${escapeHtml(plan)}</option>`;
+    });
+    html += '</optgroup>';
+  }
+  
+  els.insurance.innerHTML = html;
+}
+
 function matchesFilters(p){
   const q = safeStr(els.q.value).toLowerCase();
   const loc = safeStr(els.loc.value).toLowerCase();
@@ -446,6 +512,27 @@ function matchesFilters(p){
         // Exact age match
         if (!programServesAge(p, age)) return false;
       }
+    }
+  }
+
+  // Insurance filter
+  const insuranceVal = safeStr(els.insurance.value);
+  if (insuranceVal) {
+    const insurance = p.accepted_insurance || {};
+    const insuranceTypes = Array.isArray(insurance.types) ? insurance.types.map(t => safeStr(t).toLowerCase()) : [];
+    const insurancePlans = Array.isArray(insurance.plans) ? insurance.plans.map(pl => safeStr(pl).toLowerCase()) : [];
+    
+    // Check if it's a type or plan filter
+    if (insuranceVal.startsWith('type:')) {
+      const filterType = insuranceVal.replace('type:', '').toLowerCase();
+      // Normalize for matching (remove qualifiers like "(many)", "(some)", etc.)
+      const normalizedTypes = insuranceTypes.map(t => 
+        t.replace(/\(many\)/g, '').replace(/\(some\)/g, '').replace(/\(varies\)/g, '').replace(/\(listed\)/g, '').replace(/\(most major\)/g, '').trim()
+      );
+      if (!normalizedTypes.some(t => t.includes(filterType) || filterType.includes(t))) return false;
+    } else if (insuranceVal.startsWith('plan:')) {
+      const filterPlan = insuranceVal.replace('plan:', '').toLowerCase();
+      if (!insurancePlans.some(pl => pl === filterPlan || pl.includes(filterPlan) || filterPlan.includes(pl))) return false;
     }
   }
 
@@ -552,9 +639,6 @@ function createCard(p, idx){
   const care = safeStr(p.level_of_care) || "Unknown";
   const id = stableIdFor(p, idx);
   programDataMap.set(id, p);
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:554',message:'program added to programDataMap',data:{id:id,programName:safeStr(p.program_name),mapSize:programDataMap.size},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-  // #endregion
   const isOpen = (openId === id);
 
   const phone = safeStr(p.phone);
@@ -647,6 +731,11 @@ function createCard(p, idx){
         <span class="icon">🔗</span>
         <span>Share</span>
       </button>
+      <label class="card-action-btn compare-btn ${comparisonSet.has(id) ? 'active' : ''}" ${comparisonSet.size >= 3 && !comparisonSet.has(id) ? 'style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+        <input type="checkbox" data-compare="${escapeHtml(id)}" ${comparisonSet.has(id) ? 'checked' : ''} ${comparisonSet.size >= 3 && !comparisonSet.has(id) ? 'disabled' : ''} aria-label="Add to comparison" style="display: none;" />
+        <span class="icon">⚖️</span>
+        <span>${comparisonSet.has(id) ? 'Comparing' : 'Compare'}</span>
+      </label>
     </div>
 
     <div class="accuracyStrip">${escapeHtml(accuracyLine)}</div>
@@ -742,6 +831,112 @@ function updateFavoritesCount() {
   els.favoritesCount.style.display = count > 0 ? 'block' : 'none';
 }
 
+function updateComparisonCount() {
+  const count = comparisonSet.size;
+  const countEl = document.getElementById('comparisonCount');
+  if (countEl) {
+    countEl.textContent = count;
+    countEl.style.display = count > 0 ? 'block' : 'none';
+  }
+}
+
+function saveComparison() {
+  localStorage.setItem('comparison', JSON.stringify(Array.from(comparisonSet)));
+  updateComparisonCount();
+}
+
+function toggleComparison(programId) {
+  if (comparisonSet.has(programId)) {
+    comparisonSet.delete(programId);
+    showToast('Removed from comparison', 'success');
+  } else {
+    if (comparisonSet.size >= 3) {
+      showToast('Maximum 3 programs can be compared', 'error');
+      return;
+    }
+    comparisonSet.add(programId);
+    showToast('Added to comparison', 'success');
+  }
+  saveComparison();
+  render();
+}
+
+function isInComparison(programId) {
+  return comparisonSet.has(programId);
+}
+
+function renderComparison() {
+  if (comparisonSet.size === 0) {
+    els.comparisonList.innerHTML = '<p style="color: var(--muted); text-align: center; padding: 40px 20px;">No programs selected for comparison. Check the "Compare" box on program cards to add them.</p>';
+    return;
+  }
+  
+  const comparisonPrograms = Array.from(comparisonSet).map(id => {
+    return programDataMap.get(id);
+  }).filter(p => p !== undefined);
+  
+  if (comparisonPrograms.length === 0) {
+    els.comparisonList.innerHTML = '<p style="color: var(--muted); text-align: center; padding: 40px 20px;">Selected programs not found.</p>';
+    return;
+  }
+  
+  // Create comparison table
+  const fields = [
+    { label: 'Program Name', getValue: (p) => safeStr(p.program_name) },
+    { label: 'Organization', getValue: (p) => safeStr(p.organization) },
+    { label: 'Level of Care', getValue: (p) => safeStr(p.level_of_care) },
+    { label: 'Location', getValue: (p) => locLabel(p) },
+    { label: 'Ages Served', getValue: (p) => safeStr(p.ages_served) },
+    { label: 'Service Setting', getValue: (p) => safeStr(p.service_setting) },
+    { label: 'Phone', getValue: (p) => safeStr(p.phone) },
+    { label: 'Website', getValue: (p) => {
+      const url = safeUrl(p.website_url || p.website || '');
+      return url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener">${escapeHtml(domainFromUrl(url) || url)}</a>` : '—';
+    }},
+    { label: 'Insurance', getValue: (p) => {
+      const ins = p.accepted_insurance || {};
+      const types = Array.isArray(ins.types) ? ins.types : [];
+      const plans = Array.isArray(ins.plans) ? ins.plans : [];
+      if (types.length > 0 || plans.length > 0) {
+        return [...types, ...plans].slice(0, 3).join(', ') + (types.length + plans.length > 3 ? '...' : '');
+      }
+      return safeStr(p.insurance_notes) || 'Unknown';
+    }},
+    { label: 'Accepting New Patients', getValue: (p) => safeStr(p.accepting_new_patients) },
+    { label: 'Waitlist Status', getValue: (p) => safeStr(p.waitlist_status) },
+    { label: 'Notes', getValue: (p) => safeStr(p.notes) || '—' }
+  ];
+  
+  let html = '<div class="comparison-table-wrapper"><table class="comparison-table"><thead><tr><th>Field</th>';
+  comparisonPrograms.forEach((p) => {
+    // Find the program ID from the comparisonSet
+    const programId = Array.from(comparisonSet).find(id => programDataMap.get(id) === p);
+    html += `<th><div class="comparison-header"><button type="button" class="remove-compare" data-remove="${escapeHtml(programId)}" aria-label="Remove from comparison">×</button><div><strong>${escapeHtml(safeStr(p.program_name))}</strong><br><span style="color: var(--muted); font-size: 12px;">${escapeHtml(safeStr(p.organization))}</span></div></div></th>`;
+  });
+  html += '</tr></thead><tbody>';
+  
+  fields.forEach(field => {
+    html += '<tr><td class="comparison-label">' + escapeHtml(field.label) + '</td>';
+    comparisonPrograms.forEach(p => {
+      const value = field.getValue(p);
+      html += '<td class="comparison-value">' + (typeof value === 'string' ? escapeHtml(value) : value) + '</td>';
+    });
+    html += '</tr>';
+  });
+  
+  html += '</tbody></table></div>';
+  els.comparisonList.innerHTML = html;
+  
+  // Add remove handlers
+  els.comparisonList.querySelectorAll('.remove-compare').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.remove;
+      toggleComparison(id);
+      renderComparison();
+    });
+  });
+}
+
 function saveFavorites() {
   localStorage.setItem('favorites', JSON.stringify(Array.from(favorites)));
   updateFavoritesCount();
@@ -816,65 +1011,32 @@ function sortPrograms(list) {
 }
 
 function shareProgram(programId) {
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:819',message:'shareProgram called',data:{programId:programId,programDataMapSize:programDataMap.size,windowLocationOrigin:window.location.origin,windowLocationPathname:window.location.pathname,windowLocationSearch:window.location.search},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-  // #endregion
   const program = programDataMap.get(programId);
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:822',message:'program lookup result',data:{programId:programId,programFound:!!program,programName:program?safeStr(program.program_name):null},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-  // #endregion
   if (!program) return;
   
-  // Clean pathname to remove any existing query parameters
-  const pathname = window.location.pathname.split('?')[0];
-  const encodedId = encodeURIComponent(programId);
-  const url = `${window.location.origin}${pathname}?program=${encodedId}`;
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:828',message:'URL constructed',data:{url:url,pathname:pathname,encodedId:encodedId,originalId:programId},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
-  // #endregion
+  const url = `${window.location.origin}${window.location.pathname}?program=${encodeURIComponent(programId)}`;
   
   if (navigator.share) {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:840',message:'navigator.share available',data:{url:url},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
-    // Only share URL and title - removing text field prevents share targets from appending text to URL
     navigator.share({
       title: `${safeStr(program.program_name)} - ${safeStr(program.organization)}`,
+      text: `Mental health program: ${safeStr(program.program_name)}`,
       url: url
-    }).catch((err) => {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:847',message:'navigator.share failed, falling back to clipboard',data:{error:err?.message||String(err),url:url},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
-      // #endregion
+    }).catch(() => {
       copyToClipboard(url);
     });
   } else {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:851',message:'navigator.share not available, using clipboard',data:{url:url},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
     copyToClipboard(url);
   }
 }
 
 function copyToClipboard(text) {
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:838',message:'copyToClipboard called',data:{text:text,textLength:text?.length,hasNavigatorClipboard:!!navigator.clipboard},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-  // #endregion
   if (navigator.clipboard) {
     navigator.clipboard.writeText(text).then(() => {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:841',message:'clipboard write success',data:{text:text},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
       showToast('Link copied to clipboard', 'success');
-    }).catch((err) => {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:844',message:'clipboard write failed, using fallback',data:{error:err?.message||String(err),text:text},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
+    }).catch(() => {
       fallbackCopy(text);
     });
   } else {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:847',message:'navigator.clipboard not available, using fallback',data:{text:text},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-    // #endregion
     fallbackCopy(text);
   }
 }
@@ -895,6 +1057,44 @@ function fallbackCopy(text) {
   document.body.removeChild(textarea);
 }
 
+function printProgram(programId) {
+  const program = programDataMap.get(programId);
+  if (!program) return;
+  
+  const printWindow = window.open('', '_blank');
+  
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>${escapeHtml(safeStr(program.program_name))}</title>
+      <style>
+        body { font-family: system-ui, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        h1 { margin: 0 0 10px; }
+        .info { margin: 10px 0; }
+        .label { font-weight: bold; color: #666; }
+      </style>
+    </head>
+    <body>
+      <h1>${escapeHtml(safeStr(program.program_name))}</h1>
+      <div class="info"><span class="label">Organization:</span> ${escapeHtml(safeStr(program.organization))}</div>
+      <div class="info"><span class="label">Level of Care:</span> ${escapeHtml(safeStr(program.level_of_care))}</div>
+      <div class="info"><span class="label">Location:</span> ${escapeHtml(locLabel(program))}</div>
+      <div class="info"><span class="label">Phone:</span> ${escapeHtml(safeStr(program.phone))}</div>
+      ${program.website_url ? `<div class="info"><span class="label">Website:</span> <a href="${escapeHtml(safeUrl(program.website_url))}">${escapeHtml(safeUrl(program.website_url))}</a></div>` : ''}
+      <div class="info"><span class="label">Ages Served:</span> ${escapeHtml(safeStr(program.ages_served))}</div>
+      <div class="info"><span class="label">Service Setting:</span> ${escapeHtml(safeStr(program.service_setting))}</div>
+      ${program.notes ? `<div class="info"><span class="label">Notes:</span> ${escapeHtml(safeStr(program.notes))}</div>` : ''}
+      <div style="margin-top: 30px; font-size: 12px; color: #666;">
+        Printed from Texas Youth Mental Health Resource Finder
+      </div>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.focus();
+  setTimeout(() => printWindow.print(), 250);
+}
 
 function exportResults() {
   const showCrisis = els.showCrisis.checked;
@@ -1066,6 +1266,7 @@ function render(){
   }
 
   announceToScreenReader(`${activeList.length} programs found`);
+  updateComparisonCount();
 }
 
 function syncTopToggles(){
@@ -1106,6 +1307,7 @@ function bind(){
   on(els.loc, "change", scheduleRender);
   on(els.age, "change", scheduleRender);
   on(els.care, "change", scheduleRender);
+  on(els.insurance, "change", scheduleRender);
   
   // Sort functionality
   on(els.sortSelect, "change", (e) => {
@@ -1126,6 +1328,7 @@ function bind(){
     els.q.value = "";
     els.loc.value = "";
     els.age.value = "";
+    if (window.__ageDropdownSync) window.__ageDropdownSync();
     els.care.value = "";
     els.onlyVirtual.checked = false;
     els.showCrisis.checked = false;
@@ -1138,7 +1341,9 @@ function bind(){
     els.q.value = "";
     els.loc.value = "";
     els.age.value = "";
+    if (window.__ageDropdownSync) window.__ageDropdownSync();
     els.care.value = "";
+    els.insurance.value = "";
     els.onlyVirtual.checked = false;
     els.showCrisis.checked = false;
     openId = null;
@@ -1156,6 +1361,7 @@ function bind(){
     if(parsed.loc) els.loc.value = parsed.loc;
     if(parsed.age) {
       els.age.value = parsed.age;
+      if(window.__ageDropdownSync) window.__ageDropdownSync();
     }
     if(parsed.care) els.care.value = parsed.care;
     els.showCrisis.checked = parsed.showCrisis;
@@ -1223,6 +1429,12 @@ function bind(){
   // Export results
   on(els.exportResults, "click", exportResults);
 
+  // Comparison modal
+  on(els.viewComparison, "click", () => {
+    renderComparison();
+    showModal(els.comparisonModal);
+  });
+
   // Modal close buttons
   els.favoritesModal.querySelectorAll('.modal-close').forEach(btn => {
     on(btn, "click", () => hideModal(els.favoritesModal));
@@ -1230,6 +1442,20 @@ function bind(){
   els.historyModal.querySelectorAll('.modal-close').forEach(btn => {
     on(btn, "click", () => hideModal(els.historyModal));
   });
+  els.comparisonModal.querySelectorAll('.modal-close').forEach(btn => {
+    on(btn, "click", () => hideModal(els.comparisonModal));
+  });
+  
+  // Clear comparison
+  const clearComparisonBtn = document.getElementById('clearComparison');
+  if (clearComparisonBtn) {
+    on(clearComparisonBtn, "click", () => {
+      comparisonSet.clear();
+      saveComparison();
+      renderComparison();
+      render();
+    });
+  }
 
   // Close modals when clicking outside
   on(els.favoritesModal, "click", (e) => {
@@ -1237,6 +1463,9 @@ function bind(){
   });
   on(els.historyModal, "click", (e) => {
     if (e.target === els.historyModal) hideModal(els.historyModal);
+  });
+  on(els.comparisonModal, "click", (e) => {
+    if (e.target === els.comparisonModal) hideModal(els.comparisonModal);
   });
 
   syncTopToggles();
@@ -1275,7 +1504,9 @@ async function loadPrograms(){
     }));
 
     buildLocationOptions(programs);
+    buildInsuranceOptions(programs);
     updateStats();
+    updateComparisonCount();
     ready = true;
     openId = null;
     render();
@@ -1286,6 +1517,7 @@ async function loadPrograms(){
     ready = true;
     programs = [];
     buildLocationOptions(programs);
+    buildInsuranceOptions(programs);
     openId = null;
     render();
   }
@@ -1310,13 +1542,7 @@ document.addEventListener('click', (e) => {
 });
 // Handle expand button clicks via event delegation (for main grid and favorites modal)
 function setupCardEventDelegation(container) {
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1353',message:'setupCardEventDelegation called',data:{containerId:container?.id,containerTagName:container?.tagName,hasContainer:!!container},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-  // #endregion
   container.addEventListener('click', (e) => {
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1355',message:'click event in container',data:{targetTagName:e.target?.tagName,targetClassName:e.target?.className,closestDataShare:e.target?.closest?.('[data-share]')?.dataset?.share},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-  // #endregion
   const expandBtn = e.target.closest('.expandBtn');
   if (expandBtn) {
     const card = expandBtn.closest('.card');
@@ -1324,6 +1550,14 @@ function setupCardEventDelegation(container) {
       const id = card.dataset.id;
       toggleOpen(id);
     }
+    return;
+  }
+  
+  // Handle comparison checkbox
+  const compareCheckbox = e.target.closest('[data-compare]');
+  if (compareCheckbox && !compareCheckbox.disabled) {
+    const programId = compareCheckbox.dataset.compare;
+    toggleComparison(programId);
     return;
   }
 
@@ -1344,25 +1578,35 @@ function setupCardEventDelegation(container) {
 
   const shareBtn = e.target.closest('[data-share]');
   if (shareBtn) {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1345',message:'share button clicked',data:{shareBtnFound:!!shareBtn,datasetShare:shareBtn?.dataset?.share,eventTarget:e.target?.tagName,closestElement:e.target?.closest?.('[data-share]')?.tagName},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
     e.preventDefault();
     const id = shareBtn.dataset.share;
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1349',message:'calling shareProgram',data:{id:id,idType:typeof id,idLength:id?.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
     shareProgram(id);
     return;
   }
 
+  // Handle comparison checkbox
+  const compareCheckbox = e.target.closest('[data-compare]');
+  if (compareCheckbox && !compareCheckbox.disabled) {
+    e.preventDefault();
+    const programId = compareCheckbox.dataset.compare;
+    toggleComparison(programId);
+    // Update card state
+    const card = compareCheckbox.closest('.card');
+    if (card) {
+      const id = card.dataset.id;
+      const program = programDataMap.get(id);
+      if (program) {
+        const idx = Array.from(programDataMap.keys()).indexOf(id);
+        const newCard = createCard(program, idx);
+        card.replaceWith(newCard);
+      }
+    }
+    return;
+  }
   });
 }
 
 // Setup event delegation for main grid
-// #region agent log
-fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1400',message:'setting up event delegation for main grid',data:{treatmentGridExists:!!els.treatmentGrid,treatmentGridId:els.treatmentGrid?.id},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-// #endregion
 setupCardEventDelegation(els.treatmentGrid);
 
 els.treatmentGrid.addEventListener('keydown', (e) => {
@@ -1408,22 +1652,8 @@ document.addEventListener('click', (e) => {
 // Handle URL parameters for shared programs
 function handleURLParams() {
   const params = new URLSearchParams(window.location.search);
-  let programId = params.get('program');
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1457',message:'handleURLParams called',data:{rawProgramId:programId,programIdLength:programId?.length,ready:ready},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'D'})}).catch(()=>{});
-  // #endregion
-  
+  const programId = params.get('program');
   if (programId && ready) {
-    // Clean programId - remove any extra text that might have been appended by share targets
-    // Program IDs start with 'p_' followed by hex, so extract only that part
-    const programIdMatch = programId.match(/^(p_[a-f0-9_]+)/i);
-    if (programIdMatch) {
-      programId = programIdMatch[1];
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1465',message:'programId cleaned',data:{original:params.get('program'),cleaned:programId},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'D'})}).catch(()=>{});
-      // #endregion
-    }
-    
     // Find and open the program
     programs.forEach((p, idx) => {
       const id = stableIdFor(p, idx);
@@ -1443,6 +1673,7 @@ function handleURLParams() {
 }
 
 // Initialize
+initAgeDropdown();
 bind();
 loadPrograms().then(() => {
   handleURLParams();

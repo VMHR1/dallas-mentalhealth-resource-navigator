@@ -121,7 +121,7 @@
         <div class="hero-visual" aria-label="Summary cards">
           <div class="floating-card">
             <strong>Level of care</strong>
-            <span>PHP • IOP • Navigation</span>
+            <span>PHP • IOP • Outpatient • Navigation</span>
           </div>
           <div class="floating-card">
             <strong>Family-friendly filters</strong>
@@ -172,28 +172,57 @@
           </div>
 
           <div class="input-group">
-            <label for="age">Age</label>
-            <select id="age">
-              <option value="">Any age</option>
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-              <option value="13">13</option>
-              <option value="14">14</option>
-              <option value="15">15</option>
-              <option value="16">16</option>
-              <option value="17">17</option>
-            </select>
+            <label class="dd-label">Age</label>
+            <div class="dropdown" data-dd="age">
+              <button type="button" class="dd-btn" id="ageBtn" aria-haspopup="listbox" aria-controls="ageMenu" aria-expanded="false">
+                <span class="dd-value" id="ageBtnValue">Any age</span>
+                <span class="dd-icon" aria-hidden="true">▾</span>
+              </button>
+
+              <div class="dd-menu" id="ageMenu" role="listbox" tabindex="-1" aria-labelledby="ageBtn">
+                <div class="dd-option is-selected" role="option" aria-selected="true" data-value="">Any age<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="0">0<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="1">1<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="2">2<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="3">3<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="4">4<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="5">5<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="6">6<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="7">7<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="8">8<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="9">9<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="10">10<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="11">11<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="12">12<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="13">13<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="14">14<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="15">15<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="16">16<span class="dd-check" aria-hidden="true">✓</span></div>
+                <div class="dd-option" role="option" aria-selected="false" data-value="17">17<span class="dd-check" aria-hidden="true">✓</span></div>
+              </div>
+
+              <select id="age" class="dd-native" aria-hidden="true" tabindex="-1">
+                <option value="">Any age</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+              </select>
+            </div>
           </div>
 
           <div class="input-group">
@@ -203,6 +232,13 @@
               <option value="Partial Hospitalization (PHP)">Partial Hospitalization (PHP)</option>
               <option value="Intensive Outpatient (IOP)">Intensive Outpatient (IOP)</option>
               <option value="Navigation">Navigation</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label for="insurance">Insurance</label>
+            <select id="insurance">
+              <option value="">Any insurance</option>
             </select>
           </div>
         </div>
@@ -257,6 +293,11 @@
         <button type="button" class="btn-icon" id="exportResults" title="Export search results" aria-label="Export search results">
           <span class="icon">📥</span>
           <span class="btn-text">Export</span>
+        </button>
+        <button type="button" class="btn-icon" id="viewComparison" title="Compare selected programs" aria-label="Compare programs">
+          <span class="icon">⚖️</span>
+          <span class="btn-text">Compare</span>
+          <span class="badge-count" id="comparisonCount">0</span>
         </button>
       </div>
     </div>
@@ -316,6 +357,20 @@
         <button type="button" class="modal-close" aria-label="Close modal">&times;</button>
       </div>
       <div class="modal-body" id="historyList"></div>
+    </div>
+  </div>
+
+  <!-- Comparison Modal -->
+  <div id="comparisonModal" class="modal" role="dialog" aria-labelledby="comparisonModalTitle" aria-hidden="true">
+    <div class="modal-content comparison-modal-content">
+      <div class="modal-header">
+        <h2 id="comparisonModalTitle">Compare Programs</h2>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <button type="button" id="clearComparison" class="btn-ghost" style="font-size: 12px; padding: 6px 12px;">Clear all</button>
+          <button type="button" class="modal-close" aria-label="Close modal">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body" id="comparisonList"></div>
     </div>
   </div>
 
