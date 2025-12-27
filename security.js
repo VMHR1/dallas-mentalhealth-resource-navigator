@@ -177,31 +177,36 @@ function checkRateLimit(key, maxAttempts = 3, windowMs = 3600000) {
 const securityLog = [];
 
 function logSecurityEvent(type, details) {
-  const event = {
-    type,
-    timestamp: new Date().toISOString(),
-    details: typeof details === 'string' ? details : JSON.stringify(details),
-    userAgent: navigator.userAgent.substring(0, 100),
-    url: window.location.href
-  };
-  
-  securityLog.push(event);
-  
-  // Keep only last 50 events
-  if (securityLog.length > 50) {
-    securityLog.shift();
-  }
-  
-  // Store in localStorage (encrypted if sensitive)
   try {
-    localStorage.setItem('securityLog', JSON.stringify(securityLog.slice(-20)));
+    const event = {
+      type,
+      timestamp: new Date().toISOString(),
+      details: typeof details === 'string' ? details : (details ? JSON.stringify(details) : ''),
+      userAgent: navigator.userAgent ? navigator.userAgent.substring(0, 100) : '',
+      url: window.location ? window.location.href : ''
+    };
+    
+    securityLog.push(event);
+    
+    // Keep only last 50 events
+    if (securityLog.length > 50) {
+      securityLog.shift();
+    }
+    
+    // Store in localStorage (encrypted if sensitive)
+    try {
+      localStorage.setItem('securityLog', JSON.stringify(securityLog.slice(-20)));
+    } catch (e) {
+      // Ignore quota exceeded
+    }
+    
+    // Console warning for suspicious events
+    if (type.includes('suspicious') || type.includes('failed')) {
+      console.warn('Security event:', type, details);
+    }
   } catch (e) {
-    // Ignore quota exceeded
-  }
-  
-  // Console warning for suspicious events
-  if (type.includes('suspicious') || type.includes('failed')) {
-    console.warn('Security event:', type, details);
+    // Prevent recursion - if logging fails, just ignore it
+    console.error('Failed to log security event:', e);
   }
 }
 
