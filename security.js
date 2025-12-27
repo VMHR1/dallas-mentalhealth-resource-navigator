@@ -235,8 +235,24 @@ function validateProgramStructure(program) {
     return { valid: false, errors: ['Invalid website_url'] };
   }
   
-  if (program.verification_source && !validateUrl(program.verification_source)) {
-    return { valid: false, errors: ['Invalid verification_source URL'] };
+  // verification_source may contain descriptive text with embedded URLs
+  // Extract URL from text if present, or validate if it's a pure URL
+  if (program.verification_source) {
+    const verificationText = String(program.verification_source);
+    // Try to extract URL from text (look for http:// or https://)
+    const urlMatch = verificationText.match(/https?:\/\/[^\s]+/);
+    if (urlMatch) {
+      // Found a URL in the text, validate it
+      if (!validateUrl(urlMatch[0])) {
+        return { valid: false, errors: ['Invalid URL in verification_source'] };
+      }
+    } else if (verificationText.trim().startsWith('http://') || verificationText.trim().startsWith('https://')) {
+      // It's a pure URL, validate it
+      if (!validateUrl(verificationText.trim())) {
+        return { valid: false, errors: ['Invalid verification_source URL'] };
+      }
+    }
+    // If no URL found and doesn't start with http, it's just descriptive text - allow it
   }
   
   return { valid: true };

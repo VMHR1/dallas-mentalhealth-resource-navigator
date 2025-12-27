@@ -1709,6 +1709,10 @@ async function loadPrograms(){
           window.logSecurityEvent('data_integrity_issues', { count: invalidPrograms.length, programs: invalidPrograms.slice(0, 5) });
         }
         console.warn('Some programs failed validation:', invalidPrograms);
+        // Log detailed errors for debugging
+        invalidPrograms.forEach(invalid => {
+          console.warn(`Program ${invalid.programId} (index ${invalid.index}) failed:`, invalid.errors);
+        });
       }
     }
 
