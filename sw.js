@@ -1,11 +1,17 @@
-const CACHE_NAME = 'mh-directory-v2';
+const CACHE_NAME = 'mh-directory-v4';
 const urlsToCache = [
   '/',
   '/index.html',
   '/styles.css',
   '/app.js',
   '/programs.json',
-  '/security.js'
+  '/security.js',
+  '/js/config/constants.js',
+  '/js/utils/helpers.js',
+  '/js/modules/storage.js',
+  '/js/modules/search.js',
+  '/js/state-manager.js',
+  '/js/data-validator.js'
 ];
 
 self.addEventListener('install', (event) => {
@@ -29,7 +35,7 @@ self.addEventListener('fetch', (event) => {
         if (response) {
           // Verify response is for expected resource
           const requestUrl = new URL(event.request.url);
-          const allowedPaths = ['/', '/index.html', '/styles.css', '/app.js', '/programs.json', '/security.js'];
+          const allowedPaths = ['/', '/index.html', '/styles.css', '/app.js', '/programs.json', '/security.js', '/js/config/constants.js', '/js/utils/helpers.js', '/js/modules/storage.js', '/js/modules/search.js', '/js/state-manager.js', '/js/data-validator.js'];
           if (allowedPaths.some(path => requestUrl.pathname === path || requestUrl.pathname.endsWith(path))) {
             return response;
           }
