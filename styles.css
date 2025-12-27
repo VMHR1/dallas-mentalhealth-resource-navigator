@@ -2619,13 +2619,29 @@ body.high-contrast textarea {
   
   /* Fix search section */
   .search-section {
-    padding: 14px;
+    padding: 12px;
     margin-left: -12px;
     margin-right: -12px;
     margin-top: -34px;
     margin-bottom: 8px;
     width: calc(100% + 24px);
     max-width: calc(100vw - 0px);
+  }
+  
+  /* Optimize search header spacing on mobile */
+  .search-header {
+    margin: 4px 0 8px;
+  }
+  
+  .search-header h3 {
+    margin-bottom: 4px;
+    font-size: 16px;
+  }
+  
+  .search-header p {
+    margin-top: 4px;
+    margin-bottom: 6px;
+    font-size: 13px;
   }
   
   /* Fix gap between search and results */
@@ -2751,6 +2767,30 @@ body.high-contrast textarea {
     max-width: 100%;
   }
   
+  /* Optimize search simple layout on mobile */
+  .search-simple {
+    gap: 8px;
+    margin-top: 0;
+    align-items: stretch;
+  }
+  
+  /* Optimize input group spacing on mobile */
+  .input-group label,
+  .input-group-primary label {
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  
+  .input-wrapper {
+    margin-top: 0;
+  }
+  
+  /* Tighten button spacing on mobile */
+  .btn-smart-search,
+  .btn-advanced {
+    margin-top: 0;
+  }
+  
   /* Fix dropdown menu positioning */
   .dd-menu {
     max-width: calc(100vw - 24px);
@@ -2777,10 +2817,16 @@ body.high-contrast textarea {
     max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    margin-top: 6px !important;
+    gap: 6px !important;
+    margin-bottom: 8px;
   }
   
   .filter-preset-btn {
     white-space: nowrap;
+    padding: 6px 10px;
+    font-size: 11px;
+    min-height: 36px;
   }
 }
 
