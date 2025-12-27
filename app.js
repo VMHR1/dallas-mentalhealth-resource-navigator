@@ -2002,11 +2002,24 @@ function renderAutocomplete(suggestions) {
   container.innerHTML = html;
   container.style.display = 'block';
   
-  // Add click handlers
+  // Add click handlers using event delegation to handle clicks on child elements
+  container.addEventListener('click', (e) => {
+    const item = e.target.closest('.suggestion-item');
+    if (!item) return;
+    
+    const indexAttr = item.getAttribute('data-index');
+    if (indexAttr !== null) {
+      const index = parseInt(indexAttr, 10);
+      if (!isNaN(index) && index >= 0 && index < suggestions.length) {
+        e.preventDefault();
+        e.stopPropagation();
+        selectSuggestion(index);
+      }
+    }
+  });
+  
+  // Add mouseenter handlers for hover effect
   container.querySelectorAll('.suggestion-item').forEach((item, index) => {
-    item.addEventListener('click', () => {
-      selectSuggestion(index);
-    });
     item.addEventListener('mouseenter', () => {
       setSelectedSuggestion(index);
     });
@@ -2190,6 +2203,10 @@ function bind(){
   // Hide autocomplete when clicking outside
   document.addEventListener("click", (e) => {
     const container = document.getElementById('search-suggestions');
+    // Don't hide if clicking on suggestion items (they handle their own clicks)
+    if (container && e.target.closest('.suggestion-item')) {
+      return;
+    }
     if (container && !container.contains(e.target) && e.target !== els.q) {
       hideAutocomplete();
     }
