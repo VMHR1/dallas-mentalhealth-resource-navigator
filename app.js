@@ -346,13 +346,8 @@ function initAgeDropdown(){
 function safeStr(x){ return (x ?? "").toString().trim(); }
 
 function escapeHtml(s){
-  // Use enhanced escapeHtml from security.js if available, otherwise fallback
-  // Store reference to avoid circular calls
-  const securityEscapeHtml = window.escapeHtml;
-  if (typeof securityEscapeHtml === 'function' && securityEscapeHtml !== escapeHtml) {
-    return securityEscapeHtml(s);
-  }
-  // Fallback implementation
+  // Use local implementation to avoid circular reference issues
+  // Don't call window.escapeHtml to prevent recursion
   const str = safeStr(s);
   return str
     .replace(/&/g, "&amp;")
@@ -1787,9 +1782,6 @@ async function loadPrograms(){
     openId = null;
     render();
   }catch(err){
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1746',message:'loadPrograms catch block',data:{errorMessage:err.message,errorName:err.name,errorStack:err.stack?.substring(0,300),includesInvalid:err.message.includes('Invalid JSON')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
     console.error(err);
     els.loadWarn.textContent = `Couldn't load programs.json. ${err.message}`;
     els.loadWarn.classList.add("show");
