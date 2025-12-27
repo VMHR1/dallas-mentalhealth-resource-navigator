@@ -478,7 +478,7 @@ function matchesFilters(p){
   const onlyVirtual = els.onlyVirtual?.checked || false;
 
   // Parse smart search to get additional filters
-  const parsed = parseSmartSearch(els.q.value);
+  const parsed = parseSmartSearch(els.q?.value || '');
   const searchMinAge = parsed.minAge;
 
   // Text search - check if query terms appear in program fields
@@ -1284,7 +1284,7 @@ function render(){
     return;
   }
 
-  const showCrisis = els.showCrisis.checked;
+  const showCrisis = els.showCrisis?.checked || false;
 
   // #region agent log
   fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1255',message:'Before filtering',data:{totalPrograms:programs.length,query:els.q?.value,location:els.loc?.value,age:els.age?.value,care:els.care?.value,insurance:els.insurance?.value},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'L'})}).catch(()=>{});
@@ -1308,24 +1308,24 @@ function render(){
     if (!stillExists) openId = null;
   }
 
-  els.sectionTitle.textContent = activeLabel;
-  els.resultsLabel.textContent = showCrisis ? "crisis matches" : "treatment matches";
-  els.totalCount.textContent = String(activeList.length);
+  if (els.sectionTitle) els.sectionTitle.textContent = activeLabel;
+  if (els.resultsLabel) els.resultsLabel.textContent = showCrisis ? "crisis matches" : "treatment matches";
+  if (els.totalCount) els.totalCount.textContent = String(activeList.length);
 
-  els.treatmentGrid.innerHTML = "";
-  activeList.forEach((p, idx) => {
-    const realIdx = showCrisis ? (idx + 10000) : idx;
-    const card = createCard(p, realIdx);
-    card.style.animationDelay = `${Math.min(idx, 18) * 18}ms`;
-    els.treatmentGrid.appendChild(card);
-  });
+  if (els.treatmentGrid) {
+    els.treatmentGrid.innerHTML = "";
+    activeList.forEach((p, idx) => {
+      const realIdx = showCrisis ? (idx + 10000) : idx;
+      const card = createCard(p, realIdx);
+      card.style.animationDelay = `${Math.min(idx, 18) * 18}ms`;
+      els.treatmentGrid.appendChild(card);
+    });
+  }
 
-  els.treatmentCount.textContent = `${activeList.length} result${activeList.length===1?"":"s"}`;
+  if (els.treatmentCount) els.treatmentCount.textContent = `${activeList.length} result${activeList.length===1?"":"s"}`;
 
-  if (activeList.length){
-    els.treatmentEmpty.style.display = "none";
-  } else {
-    els.treatmentEmpty.style.display = "block";
+  if (els.treatmentEmpty) {
+    els.treatmentEmpty.style.display = activeList.length ? "none" : "block";
   }
 
   announceToScreenReader(`${activeList.length} programs found`);
