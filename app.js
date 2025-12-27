@@ -1188,6 +1188,11 @@ function toggleComparison(programId) {
   }
   saveComparison();
   render();
+  
+  // Update comparison view if modal is open
+  if (els.comparisonModal && els.comparisonModal.getAttribute('aria-hidden') === 'false') {
+    renderComparison();
+  }
 }
 
 function isInComparison(programId) {
@@ -1955,16 +1960,25 @@ function renderAutocomplete(suggestions) {
   autocompleteVisible = true;
   input.setAttribute('aria-expanded', 'true');
   
+  // Helper function to remove emojis from text
+  const removeEmojis = (text) => {
+    if (!text) return '';
+    // Remove emoji characters (Unicode ranges for emojis)
+    return text.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{1F900}-\u{1F9FF}]|[\u{1FA00}-\u{1FA6F}]|[\u{1FA70}-\u{1FAFF}]/gu, '').trim();
+  };
+  
   const html = suggestions.map((suggestion, index) => {
     // No emojis - use text labels instead
     const label = suggestion.type === 'popular' ? 'Popular' : 
                  suggestion.type === 'recent' ? 'Recent' :
                  suggestion.type === 'program' ? 'Program' :
                  suggestion.type === 'organization' ? 'Organization' : 'Location';
+    // Remove any emojis from the suggestion text itself
+    const cleanText = removeEmojis(suggestion.text);
     return `
       <div class="suggestion-item" role="option" data-index="${index}" aria-selected="false">
         <span class="suggestion-label">${escapeHtml(label)}</span>
-        <span class="suggestion-text">${escapeHtml(suggestion.text)}</span>
+        <span class="suggestion-text">${escapeHtml(cleanText)}</span>
       </div>
     `;
   }).join('');
