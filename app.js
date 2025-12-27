@@ -38,7 +38,6 @@ const els = {
   sortSelect: document.getElementById("sortSelect"),
   viewFavorites: document.getElementById("viewFavorites"),
   viewHistory: document.getElementById("viewHistory"),
-  exportResults: document.getElementById("exportResults"),
   favoritesCount: document.getElementById("favoritesCount"),
   favoritesModal: document.getElementById("favoritesModal"),
   historyModal: document.getElementById("historyModal"),
@@ -1117,35 +1116,6 @@ function printProgram(programId) {
   setTimeout(() => printWindow.print(), 250);
 }
 
-function exportResults() {
-  const showCrisis = els.showCrisis.checked;
-  const filtered = programs.filter(matchesFilters);
-  const activeList = showCrisis ? filtered.filter(p => isCrisis(p)) : filtered.filter(p => !isCrisis(p));
-  const sorted = sortPrograms(activeList);
-  
-  const exportData = sorted.map(p => ({
-    program_name: p.program_name,
-    organization: p.organization,
-    level_of_care: p.level_of_care,
-    location: locLabel(p),
-    phone: p.phone,
-    website: p.website_url || p.website || '',
-    ages_served: p.ages_served,
-    service_setting: p.service_setting,
-    insurance_notes: p.insurance_notes,
-    notes: p.notes
-  }));
-  
-  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `mental-health-programs-${new Date().toISOString().split('T')[0]}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('Results exported', 'success');
-}
-
 function addRecentSearch(query) {
   if (!query || query.trim().length < 3) return;
   const trimmed = query.trim();
@@ -1454,9 +1424,6 @@ function bind(){
     renderCallHistory();
     showModal(els.historyModal);
   });
-
-  // Export results
-  on(els.exportResults, "click", exportResults);
 
   // Comparison modal
   on(els.viewComparison, "click", () => {
