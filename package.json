@@ -9,7 +9,7 @@
     "minify": "node build.js --minify"
   },
   "devDependencies": {
-    "esbuild": "^0.24.0"
+    "esbuild": "^0.27.2"
   },
   "keywords": [
     "mental-health",
