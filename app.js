@@ -895,17 +895,18 @@ function matchesFilters(p){
   const searchMinAge = parsed.minAge;
 
   // Text search - check if query terms appear in program fields
-  if (q) {
+  if (q && q.trim()) {
     const orgLower = safeStr(p.organization).toLowerCase();
     const progLower = safeStr(p.program_name).toLowerCase();
     const qLower = q.toLowerCase().trim();
     
     // Check for exact matches first (highest priority)
+    // Only check dataset attributes if there's actually a query
     const isExactMatch = els.q?.dataset.exactMatch === 'true';
     const matchType = els.q?.dataset.matchType;
     
     // If this was selected from autocomplete as an organization, match all programs from that org
-    if (matchType === 'organization') {
+    if (matchType === 'organization' && qLower) {
       // For organization matches, check if this program belongs to the selected organization
       // Use case-insensitive comparison
       if (orgLower === qLower) {
@@ -914,7 +915,7 @@ function matchesFilters(p){
         // Organization name doesn't match exactly - this program should be filtered out
         return false;
       }
-    } else if (matchType === 'program' && isExactMatch) {
+    } else if (matchType === 'program' && isExactMatch && qLower) {
       // Exact program match required
       if (progLower !== qLower) {
         return false;
@@ -1756,6 +1757,9 @@ function nativeShare(url, title) {
 function applyFilterPreset(preset) {
   // Clear current filters
   els.q.value = "";
+  // Clear dataset attributes
+  delete els.q.dataset.exactMatch;
+  delete els.q.dataset.matchType;
   els.loc.value = "";
   els.age.value = "";
   if (window.__ageDropdownSync) window.__ageDropdownSync();
@@ -2407,6 +2411,12 @@ function bind(){
   on(els.q, "input", (e) => {
     const query = els.q.value;
     
+    // Clear dataset attributes if input is empty
+    if (!query || !query.trim()) {
+      delete els.q.dataset.exactMatch;
+      delete els.q.dataset.matchType;
+    }
+    
     // Show autocomplete
     if (autocompleteDebounce) clearTimeout(autocompleteDebounce);
     autocompleteDebounce = setTimeout(() => {
@@ -2507,6 +2517,9 @@ function bind(){
 
   function resetFilters() {
     els.q.value = "";
+    // Clear dataset attributes
+    delete els.q.dataset.exactMatch;
+    delete els.q.dataset.matchType;
     els.loc.value = "";
     els.age.value = "";
     if (window.__ageDropdownSync) window.__ageDropdownSync();
@@ -3037,6 +3050,9 @@ document.addEventListener('click', (e) => {
     render();
   } else if (action === 'view-all') {
     els.q.value = '';
+    // Clear dataset attributes
+    delete els.q.dataset.exactMatch;
+    delete els.q.dataset.matchType;
     els.loc.value = '';
     els.age.value = '';
     if (window.__ageDropdownSync) window.__ageDropdownSync();
