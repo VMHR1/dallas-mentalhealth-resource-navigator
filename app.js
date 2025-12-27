@@ -904,19 +904,27 @@ function matchesFilters(p){
     const isExactMatch = els.q?.dataset.exactMatch === 'true';
     const matchType = els.q?.dataset.matchType;
     
-    if (isExactMatch) {
-      if (matchType === 'organization' && orgLower !== qLower) {
-        return false; // Exact organization match required
+    // If this was selected from autocomplete as an organization, match all programs from that org
+    if (matchType === 'organization') {
+      // For organization matches, check if this program belongs to the selected organization
+      // Use case-insensitive comparison
+      if (orgLower === qLower) {
+        // This program belongs to the selected organization - continue with other filters
+      } else {
+        // Organization name doesn't match exactly - this program should be filtered out
+        return false;
       }
-      if (matchType === 'program' && progLower !== qLower) {
-        return false; // Exact program match required
+    } else if (matchType === 'program' && isExactMatch) {
+      // Exact program match required
+      if (progLower !== qLower) {
+        return false;
       }
-    }
-    
-    // Check exact organization or program name match before other checks
-    if (orgLower === qLower || progLower === qLower) {
-      // Exact match found - continue with other filters but this will score highest
     } else {
+      // No specific match type or not exact - check normal matching
+      // Check exact organization or program name match before other checks
+      if (orgLower === qLower || progLower === qLower) {
+        // Exact match found - continue with other filters but this will score highest
+      } else {
       // Remove location, age, and care level terms from search query for text matching
       // BUT preserve organization-like terms (don't remove words that might be part of org names)
       const searchTerms = q
@@ -2099,24 +2107,6 @@ function generateAutocompleteSuggestions(query) {
   const suggestions = [];
   const seen = new Set();
   
-  // Popular searches
-  const popularSearches = [
-    'IOP in Dallas',
-    'PHP for teens',
-    'crisis support',
-    'virtual therapy',
-    'Plano mental health',
-    'adolescent treatment',
-    'family therapy'
-  ];
-  
-  popularSearches.forEach(search => {
-    if (search.toLowerCase().includes(q) && !seen.has(search)) {
-      suggestions.push({ type: 'popular', text: search });
-      seen.add(search);
-    }
-  });
-  
   // Recent searches
   recentSearches.forEach(search => {
     if (search.toLowerCase().includes(q) && !seen.has(search)) {
@@ -2194,8 +2184,8 @@ function generateAutocompleteSuggestions(query) {
     // Exact matches first
     if (a.isExact && !b.isExact) return -1;
     if (!a.isExact && b.isExact) return 1;
-    // Then prioritize: organization > program > location > recent > popular
-    const typeOrder = { organization: 0, program: 1, location: 2, recent: 3, popular: 4 };
+    // Then prioritize: organization > program > location > recent
+    const typeOrder = { organization: 0, program: 1, location: 2, recent: 3 };
     return (typeOrder[a.type] || 5) - (typeOrder[b.type] || 5);
   });
   
@@ -2229,8 +2219,7 @@ function renderAutocomplete(suggestions) {
   
   const html = suggestions.map((suggestion, index) => {
     // No emojis - use text labels instead
-    const label = suggestion.type === 'popular' ? 'Popular' : 
-                 suggestion.type === 'recent' ? 'Recent' :
+    const label = suggestion.type === 'recent' ? 'Recent' :
                  suggestion.type === 'program' ? 'Program' :
                  suggestion.type === 'organization' ? 'Organization' : 'Location';
     // Remove any emojis from the suggestion text itself
@@ -2246,21 +2235,29 @@ function renderAutocomplete(suggestions) {
   container.innerHTML = html;
   container.style.display = 'block';
   
-  // Add click handlers using event delegation to handle clicks on child elements
-  container.addEventListener('click', (e) => {
+  // Remove any existing click handler to prevent duplicates
+  // Use a single delegated click handler that's set up once in bind()
+  // For now, we'll use a one-time handler that removes itself
+  const clickHandler = (e) => {
     const item = e.target.closest('.suggestion-item');
     if (!item) return;
     
     const indexAttr = item.getAttribute('data-index');
     if (indexAttr !== null) {
       const index = parseInt(indexAttr, 10);
-      if (!isNaN(index) && index >= 0 && index < suggestions.length) {
+      // Use autocompleteSuggestions instead of suggestions parameter
+      if (!isNaN(index) && index >= 0 && index < autocompleteSuggestions.length) {
         e.preventDefault();
         e.stopPropagation();
         selectSuggestion(index);
       }
     }
-  });
+  };
+  
+  // Remove old listener if it exists, then add new one
+  container.removeEventListener('click', container._autocompleteClickHandler);
+  container._autocompleteClickHandler = clickHandler;
+  container.addEventListener('click', clickHandler);
   
   // Add mouseenter handlers for hover effect
   container.querySelectorAll('.suggestion-item').forEach((item, index) => {
@@ -2288,14 +2285,22 @@ function selectSuggestion(index) {
   if (index < 0 || index >= autocompleteSuggestions.length) return;
   
   const suggestion = autocompleteSuggestions[index];
-  els.q.value = suggestion.text;
   
-  // Store metadata for exact matching if this is an organization or program suggestion
-  if (suggestion.type === 'organization' || suggestion.type === 'program') {
-    // Store in a way that the search can use for exact matching
+  // For organization suggestions, use the exact organization name from the database
+  // This ensures case-sensitive matching works correctly
+  if (suggestion.type === 'organization' && suggestion.programs && suggestion.programs.length > 0) {
+    // Use the organization name from the first program to ensure exact match
+    els.q.value = safeStr(suggestion.programs[0].organization);
+    els.q.dataset.exactMatch = 'true';
+    els.q.dataset.matchType = 'organization';
+  } else if (suggestion.type === 'program' && suggestion.program) {
+    // For program suggestions, use the exact program name
+    els.q.value = safeStr(suggestion.program.program_name);
     els.q.dataset.exactMatch = suggestion.isExact ? 'true' : 'false';
-    els.q.dataset.matchType = suggestion.type;
+    els.q.dataset.matchType = 'program';
   } else {
+    // For other types (recent, location), use the suggestion text
+    els.q.value = suggestion.text;
     delete els.q.dataset.exactMatch;
     delete els.q.dataset.matchType;
   }
@@ -2308,16 +2313,19 @@ function selectSuggestion(index) {
   els.q.setAttribute('aria-expanded', 'false');
   autocompleteVisible = false;
   
-  // Trigger search
-  if (scheduleRenderFn) {
-    scheduleRenderFn();
-  } else {
-    render();
-  }
-  
-  // Scroll to results
-  const t = document.getElementById("treatmentSection");
-  if (t) window.scrollTo({ top: t.offsetTop - 10, behavior: "smooth" });
+  // Clear any previous search state and trigger fresh search
+  // Use a small delay to ensure the input value is set
+  setTimeout(() => {
+    if (scheduleRenderFn) {
+      scheduleRenderFn();
+    } else {
+      render();
+    }
+    
+    // Scroll to results
+    const t = document.getElementById("treatmentSection");
+    if (t) window.scrollTo({ top: t.offsetTop - 10, behavior: "smooth" });
+  }, 10);
 }
 
 function hideAutocomplete() {
