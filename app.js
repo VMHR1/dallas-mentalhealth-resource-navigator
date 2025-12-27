@@ -552,6 +552,9 @@ function createCard(p, idx){
   const care = safeStr(p.level_of_care) || "Unknown";
   const id = stableIdFor(p, idx);
   programDataMap.set(id, p);
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:554',message:'program added to programDataMap',data:{id:id,programName:safeStr(p.program_name),mapSize:programDataMap.size},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+  // #endregion
   const isOpen = (openId === id);
 
   const phone = safeStr(p.phone);
@@ -817,32 +820,66 @@ function sortPrograms(list) {
 }
 
 function shareProgram(programId) {
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:819',message:'shareProgram called',data:{programId:programId,programDataMapSize:programDataMap.size,windowLocationOrigin:window.location.origin,windowLocationPathname:window.location.pathname,windowLocationSearch:window.location.search},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+  // #endregion
   const program = programDataMap.get(programId);
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:822',message:'program lookup result',data:{programId:programId,programFound:!!program,programName:program?safeStr(program.program_name):null},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+  // #endregion
   if (!program) return;
   
-  const url = `${window.location.origin}${window.location.pathname}?program=${encodeURIComponent(programId)}`;
+  // Clean pathname to remove any existing query parameters
+  const pathname = window.location.pathname.split('?')[0];
+  const encodedId = encodeURIComponent(programId);
+  const url = `${window.location.origin}${pathname}?program=${encodedId}`;
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:828',message:'URL constructed',data:{url:url,pathname:pathname,encodedId:encodedId,originalId:programId},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
+  // #endregion
   
   if (navigator.share) {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:832',message:'navigator.share available',data:{url:url},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
+    // Use only URL in share to prevent text from being appended to URL by some share targets
     navigator.share({
       title: `${safeStr(program.program_name)} - ${safeStr(program.organization)}`,
       text: `Mental health program: ${safeStr(program.program_name)}`,
       url: url
-    }).catch(() => {
+    }).catch((err) => {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:838',message:'navigator.share failed, falling back to clipboard',data:{error:err?.message||String(err),url:url},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
+      // #endregion
       copyToClipboard(url);
     });
   } else {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:841',message:'navigator.share not available, using clipboard',data:{url:url},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
     copyToClipboard(url);
   }
 }
 
 function copyToClipboard(text) {
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:838',message:'copyToClipboard called',data:{text:text,textLength:text?.length,hasNavigatorClipboard:!!navigator.clipboard},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+  // #endregion
   if (navigator.clipboard) {
     navigator.clipboard.writeText(text).then(() => {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:841',message:'clipboard write success',data:{text:text},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+      // #endregion
       showToast('Link copied to clipboard', 'success');
-    }).catch(() => {
+    }).catch((err) => {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:844',message:'clipboard write failed, using fallback',data:{error:err?.message||String(err),text:text},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+      // #endregion
       fallbackCopy(text);
     });
   } else {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:847',message:'navigator.clipboard not available, using fallback',data:{text:text},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
     fallbackCopy(text);
   }
 }
@@ -1316,7 +1353,13 @@ document.addEventListener('click', (e) => {
 });
 // Handle expand button clicks via event delegation (for main grid and favorites modal)
 function setupCardEventDelegation(container) {
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1353',message:'setupCardEventDelegation called',data:{containerId:container?.id,containerTagName:container?.tagName,hasContainer:!!container},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+  // #endregion
   container.addEventListener('click', (e) => {
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1355',message:'click event in container',data:{targetTagName:e.target?.tagName,targetClassName:e.target?.className,closestDataShare:e.target?.closest?.('[data-share]')?.dataset?.share},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+  // #endregion
   const expandBtn = e.target.closest('.expandBtn');
   if (expandBtn) {
     const card = expandBtn.closest('.card');
@@ -1344,8 +1387,14 @@ function setupCardEventDelegation(container) {
 
   const shareBtn = e.target.closest('[data-share]');
   if (shareBtn) {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1345',message:'share button clicked',data:{shareBtnFound:!!shareBtn,datasetShare:shareBtn?.dataset?.share,eventTarget:e.target?.tagName,closestElement:e.target?.closest?.('[data-share]')?.tagName},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
     e.preventDefault();
     const id = shareBtn.dataset.share;
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1349',message:'calling shareProgram',data:{id:id,idType:typeof id,idLength:id?.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
     shareProgram(id);
     return;
   }
@@ -1361,6 +1410,9 @@ function setupCardEventDelegation(container) {
 }
 
 // Setup event delegation for main grid
+// #region agent log
+fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1400',message:'setting up event delegation for main grid',data:{treatmentGridExists:!!els.treatmentGrid,treatmentGridId:els.treatmentGrid?.id},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+// #endregion
 setupCardEventDelegation(els.treatmentGrid);
 
 els.treatmentGrid.addEventListener('keydown', (e) => {
@@ -1406,8 +1458,22 @@ document.addEventListener('click', (e) => {
 // Handle URL parameters for shared programs
 function handleURLParams() {
   const params = new URLSearchParams(window.location.search);
-  const programId = params.get('program');
+  let programId = params.get('program');
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1457',message:'handleURLParams called',data:{rawProgramId:programId,programIdLength:programId?.length,ready:ready},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'D'})}).catch(()=>{});
+  // #endregion
+  
   if (programId && ready) {
+    // Clean programId - remove any extra text that might have been appended by share targets
+    // Program IDs start with 'p_' followed by hex, so extract only that part
+    const programIdMatch = programId.match(/^(p_[a-f0-9_]+)/i);
+    if (programIdMatch) {
+      programId = programIdMatch[1];
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1465',message:'programId cleaned',data:{original:params.get('program'),cleaned:programId},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'D'})}).catch(()=>{});
+      // #endregion
+    }
+    
     // Find and open the program
     programs.forEach((p, idx) => {
       const id = stableIdFor(p, idx);
