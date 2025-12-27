@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mh-directory-v1';
+const CACHE_NAME = 'mh-directory-v2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -61,6 +61,9 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
+    }).then(() => {
+      // Force clients to reload to get fresh files
+      return self.clients.claim();
     })
   );
 });
