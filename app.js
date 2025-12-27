@@ -132,13 +132,21 @@ const els = {
 // ========== Document-Level Event Delegation ==========
 // Set up early to handle dynamically added cards (including on first page load)
 document.addEventListener('click', (e) => {
-  // Handle expand button clicks
-  const expandBtn = e.target.closest('.expandBtn');
+  // Handle expand button clicks - check if click is on the button or its child (chev icon)
+  // Check both the target and if it's inside an expandBtn
+  let expandBtn = e.target.closest('.expandBtn');
+  // Also check if clicking directly on the button
+  if (!expandBtn && e.target.classList && e.target.classList.contains('expandBtn')) {
+    expandBtn = e.target;
+  }
+  
   if (expandBtn) {
+    e.preventDefault();
+    e.stopPropagation();
     const card = expandBtn.closest('.card');
     if (card) {
-      const id = card.dataset.id;
-      if (id && typeof toggleOpen === 'function') {
+      const id = card.dataset.id || card.getAttribute('data-id');
+      if (id) {
         toggleOpen(id);
       }
     }
@@ -201,10 +209,11 @@ document.addEventListener('keydown', (e) => {
   const expandBtn = e.target.closest('.expandBtn');
   if (expandBtn && (e.key === "Enter" || e.key === " ")) {
     e.preventDefault();
+    e.stopPropagation();
     const card = expandBtn.closest('.card');
     if (card) {
       const id = card.dataset.id;
-      if (id && typeof toggleOpen === 'function') {
+      if (id) {
         toggleOpen(id);
       }
     }
@@ -335,17 +344,17 @@ function parseSmartSearch(query) {
   
   // Single location detection if no multi-location found
   if (!foundMultiLocation) {
-    // Check for city matches (prioritize longer matches first)
-    const sortedCities = cities.sort((a, b) => b.length - a.length);
-    for (const city of sortedCities) {
-      if(q.includes(city)) {
-        // Normalize city name - handle "de soto" -> "De Soto", "desoto" -> "De Soto"
-        if (city === 'desoto' || city === 'de soto') {
-          filters.loc = 'De Soto';
-        } else {
-          filters.loc = city.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-        }
-        break; // Use first (longest) match
+  // Check for city matches (prioritize longer matches first)
+  const sortedCities = cities.sort((a, b) => b.length - a.length);
+  for (const city of sortedCities) {
+    if(q.includes(city)) {
+      // Normalize city name - handle "de soto" -> "De Soto", "desoto" -> "De Soto"
+      if (city === 'desoto' || city === 'de soto') {
+        filters.loc = 'De Soto';
+      } else {
+        filters.loc = city.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      }
+      break; // Use first (longest) match
       }
     }
     
@@ -776,7 +785,7 @@ function matchesFilters(p){
           if (term.length > 3) {
             return fuzzyMatch(term, hay, 0.7);
           }
-          return false;
+        return false;
         });
         if (!allMatch) return false;
       }
@@ -796,14 +805,14 @@ function matchesFilters(p){
     });
     if (!matches) return false;
   } else {
-    const locationToCheck = parsed.loc ? parsed.loc.toLowerCase() : loc;
-    if (locationToCheck) {
-      const cities = (p.locations || []).map(l => safeStr(l.city).toLowerCase());
-      // Handle "De Soto" matching both "De Soto" and "Desoto"
-      const normalizedLocation = locationToCheck.replace(/\s+/g, ' ').trim();
-      if (normalizedLocation === 'de soto') {
-        if (!cities.some(c => c === 'de soto' || c === 'desoto')) return false;
-      } else {
+  const locationToCheck = parsed.loc ? parsed.loc.toLowerCase() : loc;
+  if (locationToCheck) {
+    const cities = (p.locations || []).map(l => safeStr(l.city).toLowerCase());
+    // Handle "De Soto" matching both "De Soto" and "Desoto"
+    const normalizedLocation = locationToCheck.replace(/\s+/g, ' ').trim();
+    if (normalizedLocation === 'de soto') {
+      if (!cities.some(c => c === 'de soto' || c === 'desoto')) return false;
+    } else {
         // Use fuzzy matching for location
         const matches = cities.some(c => c === normalizedLocation || fuzzyMatch(normalizedLocation, c, 0.8));
         if (!matches) return false;
@@ -934,20 +943,27 @@ function setCardOpen(cardEl, isOpen){
 }
 
 function toggleOpen(id){
+  if (!id) return;
+  
   const nextOpenId = (openId === id) ? null : id;
 
-  if (openId){
+  // Close previously open card
+  if (openId && openId !== nextOpenId){
     const prev = document.querySelector(`.card[data-id="${CSS.escape(openId)}"]`);
-    if (prev) setCardOpen(prev, false);
+    if (prev) {
+      setCardOpen(prev, false);
+    }
   }
 
   openId = nextOpenId;
 
+  // Open new card if needed
   if (openId){
     const cur = document.querySelector(`.card[data-id="${CSS.escape(openId)}"]`);
-    if (cur) setCardOpen(cur, true);
+    if (cur) {
+      setCardOpen(cur, true);
 
-    if (cur){
+      // Scroll into view if needed
       const rect = cur.getBoundingClientRect();
       if (rect.top < 0 || rect.bottom > window.innerHeight){
         window.scrollTo({ top: window.scrollY + rect.top - 14, behavior: "smooth" });
@@ -1840,14 +1856,14 @@ function render(){
     renderProgressive(activeList, showCrisis);
   } else {
     // Small result sets - render all at once
-    if (els.treatmentGrid) {
-      els.treatmentGrid.innerHTML = "";
-      activeList.forEach((p, idx) => {
-        const realIdx = showCrisis ? (idx + 10000) : idx;
-        const card = createCard(p, realIdx);
-        card.style.animationDelay = `${Math.min(idx, 18) * 18}ms`;
-        els.treatmentGrid.appendChild(card);
-      });
+  if (els.treatmentGrid) {
+    els.treatmentGrid.innerHTML = "";
+    activeList.forEach((p, idx) => {
+      const realIdx = showCrisis ? (idx + 10000) : idx;
+      const card = createCard(p, realIdx);
+      card.style.animationDelay = `${Math.min(idx, 18) * 18}ms`;
+      els.treatmentGrid.appendChild(card);
+    });
       // Event delegation is handled at document level
     }
     
@@ -2319,10 +2335,10 @@ function bind(){
     } else if (e.key === "Escape") {
       // Close expanded cards
       if (openId) {
-        const cur = document.querySelector(`.card[data-id="${CSS.escape(openId)}"]`);
-        if (cur) setCardOpen(cur, false);
-        openId = null;
-      }
+      const cur = document.querySelector(`.card[data-id="${CSS.escape(openId)}"]`);
+      if (cur) setCardOpen(cur, false);
+      openId = null;
+    }
       // Close modals
       if (els.favoritesModal && els.favoritesModal.getAttribute('aria-hidden') === 'false') {
         hideModal(els.favoritesModal);
@@ -2634,25 +2650,25 @@ async function loadPrograms(retryCount = 0){
       })) : [];
       
       return {
-        program_id: p.program_id || "",
-        entry_type: p.entry_type || "Treatment Program",
-        organization: p.organization || "",
-        program_name: p.program_name || "",
-        level_of_care: p.level_of_care || "Unknown",
-        service_setting: p.service_setting || "Unknown",
-        ages_served: p.ages_served || "Unknown",
+      program_id: p.program_id || "",
+      entry_type: p.entry_type || "Treatment Program",
+      organization: p.organization || "",
+      program_name: p.program_name || "",
+      level_of_care: p.level_of_care || "Unknown",
+      service_setting: p.service_setting || "Unknown",
+      ages_served: p.ages_served || "Unknown",
         locations: normalizedLocations,
-        phone: p.phone || "",
-        website_url: p.website_url || p.website || "",
-        website_domain: p.website_domain || "",
-        notes: p.notes || "",
-        transportation_available: p.transportation_available || "Unknown",
-        insurance_notes: p.insurance_notes || "Unknown",
-        verification_source: p.verification_source || "",
-        last_verified: p.last_verified || "",
-        accepting_new_patients: p.accepting_new_patients || "Unknown",
-        waitlist_status: p.waitlist_status || "Unknown",
-        accepted_insurance: p.accepted_insurance || null
+      phone: p.phone || "",
+      website_url: p.website_url || p.website || "",
+      website_domain: p.website_domain || "",
+      notes: p.notes || "",
+      transportation_available: p.transportation_available || "Unknown",
+      insurance_notes: p.insurance_notes || "Unknown",
+      verification_source: p.verification_source || "",
+      last_verified: p.last_verified || "",
+      accepting_new_patients: p.accepting_new_patients || "Unknown",
+      waitlist_status: p.waitlist_status || "Unknown",
+      accepted_insurance: p.accepted_insurance || null
       };
     });
 
@@ -2669,7 +2685,7 @@ async function loadPrograms(retryCount = 0){
     // Retry logic for network errors
     if (retryCount < maxRetries && (err.name === 'TypeError' || err.name === 'AbortError')) {
       els.loadWarn.textContent = `Connection issue. Retrying... (${retryCount + 1}/${maxRetries})`;
-      els.loadWarn.classList.add("show");
+    els.loadWarn.classList.add("show");
       
       await new Promise(resolve => setTimeout(resolve, retryDelay));
       return loadPrograms(retryCount + 1);
