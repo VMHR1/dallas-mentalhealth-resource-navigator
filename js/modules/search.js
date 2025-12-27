@@ -33,6 +33,48 @@ export function fuzzyMatch(query, text, threshold = 0.7) {
   
   if (t.includes(q)) return true;
   
+  // Word-boundary aware matching for multi-word queries
+  const qWords = q.split(/\s+/).filter(w => w.length > 0);
+  if (qWords.length > 1) {
+    // Check if all query words appear in text (with word boundaries)
+    const allWordsMatch = qWords.every(qw => {
+      // Try exact word match first
+      const wordBoundaryRegex = new RegExp(`\\b${qw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+      if (wordBoundaryRegex.test(t)) return true;
+      // Then try substring match
+      if (t.includes(qw)) return true;
+      // Finally try fuzzy match for longer words
+      if (qw.length > 3) {
+        return fuzzyMatchSingleWord(qw, t, threshold);
+      }
+      return false;
+    });
+    if (allWordsMatch) return true;
+  }
+  
+  if (q.length <= 3) {
+    const distance = levenshteinDistance(q, t.substring(0, q.length + 2));
+    return distance <= 1;
+  }
+  
+  const maxDistance = Math.floor(q.length * (1 - threshold));
+  for (let i = 0; i <= t.length - q.length; i++) {
+    const substring = t.substring(i, i + q.length + maxDistance);
+    const distance = levenshteinDistance(q, substring.substring(0, q.length));
+    if (distance <= maxDistance) return true;
+  }
+  
+  return false;
+}
+
+// Helper function for single word fuzzy matching
+function fuzzyMatchSingleWord(query, text, threshold = 0.7) {
+  if (!query || !text) return false;
+  const q = query.toLowerCase();
+  const t = text.toLowerCase();
+  
+  if (t.includes(q)) return true;
+  
   if (q.length <= 3) {
     const distance = levenshteinDistance(q, t.substring(0, q.length + 2));
     return distance <= 1;
@@ -85,7 +127,8 @@ export function parseSmartSearch(query, cities) {
     age: '',
     minAge: null,
     care: '',
-    showCrisis: false
+    showCrisis: false,
+    organization: '' // Store detected organization name
   };
   
   // Multi-location patterns
@@ -180,4 +223,5 @@ if (typeof window !== 'undefined') {
     return parseSmartSearch(query, cities);
   };
 }
+
 
