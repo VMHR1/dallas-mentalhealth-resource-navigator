@@ -319,22 +319,8 @@
       if (hash === ADMIN_PASSWORD_HASH) {
         sessionStorage.setItem('admin_authenticated', 'true');
         isAuthenticated = true;
-        // Show dashboard immediately
-        showDashboard();
-        // Initialize dashboard functions
-        setTimeout(() => {
-          try {
-            loadLogs();
-            checkSystemStatus();
-            checkRateLimits();
-            setInterval(() => {
-              loadLogs();
-              checkRateLimits();
-            }, 30000);
-          } catch (error) {
-            console.error('Dashboard initialization error:', error);
-          }
-        }, 100);
+        // Reload page to show dashboard (login screen replaced body HTML)
+        location.reload();
       } else {
         if (errorDiv) {
           errorDiv.textContent = 'Incorrect password';
