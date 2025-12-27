@@ -347,16 +347,20 @@ function safeStr(x){ return (x ?? "").toString().trim(); }
 
 function escapeHtml(s){
   // Use enhanced escapeHtml from security.js if available, otherwise fallback
-  if (typeof window.escapeHtml === 'function') {
-    return window.escapeHtml(s);
+  // Store reference to avoid circular calls
+  const securityEscapeHtml = window.escapeHtml;
+  if (typeof securityEscapeHtml === 'function' && securityEscapeHtml !== escapeHtml) {
+    return securityEscapeHtml(s);
   }
-  return safeStr(s)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;")
-    .replaceAll("/","&#x2F;");
+  // Fallback implementation
+  const str = safeStr(s);
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;")
+    .replace(/\//g, "&#x2F;");
 }
 
 
