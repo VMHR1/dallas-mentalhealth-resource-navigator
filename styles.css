@@ -1580,14 +1580,14 @@ footer{
 /* Responsive adjustment for smaller screens */
 @media (max-width: 640px){
   .cardTop{
-    padding-right: 90px;
+    padding-right: 100px;
     gap: 8px;
   }
   
   .card[data-recent="true"]::after{
-    font-size: 9px;
-    padding: 4px 8px;
-    max-width: 85px;
+    font-size: 8px;
+    padding: 3px 7px;
+    max-width: 80px;
     top: 8px;
     right: 8px;
     position: absolute;
@@ -1596,18 +1596,27 @@ footer{
   
   /* Ensure card content doesn't overlap with badge */
   .card[data-recent="true"] .cardTop {
-    padding-right: 90px;
+    padding-right: 100px;
+  }
+  
+  /* Ensure text container has proper spacing */
+  .card[data-recent="true"] .cardTop > div {
+    padding-right: 8px;
+    max-width: calc(100% - 108px);
+    min-width: 0;
   }
   
   .card[data-recent="true"] .pname,
   .card[data-recent="true"] .org {
     max-width: 100%;
+    padding-right: 0;
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
   
   .card[data-recent="true"] .badgeRow {
-    max-width: 100%;
+    max-width: calc(100% - 100px);
+    padding-right: 0;
   }
   
   /* Ensure expand button doesn't overlap */
@@ -2630,7 +2639,7 @@ body.high-contrast textarea {
   
   /* Optimize search header spacing on mobile */
   .search-header {
-    margin: 4px 0 8px;
+    margin: 4px 0 6px;
   }
   
   .search-header h3 {
@@ -2640,7 +2649,7 @@ body.high-contrast textarea {
   
   .search-header p {
     margin-top: 4px;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     font-size: 13px;
   }
   
@@ -2769,7 +2778,7 @@ body.high-contrast textarea {
   
   /* Optimize search simple layout on mobile */
   .search-simple {
-    gap: 8px;
+    gap: 6px;
     margin-top: 0;
     align-items: stretch;
   }
@@ -2777,7 +2786,7 @@ body.high-contrast textarea {
   /* Optimize input group spacing on mobile */
   .input-group label,
   .input-group-primary label {
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     font-size: 13px;
   }
   
@@ -2817,9 +2826,9 @@ body.high-contrast textarea {
     max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    margin-top: 6px !important;
+    margin-top: 4px !important;
     gap: 6px !important;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
   
   .filter-preset-btn {
