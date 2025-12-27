@@ -2614,6 +2614,9 @@ function bind(){
 
   on(els.viewAll, "click", () => {
     els.q.value = "";
+    // Clear dataset attributes
+    delete els.q.dataset.exactMatch;
+    delete els.q.dataset.matchType;
     els.loc.value = "";
     els.age.value = "";
     if (window.__ageDropdownSync) window.__ageDropdownSync();
@@ -3205,7 +3208,18 @@ function loadURLState() {
   
   // Load search query
   if (params.has('q') && els.q) {
-    els.q.value = params.get('q');
+    const qValue = params.get('q');
+    els.q.value = qValue;
+    // Clear dataset attributes if q is empty or whitespace
+    if (!qValue || !qValue.trim()) {
+      delete els.q.dataset.exactMatch;
+      delete els.q.dataset.matchType;
+    }
+  } else if (els.q) {
+    // No 'q' parameter - ensure value is empty and clear dataset attributes
+    els.q.value = '';
+    delete els.q.dataset.exactMatch;
+    delete els.q.dataset.matchType;
   }
   
   // Load location
@@ -3321,6 +3335,11 @@ loadPrograms().then(() => {
   console.log('[DEBUG]', logAfterLoad);
   fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(logAfterLoad)}).catch(()=>{});
   // #endregion
+  // Clear any stale dataset attributes on initial load if q is empty
+  if (els.q && (!els.q.value || !els.q.value.trim())) {
+    delete els.q.dataset.exactMatch;
+    delete els.q.dataset.matchType;
+  }
   handleURLParams();
   renderRecentSearches();
   updateFavoritesCount();
