@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Dashboard • Mental Health Directory</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self'; font-src 'self' data:; frame-ancestors 'none'; base-uri 'self';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    header {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: #64748b;
+      font-size: 14px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .stat-value {
+      font-size: 32px;
+      font-weight: bold;
+      color: #3b82f6;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      color: #64748b;
+      font-size: 14px;
+    }
+    .section {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .section h2 {
+      font-size: 18px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .log-entry {
+      padding: 12px;
+      border-left: 3px solid #e2e8f0;
+      margin-bottom: 8px;
+      background: #f8fafc;
+      border-radius: 4px;
+    }
+    .log-entry.suspicious {
+      border-left-color: #ef4444;
+      background: #fef2f2;
+    }
+    .log-entry.failed {
+      border-left-color: #f59e0b;
+      background: #fffbeb;
+    }
+    .log-entry.success {
+      border-left-color: #10b981;
+      background: #f0fdf4;
+    }
+    .log-time {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .log-type {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .log-details {
+      font-size: 13px;
+      color: #475569;
+      font-family: 'Monaco', 'Courier New', monospace;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .btn {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .btn:hover {
+      background: #2563eb;
+    }
+    .btn-secondary {
+      background: #64748b;
+    }
+    .btn-secondary:hover {
+      background: #475569;
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #64748b;
+    }
+    .filter-controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .filter-controls select, .filter-controls input {
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    .badge-error { background: #fee2e2; color: #991b1b; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-success { background: #d1fae5; color: #065f46; }
+    .badge-info { background: #dbeafe; color: #1e40af; }
+  </style>
+</head>
+<body style="display: none;">
+  <div class="container" id="dashboardContent" style="display: none;">
+    <header>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h1>Admin Dashboard</h1>
+          <p class="subtitle">Security monitoring and system status</p>
+        </div>
+        <button class="btn btn-secondary" onclick="logout()" style="font-size: 14px; padding: 8px 16px;">Logout</button>
+      </div>
+    </header>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="totalEvents">0</div>
+        <div class="stat-label">Security Events</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="suspiciousEvents">0</div>
+        <div class="stat-label">Suspicious Events</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="failedEvents">0</div>
+        <div class="stat-label">Failed Validations</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="submissionEvents">0</div>
+        <div class="stat-label">Form Submissions</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h2>Security Event Log</h2>
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="exportLogs()">Export Logs</button>
+          <button class="btn btn-secondary" onclick="clearLogs()">Clear Logs</button>
+          <button class="btn" onclick="refreshLogs()">Refresh</button>
+        </div>
+      </div>
+      
+      <div class="filter-controls">
+        <select id="filterType" onchange="filterLogs()">
+          <option value="">All Types</option>
+          <option value="suspicious">Suspicious</option>
+          <option value="failed">Failed</option>
+          <option value="form_submission">Form Submissions</option>
+          <option value="data_integrity">Data Integrity</option>
+          <option value="invalid">Invalid Inputs</option>
+        </select>
+        <input type="text" id="searchLogs" placeholder="Search logs..." oninput="filterLogs()" style="flex: 1; min-width: 200px;">
+      </div>
+
+      <div id="logContainer">
+        <div class="empty-state">Loading security logs...</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>System Status</h2>
+      <div id="systemStatus">
+        <div class="log-entry">
+          <div class="log-type">Checking system status...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Rate Limiting Status</h2>
+      <div id="rateLimitStatus">
+        <div class="log-entry">
+          <div class="log-type">Checking rate limits...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="security.js"></script>
+  <script>
+    // Password protection
+    const ADMIN_PASSWORD_HASH = 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3'; // SHA-256 hash of "Btmolly321"
+    let isAuthenticated = false;
+
+    async function hashPassword(password) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(password);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function checkAuth() {
+      const sessionAuth = sessionStorage.getItem('admin_authenticated');
+      if (sessionAuth === 'true') {
+        isAuthenticated = true;
+        showDashboard();
+        return;
+      }
+      showLogin();
+    }
+
+    function showLogin() {
+      document.body.innerHTML = `
+        <div class="container" style="max-width: 400px; margin-top: 100px;">
+          <div class="section">
+            <h2 style="margin-bottom: 20px;">Admin Access</h2>
+            <div id="loginError" style="display: none; padding: 12px; background: #fee2e2; color: #991b1b; border-radius: 6px; margin-bottom: 16px; font-size: 14px;"></div>
+            <input type="password" id="passwordInput" placeholder="Enter password" style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 16px; margin-bottom: 12px;" autofocus>
+            <button class="btn" onclick="handleLogin()" style="width: 100%;">Login</button>
+            <p style="margin-top: 16px; font-size: 12px; color: #64748b; text-align: center;">Press Enter to submit</p>
+          </div>
+        </div>
+      `;
+      
+      const input = document.getElementById('passwordInput');
+      if (input) {
+        input.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            handleLogin();
+          }
+        });
+      }
+    }
+
+    async function handleLogin() {
+      const input = document.getElementById('passwordInput');
+      const errorDiv = document.getElementById('loginError');
+      
+      if (!input || !input.value) {
+        if (errorDiv) {
+          errorDiv.textContent = 'Please enter a password';
+          errorDiv.style.display = 'block';
+        }
+        return;
+      }
+
+      const password = input.value;
+      const hash = await hashPassword(password);
+      
+      if (hash === ADMIN_PASSWORD_HASH) {
+        sessionStorage.setItem('admin_authenticated', 'true');
+        isAuthenticated = true;
+        location.reload(); // Reload to show dashboard
+      } else {
+        if (errorDiv) {
+          errorDiv.textContent = 'Incorrect password';
+          errorDiv.style.display = 'block';
+        }
+        if (input) {
+          input.value = '';
+          input.focus();
+        }
+      }
+    }
+
+    function showDashboard() {
+      // Show dashboard content
+      const dashboardContent = document.getElementById('dashboardContent');
+      if (dashboardContent) {
+        dashboardContent.style.display = 'block';
+      }
+      document.body.style.display = 'block';
+    }
+
+    function logout() {
+      sessionStorage.removeItem('admin_authenticated');
+      isAuthenticated = false;
+      location.reload();
+    }
+
+    let allLogs = [];
+    let filteredLogs = [];
+
+    function loadLogs() {
+      try {
+        const stored = localStorage.getItem('securityLog');
+        allLogs = stored ? JSON.parse(stored) : [];
+        
+        // Also get in-memory logs if available
+        if (typeof window.getSecurityLog === 'function') {
+          const memoryLogs = window.getSecurityLog();
+          // Merge and deduplicate
+          const all = [...allLogs, ...memoryLogs];
+          const seen = new Set();
+          allLogs = all.filter(log => {
+            const key = `${log.type}-${log.timestamp}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          });
+          // Sort by timestamp (newest first)
+          allLogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        }
+        
+        updateStats();
+        filterLogs();
+      } catch (error) {
+        console.error('Error loading logs:', error);
+        document.getElementById('logContainer').innerHTML = 
+          '<div class="empty-state">Error loading logs: ' + error.message + '</div>';
+      }
+    }
+
+    function updateStats() {
+      const total = allLogs.length;
+      const suspicious = allLogs.filter(l => l.type.includes('suspicious')).length;
+      const failed = allLogs.filter(l => l.type.includes('failed') || l.type.includes('invalid')).length;
+      const submissions = allLogs.filter(l => l.type.includes('form_submission')).length;
+
+      document.getElementById('totalEvents').textContent = total;
+      document.getElementById('suspiciousEvents').textContent = suspicious;
+      document.getElementById('failedEvents').textContent = failed;
+      document.getElementById('submissionEvents').textContent = submissions;
+    }
+
+    function filterLogs() {
+      const typeFilter = document.getElementById('filterType').value;
+      const searchTerm = document.getElementById('searchLogs').value.toLowerCase();
+
+      filteredLogs = allLogs.filter(log => {
+        const matchesType = !typeFilter || 
+          (typeFilter === 'suspicious' && log.type.includes('suspicious')) ||
+          (typeFilter === 'failed' && (log.type.includes('failed') || log.type.includes('invalid'))) ||
+          (typeFilter === 'form_submission' && log.type.includes('form_submission')) ||
+          (typeFilter === 'data_integrity' && log.type.includes('data_integrity')) ||
+          (typeFilter === 'invalid' && log.type.includes('invalid'));
+        
+        const matchesSearch = !searchTerm || 
+          log.type.toLowerCase().includes(searchTerm) ||
+          (log.details && log.details.toLowerCase().includes(searchTerm));
+
+        return matchesType && matchesSearch;
+      });
+
+      renderLogs();
+    }
+
+    function renderLogs() {
+      const container = document.getElementById('logContainer');
+      
+      if (filteredLogs.length === 0) {
+        container.innerHTML = '<div class="empty-state">No logs found matching your filters.</div>';
+        return;
+      }
+
+      container.innerHTML = filteredLogs.map(log => {
+        const date = new Date(log.timestamp);
+        const timeStr = date.toLocaleString();
+        
+        let className = 'log-entry';
+        let badge = '';
+        
+        if (log.type.includes('suspicious')) {
+          className += ' suspicious';
+          badge = '<span class="badge badge-error">Suspicious</span>';
+        } else if (log.type.includes('failed') || log.type.includes('invalid')) {
+          className += ' failed';
+          badge = '<span class="badge badge-warning">Failed</span>';
+        } else if (log.type.includes('success')) {
+          className += ' success';
+          badge = '<span class="badge badge-success">Success</span>';
+        } else {
+          badge = '<span class="badge badge-info">Info</span>';
+        }
+
+        let details = log.details;
+        if (typeof details === 'string') {
+          try {
+            details = JSON.parse(details);
+            details = JSON.stringify(details, null, 2);
+          } catch (e) {
+            // Already a string
+          }
+        } else {
+          details = JSON.stringify(details, null, 2);
+        }
+
+        return `
+          <div class="${className}">
+            <div class="log-time">${timeStr}${badge}</div>
+            <div class="log-type">${escapeHtml(log.type)}</div>
+            <div class="log-details">${escapeHtml(details)}</div>
+            ${log.url ? `<div style="font-size: 11px; color: #64748b; margin-top: 4px;">URL: ${escapeHtml(log.url)}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function exportLogs() {
+      const dataStr = JSON.stringify(allLogs, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `security-logs-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function clearLogs() {
+      if (confirm('Are you sure you want to clear all security logs? This cannot be undone.')) {
+        localStorage.removeItem('securityLog');
+        allLogs = [];
+        updateStats();
+        filterLogs();
+      }
+    }
+
+    function refreshLogs() {
+      loadLogs();
+    }
+
+    function checkSystemStatus() {
+      const status = [];
+      
+      // Check localStorage availability
+      try {
+        localStorage.setItem('test', 'test');
+        localStorage.removeItem('test');
+        status.push({ name: 'Local Storage', status: 'OK', color: 'success' });
+      } catch (e) {
+        status.push({ name: 'Local Storage', status: 'Error: ' + e.message, color: 'error' });
+      }
+
+      // Check security.js
+      if (typeof window.getSecurityLog === 'function') {
+        status.push({ name: 'Security Module', status: 'Loaded', color: 'success' });
+      } else {
+        status.push({ name: 'Security Module', status: 'Not Loaded', color: 'error' });
+      }
+
+      // Check programs.json
+      fetch('programs.json')
+        .then(res => {
+          if (res.ok) {
+            status.push({ name: 'Programs Data', status: 'Available', color: 'success' });
+          } else {
+            status.push({ name: 'Programs Data', status: 'HTTP ' + res.status, color: 'error' });
+          }
+          renderSystemStatus(status);
+        })
+        .catch(e => {
+          status.push({ name: 'Programs Data', status: 'Error: ' + e.message, color: 'error' });
+          renderSystemStatus(status);
+        });
+
+      renderSystemStatus(status);
+    }
+
+    function renderSystemStatus(status) {
+      const container = document.getElementById('systemStatus');
+      container.innerHTML = status.map(s => `
+        <div class="log-entry">
+          <div class="log-type">
+            ${escapeHtml(s.name)}
+            <span class="badge badge-${s.color}">${escapeHtml(s.status)}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function checkRateLimits() {
+      const rateLimitKeys = ['form_submission'];
+      const container = document.getElementById('rateLimitStatus');
+      
+      const status = rateLimitKeys.map(key => {
+        const stored = localStorage.getItem(`rateLimit_${key}`);
+        if (!stored) {
+          return { name: key, status: 'No limits active', color: 'success' };
+        }
+        
+        try {
+          const record = JSON.parse(stored);
+          const now = Date.now();
+          const windowMs = 3600000; // 1 hour
+          const recentAttempts = record.attempts.filter(t => now - t < windowMs);
+          
+          return {
+            name: key,
+            status: `${recentAttempts.length} attempts in last hour`,
+            color: recentAttempts.length >= 3 ? 'warning' : 'success'
+          };
+        } catch (e) {
+          return { name: key, status: 'Error reading', color: 'error' };
+        }
+      });
+
+      container.innerHTML = status.map(s => `
+        <div class="log-entry">
+          <div class="log-type">
+            ${escapeHtml(s.name)}
+            <span class="badge badge-${s.color}">${escapeHtml(s.status)}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Initialize - check authentication first
+    checkAuth();
+    
+    // Only load dashboard if authenticated
+    if (isAuthenticated) {
+      loadLogs();
+      checkSystemStatus();
+      checkRateLimits();
+      
+      // Auto-refresh every 30 seconds
+      setInterval(() => {
+        loadLogs();
+        checkRateLimits();
+      }, 30000);
+    }
+  </script>
+</body>
+</html>
+
