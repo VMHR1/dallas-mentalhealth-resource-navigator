@@ -163,14 +163,34 @@ function checkRateLimit(key, maxAttempts = 3, windowMs = 3600000) {
   if (record.attempts.length >= maxAttempts) {
     const oldestAttempt = Math.min(...record.attempts);
     const waitTime = Math.ceil((windowMs - (now - oldestAttempt)) / 1000 / 60);
-    return { allowed: false, waitMinutes: waitTime };
+    const waitSeconds = Math.ceil((windowMs - (now - oldestAttempt)) / 1000);
+    
+    // Show user-friendly message
+    if (typeof window.showToast === 'function') {
+      const message = waitTime < 1 
+        ? `Please wait ${waitSeconds} seconds before trying again.`
+        : `Please wait ${waitTime} minute${waitTime > 1 ? 's' : ''} before trying again.`;
+      window.showToast(message, 'error');
+    }
+    
+    return { 
+      allowed: false, 
+      waitMinutes: waitTime,
+      waitSeconds: waitSeconds,
+      remainingAttempts: 0
+    };
   }
   
   // Record this attempt
   record.attempts.push(now);
   localStorage.setItem(storageKey, JSON.stringify(record));
   
-  return { allowed: true };
+  const remainingAttempts = maxAttempts - record.attempts.length;
+  
+  return { 
+    allowed: true,
+    remainingAttempts: remainingAttempts
+  };
 }
 
 // ========== Security Event Logging ==========

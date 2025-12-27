@@ -51,11 +51,31 @@ async function saveEncryptedData(key, data) {
 let favorites = new Set();
 let recentSearches = [];
 let callHistory = [];
+let customLists = {}; // { listName: Set<programIds> }
+let programNotes = {}; // { programId: note }
+let programTags = {}; // { programId: [tags] }
+let userPreferences = {
+  defaultSort: 'relevance',
+  defaultView: 'grid',
+  showCrisisByDefault: false,
+  itemsPerPage: 20
+};
 
 async function initializeEncryptedStorage() {
   favorites = new Set(await loadEncryptedData('favorites', []));
   recentSearches = await loadEncryptedData('recentSearches', []);
   callHistory = await loadEncryptedData('callHistory', []);
+  customLists = await loadEncryptedData('customLists', {});
+  programNotes = await loadEncryptedData('programNotes', {});
+  programTags = await loadEncryptedData('programTags', {});
+  const prefs = await loadEncryptedData('userPreferences', {});
+  userPreferences = { ...userPreferences, ...prefs };
+  
+  // Apply preferences
+  if (userPreferences.defaultSort && els.sortSelect) {
+    currentSort = userPreferences.defaultSort;
+    els.sortSelect.value = currentSort;
+  }
 }
 
 // Initialize on load
@@ -103,21 +123,105 @@ const els = {
   insurance: document.getElementById("insurance"),
   viewComparison: document.getElementById("viewComparison"),
   comparisonModal: document.getElementById("comparisonModal"),
-  comparisonList: document.getElementById("comparisonList")
+  comparisonList: document.getElementById("comparisonList"),
+  helpModal: document.getElementById("helpModal"),
+  shareFilters: document.getElementById("shareFilters")
 };
+
+// ========== Fuzzy Search Utilities ==========
+function levenshteinDistance(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
+  const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+  
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1];
+      } else {
+        dp[i][j] = Math.min(
+          dp[i - 1][j] + 1,     // deletion
+          dp[i][j - 1] + 1,     // insertion
+          dp[i - 1][j - 1] + 1  // substitution
+        );
+      }
+    }
+  }
+  return dp[m][n];
+}
+
+function fuzzyMatch(query, text, threshold = 0.7) {
+  if (!query || !text) return false;
+  const q = query.toLowerCase();
+  const t = text.toLowerCase();
+  
+  // Exact match
+  if (t.includes(q)) return true;
+  
+  // Fuzzy match for shorter queries
+  if (q.length <= 3) {
+    const distance = levenshteinDistance(q, t.substring(0, q.length + 2));
+    return distance <= 1;
+  }
+  
+  // For longer queries, check if query is similar to any substring
+  const maxDistance = Math.floor(q.length * (1 - threshold));
+  for (let i = 0; i <= t.length - q.length; i++) {
+    const substring = t.substring(i, i + q.length + maxDistance);
+    const distance = levenshteinDistance(q, substring.substring(0, q.length));
+    if (distance <= maxDistance) return true;
+  }
+  
+  return false;
+}
+
+function findBestCityMatch(query, cities) {
+  const q = query.toLowerCase().trim();
+  if (!q) return null;
+  
+  // Exact match first
+  for (const city of cities) {
+    const cityLower = city.toLowerCase();
+    if (cityLower === q || cityLower.includes(q) || q.includes(cityLower)) {
+      return city;
+    }
+  }
+  
+  // Fuzzy match
+  let bestMatch = null;
+  let bestScore = Infinity;
+  
+  for (const city of cities) {
+    const cityLower = city.toLowerCase();
+    const distance = levenshteinDistance(q, cityLower);
+    const maxLen = Math.max(q.length, cityLower.length);
+    const similarity = 1 - (distance / maxLen);
+    
+    if (similarity >= 0.6 && distance < bestScore) {
+      bestScore = distance;
+      bestMatch = city;
+    }
+  }
+  
+  return bestMatch;
+}
 
 // ========== Smart Search Parser ==========
 function parseSmartSearch(query) {
   const q = query.toLowerCase();
   const filters = {
     loc: '',
+    locs: [], // Multi-location support
     age: '',
     minAge: null, // For "13 and up" type searches
     care: '',
     showCrisis: false
   };
   
-  // Location detection - handle both "desoto" and "de soto"
+  // Location detection - handle both "desoto" and "de soto" and multi-location
   const cities = [
     'dallas', 'plano', 'frisco', 'mckinney', 'richardson', 'denton', 
     'arlington', 'fort worth', 'mansfield', 'keller', 'desoto', 'de soto',
@@ -126,17 +230,52 @@ function parseSmartSearch(query) {
     'mesquite', 'irving', 'grand prairie', 'corsicana'
   ];
   
-  // Check for city matches (prioritize longer matches first)
-  const sortedCities = cities.sort((a, b) => b.length - a.length);
-  for (const city of sortedCities) {
-    if(q.includes(city)) {
-      // Normalize city name - handle "de soto" -> "De Soto", "desoto" -> "De Soto"
-      if (city === 'desoto' || city === 'de soto') {
-        filters.loc = 'De Soto';
-      } else {
-        filters.loc = city.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  // Check for multi-location patterns: "Dallas or Plano", "Dallas, Plano", "Dallas/Plano"
+  const multiLocationPatterns = [
+    /\b([a-z\s]+)\s+(?:or|,|and|\/)\s+([a-z\s]+)\b/i,
+    /\b([a-z\s]+)\s*,\s*([a-z\s]+)\b/i
+  ];
+  
+  let foundMultiLocation = false;
+  for (const pattern of multiLocationPatterns) {
+    const match = q.match(pattern);
+    if (match) {
+      const city1 = findBestCityMatch(match[1].trim(), cities);
+      const city2 = findBestCityMatch(match[2].trim(), cities);
+      if (city1 && city2) {
+        filters.locs = [city1, city2];
+        foundMultiLocation = true;
+        break;
       }
-      break; // Use first (longest) match
+    }
+  }
+  
+  // Single location detection if no multi-location found
+  if (!foundMultiLocation) {
+    // Check for city matches (prioritize longer matches first)
+    const sortedCities = cities.sort((a, b) => b.length - a.length);
+    for (const city of sortedCities) {
+      if(q.includes(city)) {
+        // Normalize city name - handle "de soto" -> "De Soto", "desoto" -> "De Soto"
+        if (city === 'desoto' || city === 'de soto') {
+          filters.loc = 'De Soto';
+        } else {
+          filters.loc = city.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+        break; // Use first (longest) match
+      }
+    }
+    
+    // Try fuzzy matching if no exact match
+    if (!filters.loc) {
+      const fuzzyMatch = findBestCityMatch(q, cities);
+      if (fuzzyMatch) {
+        if (fuzzyMatch === 'desoto' || fuzzyMatch === 'de soto') {
+          filters.loc = 'De Soto';
+        } else {
+          filters.loc = fuzzyMatch.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+      }
     }
   }
   
@@ -544,24 +683,48 @@ function matchesFilters(p){
         (p.notes || "")
       ].map(safeStr).join(" ").toLowerCase();
       
-      // Check if all remaining search terms appear
+      // Check if all remaining search terms appear (with fuzzy matching for typos)
       const terms = searchTerms.split(/\s+/).filter(t => t.length > 0);
-      if (terms.length > 0 && !terms.every(term => hay.includes(term))) {
-        return false;
+      if (terms.length > 0) {
+        // Try exact match first, then fuzzy match
+        const allMatch = terms.every(term => {
+          if (hay.includes(term)) return true;
+          // Fuzzy match for terms longer than 3 characters
+          if (term.length > 3) {
+            return fuzzyMatch(term, hay, 0.7);
+          }
+          return false;
+        });
+        if (!allMatch) return false;
       }
     }
   }
 
-  // Location filter - use parsed location or dropdown value
-  const locationToCheck = parsed.loc ? parsed.loc.toLowerCase() : loc;
-  if (locationToCheck) {
-    const cities = (p.locations || []).map(l => safeStr(l.city).toLowerCase());
-    // Handle "De Soto" matching both "De Soto" and "Desoto"
-    const normalizedLocation = locationToCheck.replace(/\s+/g, ' ').trim();
-    if (normalizedLocation === 'de soto') {
-      if (!cities.some(c => c === 'de soto' || c === 'desoto')) return false;
-    } else {
-      if (!cities.some(c => c === normalizedLocation)) return false;
+  // Location filter - use parsed location or dropdown value, support multi-location
+  if (parsed.locs && parsed.locs.length > 0) {
+    // Multi-location search: program must serve at least one of the specified locations
+    const programCities = (p.locations || []).map(l => safeStr(l.city).toLowerCase());
+    const searchCities = parsed.locs.map(loc => loc.toLowerCase());
+    const matches = searchCities.some(searchCity => {
+      if (searchCity === 'de soto') {
+        return programCities.some(c => c === 'de soto' || c === 'desoto');
+      }
+      return programCities.some(c => c === searchCity || fuzzyMatch(searchCity, c, 0.8));
+    });
+    if (!matches) return false;
+  } else {
+    const locationToCheck = parsed.loc ? parsed.loc.toLowerCase() : loc;
+    if (locationToCheck) {
+      const cities = (p.locations || []).map(l => safeStr(l.city).toLowerCase());
+      // Handle "De Soto" matching both "De Soto" and "Desoto"
+      const normalizedLocation = locationToCheck.replace(/\s+/g, ' ').trim();
+      if (normalizedLocation === 'de soto') {
+        if (!cities.some(c => c === 'de soto' || c === 'desoto')) return false;
+      } else {
+        // Use fuzzy matching for location
+        const matches = cities.some(c => c === normalizedLocation || fuzzyMatch(normalizedLocation, c, 0.8));
+        if (!matches) return false;
+      }
     }
   }
 
@@ -855,6 +1018,7 @@ function createCard(p, idx){
       </div>
 
       <div class="actions">
+        <a class="linkBtn" href="program.html?id=${escapeHtml(safeStr(p.program_id))}" style="margin-right: 8px;">View Details</a>
         ${tel ? `<a class="linkBtn ${crisis ? "danger" : "primary"}" href="tel:${escapeHtml(tel)}" data-program-id="${escapeHtml(id)}">Call Now</a>` : ``}
         ${maps ? `<a class="linkBtn" href="${escapeHtml(maps)}" target="_blank" rel="noopener">Directions</a>` : ``}
         ${(!tel && !maps) ? `<span style="color:var(--muted);font-size:13px;font-weight:700;">No quick actions available for this listing.</span>` : ``}
@@ -878,15 +1042,20 @@ function renderSkeletons(){
   els.totalCount.textContent = "…";
 }
 
-function announceToScreenReader(message) {
+function announceToScreenReader(message, priority = 'polite') {
   const announcer = document.createElement('div');
   announcer.setAttribute('role', 'status');
-  announcer.setAttribute('aria-live', 'polite');
+  announcer.setAttribute('aria-live', priority);
+  announcer.setAttribute('aria-atomic', 'true');
   announcer.className = 'sr-only';
   announcer.textContent = message;
   document.body.appendChild(announcer);
   
-  setTimeout(() => document.body.removeChild(announcer), 3000);
+  setTimeout(() => {
+    if (announcer.parentNode) {
+      document.body.removeChild(announcer);
+    }
+  }, priority === 'assertive' ? 5000 : 3000);
 }
 
 function updateStats() {
@@ -1062,13 +1231,89 @@ function isFavorite(programId) {
   return favorites.has(programId);
 }
 
+async function saveProgramNote(programId, note) {
+  if (!note || note.trim() === '') {
+    delete programNotes[programId];
+  } else {
+    programNotes[programId] = typeof window.sanitizeText === 'function' 
+      ? window.sanitizeText(note, 500)
+      : note.substring(0, 500);
+  }
+  await saveEncryptedData('programNotes', programNotes);
+}
+
+function getProgramNote(programId) {
+  return programNotes[programId] || '';
+}
+
+async function addProgramTag(programId, tag) {
+  if (!programTags[programId]) {
+    programTags[programId] = [];
+  }
+  const sanitizedTag = typeof window.sanitizeText === 'function'
+    ? window.sanitizeText(tag, 50)
+    : tag.substring(0, 50);
+  if (!programTags[programId].includes(sanitizedTag) && sanitizedTag.trim()) {
+    programTags[programId].push(sanitizedTag);
+    await saveEncryptedData('programTags', programTags);
+  }
+}
+
+async function removeProgramTag(programId, tag) {
+  if (programTags[programId]) {
+    programTags[programId] = programTags[programId].filter(t => t !== tag);
+    if (programTags[programId].length === 0) {
+      delete programTags[programId];
+    }
+    await saveEncryptedData('programTags', programTags);
+  }
+}
+
+function getProgramTags(programId) {
+  return programTags[programId] || [];
+}
+
+async function createCustomList(listName) {
+  const sanitizedName = typeof window.sanitizeText === 'function'
+    ? window.sanitizeText(listName, 50)
+    : listName.substring(0, 50);
+  if (sanitizedName.trim() && !customLists[sanitizedName]) {
+    customLists[sanitizedName] = [];
+    await saveEncryptedData('customLists', customLists);
+    return sanitizedName;
+  }
+  return null;
+}
+
+async function addToCustomList(listName, programId) {
+  if (customLists[listName] && !customLists[listName].includes(programId)) {
+    customLists[listName].push(programId);
+    await saveEncryptedData('customLists', customLists);
+  }
+}
+
+async function removeFromCustomList(listName, programId) {
+  if (customLists[listName]) {
+    customLists[listName] = customLists[listName].filter(id => id !== programId);
+    await saveEncryptedData('customLists', customLists);
+  }
+}
+
+function isInCustomList(listName, programId) {
+  return customLists[listName] && customLists[listName].includes(programId);
+}
+
 function showToast(message, type = 'success') {
+  if (!els.toast) return;
   els.toast.textContent = message;
   els.toast.className = `toast ${type} show`;
   setTimeout(() => {
     els.toast.classList.remove('show');
-  }, 3000);
+  }, type === 'error' ? 5000 : 3000);
 }
+
+// Make showToast globally available for security.js
+window.showToast = showToast;
 
 function showModal(modalEl) {
   modalEl.setAttribute('aria-hidden', 'false');
@@ -1133,17 +1378,132 @@ function shareProgram(programId) {
   const pathname = window.location.pathname.split('?')[0];
   const url = `${window.location.origin}${pathname}?program=${encodeURIComponent(sanitizedId)}`;
   
-  if (navigator.share) {
-    navigator.share({
-      title: `${safeStr(program.program_name)} - ${safeStr(program.organization)}`,
-      url: url
-    }).catch(() => {
-      copyToClipboard(url);
+  // Show share options modal
+  showShareModal(url, `${safeStr(program.program_name)} - ${safeStr(program.organization)}`);
+}
+
+function shareCurrentFilters() {
+  updateURLState();
+  const url = window.location.href;
+  showShareModal(url, 'Current search filters');
+}
+
+function showShareModal(url, title) {
+  // Create or update share modal
+  let modal = document.getElementById('shareModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'shareModal';
+    modal.className = 'modal';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-labelledby', 'shareModalTitle');
+    modal.setAttribute('aria-hidden', 'true');
+    modal.innerHTML = `
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="shareModalTitle">Share</h2>
+          <button type="button" class="modal-close" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="modal-body" id="shareModalBody"></div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    
+    // Close handlers
+    modal.querySelectorAll('.modal-close').forEach(btn => {
+      btn.addEventListener('click', () => hideModal(modal));
     });
-  } else {
-    copyToClipboard(url);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) hideModal(modal);
+    });
+  }
+  
+  const body = document.getElementById('shareModalBody');
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+  
+  body.innerHTML = `
+    <div style="text-align: center;">
+      <p style="margin-bottom: 20px; color: var(--muted);">${escapeHtml(title)}</p>
+      <div style="margin: 20px 0;">
+        <img src="${qrCodeUrl}" alt="QR Code" style="border: 1px solid var(--stroke); border-radius: 8px; padding: 8px; background: white;" />
+      </div>
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <input type="text" id="shareUrlInput" value="${escapeHtml(url)}" readonly style="flex: 1; padding: 10px; border: 1px solid var(--stroke); border-radius: 8px; font-size: 13px;" />
+        <button type="button" class="btn-primary" onclick="copyShareUrl()" style="white-space: nowrap;">Copy Link</button>
+      </div>
+      ${navigator.share ? `
+        <button type="button" class="btn-primary" onclick="nativeShare('${escapeHtml(url)}', '${escapeHtml(title)}')" style="width: 100%; margin-top: 12px;">
+          Share via...
+        </button>
+      ` : ''}
+    </div>
+  `;
+  
+  showModal(modal);
+}
+
+function copyShareUrl() {
+  const input = document.getElementById('shareUrlInput');
+  if (input) {
+    input.select();
+    document.execCommand('copy');
+    showToast('Link copied to clipboard', 'success');
   }
 }
+
+function nativeShare(url, title) {
+  if (navigator.share) {
+    navigator.share({
+      title: title,
+      url: url
+    }).catch(() => {
+      copyShareUrl();
+    });
+  }
+}
+
+function applyFilterPreset(preset) {
+  // Clear current filters
+  els.q.value = "";
+  els.loc.value = "";
+  els.age.value = "";
+  if (window.__ageDropdownSync) window.__ageDropdownSync();
+  els.care.value = "";
+  if (els.insurance) els.insurance.value = "";
+  els.onlyVirtual.checked = false;
+  els.showCrisis.checked = false;
+  
+  switch(preset) {
+    case 'teens-dallas':
+      els.loc.value = 'Dallas';
+      els.age.value = '13';
+      if (window.__ageDropdownSync) window.__ageDropdownSync();
+      break;
+    case 'crisis-support':
+      els.showCrisis.checked = true;
+      els.q.value = 'crisis support';
+      break;
+    case 'virtual-therapy':
+      els.onlyVirtual.checked = true;
+      els.q.value = 'virtual therapy';
+      break;
+    case 'iop-plano':
+      els.loc.value = 'Plano';
+      els.care.value = 'Intensive Outpatient (IOP)';
+      break;
+  }
+  
+  syncTopToggles();
+  render();
+  updateURLState();
+  
+  const t = document.getElementById("treatmentSection");
+  if (t) window.scrollTo({ top: t.offsetTop - 10, behavior: "smooth" });
+}
+
+// Make functions globally available for onclick handlers
+window.copyShareUrl = copyShareUrl;
+window.nativeShare = nativeShare;
 
 function copyToClipboard(text) {
   if (navigator.clipboard) {
@@ -1309,6 +1669,56 @@ function renderCallHistory() {
   }).join('');
 }
 
+// Progressive loading state
+let progressiveLoadState = {
+  allItems: [],
+  displayedCount: 20,
+  isLoading: false
+};
+
+function renderProgressive(activeList, isCrisisList = false) {
+  if (!els.treatmentGrid) return;
+  
+  const toDisplay = activeList.slice(0, progressiveLoadState.displayedCount);
+  els.treatmentGrid.innerHTML = "";
+  
+  toDisplay.forEach((p, idx) => {
+    const realIdx = isCrisisList ? (idx + 10000) : idx;
+    const card = createCard(p, realIdx);
+    card.style.animationDelay = `${Math.min(idx, 18) * 18}ms`;
+    els.treatmentGrid.appendChild(card);
+  });
+  
+  // Setup event delegation for newly rendered cards
+  setupCardEventDelegation(els.treatmentGrid);
+  
+  // Show "Load More" button if there are more items
+  const loadMoreBtn = document.getElementById('loadMoreBtn');
+  if (activeList.length > progressiveLoadState.displayedCount) {
+    if (!loadMoreBtn) {
+      const btn = document.createElement('button');
+      btn.id = 'loadMoreBtn';
+      btn.className = 'btn-primary';
+      btn.textContent = `Load More (${activeList.length - progressiveLoadState.displayedCount} remaining)`;
+      btn.style.margin = '20px auto';
+      btn.style.display = 'block';
+      btn.addEventListener('click', () => {
+        progressiveLoadState.displayedCount = Math.min(
+          progressiveLoadState.displayedCount + 20,
+          activeList.length
+        );
+        renderProgressive(activeList);
+      });
+      els.treatmentGrid.parentElement.appendChild(btn);
+    } else {
+      loadMoreBtn.textContent = `Load More (${activeList.length - progressiveLoadState.displayedCount} remaining)`;
+      loadMoreBtn.style.display = 'block';
+    }
+  } else if (loadMoreBtn) {
+    loadMoreBtn.style.display = 'none';
+  }
+}
+
 function render(){
   if (!ready) return;
 
@@ -1324,6 +1734,10 @@ function render(){
 
   // Apply sorting
   activeList = sortPrograms(activeList);
+  
+  // Store for progressive loading
+  progressiveLoadState.allItems = activeList;
+  progressiveLoadState.displayedCount = Math.min(20, activeList.length);
 
   if (openId){
     const stillExists = activeList.some((p, idx) => stableIdFor(p, idx) === openId);
@@ -1334,14 +1748,25 @@ function render(){
   if (els.resultsLabel) els.resultsLabel.textContent = showCrisis ? "crisis matches" : "treatment matches";
   if (els.totalCount) els.totalCount.textContent = String(activeList.length);
 
-  if (els.treatmentGrid) {
-    els.treatmentGrid.innerHTML = "";
-    activeList.forEach((p, idx) => {
-      const realIdx = showCrisis ? (idx + 10000) : idx;
-      const card = createCard(p, realIdx);
-      card.style.animationDelay = `${Math.min(idx, 18) * 18}ms`;
-      els.treatmentGrid.appendChild(card);
-    });
+  // Use progressive loading for large result sets
+  if (activeList.length > 20) {
+    renderProgressive(activeList, showCrisis);
+  } else {
+    // Small result sets - render all at once
+    if (els.treatmentGrid) {
+      els.treatmentGrid.innerHTML = "";
+      activeList.forEach((p, idx) => {
+        const realIdx = showCrisis ? (idx + 10000) : idx;
+        const card = createCard(p, realIdx);
+        card.style.animationDelay = `${Math.min(idx, 18) * 18}ms`;
+        els.treatmentGrid.appendChild(card);
+      });
+      setupCardEventDelegation(els.treatmentGrid);
+    }
+    
+    // Remove load more button if it exists
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    if (loadMoreBtn) loadMoreBtn.style.display = 'none';
   }
 
   if (els.treatmentCount) els.treatmentCount.textContent = `${activeList.length} result${activeList.length===1?"":"s"}`;
@@ -1350,13 +1775,221 @@ function render(){
     els.treatmentEmpty.style.display = activeList.length ? "none" : "block";
   }
 
-  announceToScreenReader(`${activeList.length} programs found`);
+  const count = activeList.length;
+  const label = showCrisis ? "crisis resources" : "treatment programs";
+  announceToScreenReader(`${count} ${label} found${count === 0 ? '. Try adjusting your filters.' : ''}`);
   updateComparisonCount();
 }
 
 function syncTopToggles(){
   els.showCrisisTop.checked = els.showCrisis.checked;
   els.onlyVirtualTop.checked = els.onlyVirtual.checked;
+}
+
+// ========== Autocomplete ==========
+let autocompleteSuggestions = [];
+let autocompleteSelectedIndex = -1;
+let autocompleteVisible = false;
+
+function generateAutocompleteSuggestions(query) {
+  if (!query || query.length < 2) return [];
+  
+  const q = query.toLowerCase().trim();
+  const suggestions = [];
+  const seen = new Set();
+  
+  // Popular searches
+  const popularSearches = [
+    'IOP in Dallas',
+    'PHP for teens',
+    'crisis support',
+    'virtual therapy',
+    'Plano mental health',
+    'adolescent treatment',
+    'family therapy'
+  ];
+  
+  popularSearches.forEach(search => {
+    if (search.toLowerCase().includes(q) && !seen.has(search)) {
+      suggestions.push({ type: 'popular', text: search });
+      seen.add(search);
+    }
+  });
+  
+  // Recent searches
+  recentSearches.forEach(search => {
+    if (search.toLowerCase().includes(q) && !seen.has(search)) {
+      suggestions.push({ type: 'recent', text: search });
+      seen.add(search);
+    }
+  });
+  
+  // Program names and organizations
+  if (ready && programs.length > 0) {
+    programs.slice(0, 50).forEach(p => {
+      const programName = safeStr(p.program_name);
+      const orgName = safeStr(p.organization);
+      
+      if (programName && fuzzyMatch(q, programName, 0.6) && !seen.has(programName)) {
+        suggestions.push({ type: 'program', text: programName, program: p });
+        seen.add(programName);
+      }
+      if (orgName && fuzzyMatch(q, orgName, 0.6) && !seen.has(orgName) && orgName !== programName) {
+        suggestions.push({ type: 'organization', text: orgName });
+        seen.add(orgName);
+      }
+    });
+  }
+  
+  // City suggestions
+  const cities = ['Dallas', 'Plano', 'Frisco', 'McKinney', 'Richardson', 'Denton', 
+    'Arlington', 'Fort Worth', 'Mansfield', 'Keller', 'De Soto', 'Rockwall'];
+  
+  cities.forEach(city => {
+    if (fuzzyMatch(q, city.toLowerCase(), 0.7) && !seen.has(city)) {
+      suggestions.push({ type: 'location', text: `${city} programs` });
+      seen.add(city);
+    }
+  });
+  
+  return suggestions.slice(0, 8); // Limit to 8 suggestions
+}
+
+function renderAutocomplete(suggestions) {
+  const container = document.getElementById('search-suggestions');
+  const input = els.q;
+  
+  if (!container || !input) return;
+  
+  if (suggestions.length === 0) {
+    container.style.display = 'none';
+    input.setAttribute('aria-expanded', 'false');
+    autocompleteVisible = false;
+    return;
+  }
+  
+  autocompleteSuggestions = suggestions;
+  autocompleteSelectedIndex = -1;
+  autocompleteVisible = true;
+  input.setAttribute('aria-expanded', 'true');
+  
+  const html = suggestions.map((suggestion, index) => {
+    const icon = suggestion.type === 'popular' ? '🔥' : 
+                 suggestion.type === 'recent' ? '🕒' :
+                 suggestion.type === 'program' ? '🏥' :
+                 suggestion.type === 'organization' ? '🏢' : '📍';
+    return `
+      <div class="suggestion-item" role="option" data-index="${index}" aria-selected="false">
+        <span class="suggestion-icon">${icon}</span>
+        <span class="suggestion-text">${escapeHtml(suggestion.text)}</span>
+      </div>
+    `;
+  }).join('');
+  
+  container.innerHTML = html;
+  container.style.display = 'block';
+  
+  // Add click handlers
+  container.querySelectorAll('.suggestion-item').forEach((item, index) => {
+    item.addEventListener('click', () => {
+      selectSuggestion(index);
+    });
+    item.addEventListener('mouseenter', () => {
+      setSelectedSuggestion(index);
+    });
+  });
+}
+
+function setSelectedSuggestion(index) {
+  const container = document.getElementById('search-suggestions');
+  if (!container) return;
+  
+  const items = container.querySelectorAll('.suggestion-item');
+  items.forEach((item, i) => {
+    const isSelected = i === index;
+    item.classList.toggle('selected', isSelected);
+    item.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+  });
+  
+  autocompleteSelectedIndex = index;
+}
+
+function selectSuggestion(index) {
+  if (index < 0 || index >= autocompleteSuggestions.length) return;
+  
+  const suggestion = autocompleteSuggestions[index];
+  els.q.value = suggestion.text;
+  
+  // Hide autocomplete
+  const container = document.getElementById('search-suggestions');
+  if (container) {
+    container.style.display = 'none';
+  }
+  els.q.setAttribute('aria-expanded', 'false');
+  autocompleteVisible = false;
+  
+  // Trigger search
+  if (scheduleRenderFn) {
+    scheduleRenderFn();
+  } else {
+    render();
+  }
+  
+  // Scroll to results
+  const t = document.getElementById("treatmentSection");
+  if (t) window.scrollTo({ top: t.offsetTop - 10, behavior: "smooth" });
+}
+
+function hideAutocomplete() {
+  const container = document.getElementById('search-suggestions');
+  if (container) {
+    container.style.display = 'none';
+  }
+  if (els.q) {
+    els.q.setAttribute('aria-expanded', 'false');
+  }
+  autocompleteVisible = false;
+  autocompleteSelectedIndex = -1;
+}
+
+// ========== Mobile Swipe Gestures ==========
+function initSwipeGestures() {
+  if (!els.treatmentGrid) return;
+  
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchEndX = 0;
+  let touchEndY = 0;
+  const minSwipeDistance = 50;
+  
+  els.treatmentGrid.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  }, { passive: true });
+  
+  els.treatmentGrid.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    
+    // Only handle horizontal swipes if they're more horizontal than vertical
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+      const cards = Array.from(els.treatmentGrid.querySelectorAll('.card[data-open="true"]'));
+      if (cards.length > 0) {
+        // Swipe left to close, swipe right to open previous
+        if (deltaX < 0) {
+          // Swipe left - close current card
+          const currentCard = cards[0];
+          if (currentCard) {
+            const id = currentCard.dataset.id;
+            toggleOpen(id);
+          }
+        }
+      }
+    }
+  }, { passive: true });
 }
 
 function bind(){
@@ -1372,24 +2005,81 @@ function bind(){
       raf = null;
       openId = null;
       render();
+      updateURLState(); // Update URL after rendering
     });
   }
   
   // Make scheduleRender accessible globally
   scheduleRenderFn = scheduleRender;
 
-  // Debounced search
+  // Debounced search with autocomplete
   let searchDebounce = null;
-  on(els.q, "input", () => {
+  let autocompleteDebounce = null;
+  
+  on(els.q, "input", (e) => {
+    const query = els.q.value;
+    
+    // Show autocomplete
+    if (autocompleteDebounce) clearTimeout(autocompleteDebounce);
+    autocompleteDebounce = setTimeout(() => {
+      if (ready) {
+        const suggestions = generateAutocompleteSuggestions(query);
+        renderAutocomplete(suggestions);
+      }
+    }, 150);
+    
+    // Debounced search
     if (searchDebounce) clearTimeout(searchDebounce);
     searchDebounce = setTimeout(() => {
-      addRecentSearch(els.q.value);
+      addRecentSearch(query);
       scheduleRender();
     }, 300);
   });
+  
   on(els.q, "change", () => {
+    hideAutocomplete();
     addRecentSearch(els.q.value);
     scheduleRender();
+  });
+  
+  // Keyboard navigation for autocomplete
+  on(els.q, "keydown", (e) => {
+    if (!autocompleteVisible || autocompleteSuggestions.length === 0) {
+      // Allow '/' to focus search
+      if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        els.q.focus();
+      }
+      return;
+    }
+    
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      const nextIndex = autocompleteSelectedIndex < autocompleteSuggestions.length - 1 
+        ? autocompleteSelectedIndex + 1 
+        : 0;
+      setSelectedSuggestion(nextIndex);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      const prevIndex = autocompleteSelectedIndex > 0 
+        ? autocompleteSelectedIndex - 1 
+        : autocompleteSuggestions.length - 1;
+      setSelectedSuggestion(prevIndex);
+    } else if (e.key === "Enter" && autocompleteSelectedIndex >= 0) {
+      e.preventDefault();
+      selectSuggestion(autocompleteSelectedIndex);
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      hideAutocomplete();
+    }
+  });
+  
+  // Hide autocomplete when clicking outside
+  document.addEventListener("click", (e) => {
+    const container = document.getElementById('search-suggestions');
+    if (container && !container.contains(e.target) && e.target !== els.q) {
+      hideAutocomplete();
+    }
   });
   
   on(els.loc, "change", scheduleRender);
@@ -1403,6 +2093,15 @@ function bind(){
   on(els.sortSelect, "change", (e) => {
     currentSort = e.target.value;
     scheduleRender();
+    updateURLState();
+  });
+  
+  // Handle browser back/forward buttons
+  window.addEventListener('popstate', (e) => {
+    if (ready) {
+      loadURLState();
+      render();
+    }
   });
 
   on(els.showCrisisTop, "change", () => {
@@ -1491,18 +2190,47 @@ function bind(){
   });
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && openId){
-      const cur = document.querySelector(`.card[data-id="${CSS.escape(openId)}"]`);
-      if (cur) setCardOpen(cur, false);
-      openId = null;
+    // Don't trigger shortcuts when typing in inputs
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+      // Allow Escape to work in inputs
+      if (e.key === "Escape") {
+        if (autocompleteVisible) {
+          hideAutocomplete();
+          e.preventDefault();
+        }
+      }
+      return;
     }
-    // Close modals with Escape
-    if (e.key === "Escape") {
-      if (els.favoritesModal.getAttribute('aria-hidden') === 'false') {
+    
+    // Keyboard shortcuts
+    if (e.key === "/" && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault();
+      els.q.focus();
+      els.q.select();
+    } else if (e.key === "?" && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault();
+      if (els.helpModal) {
+        showModal(els.helpModal);
+      }
+    } else if (e.key === "Escape") {
+      // Close expanded cards
+      if (openId) {
+        const cur = document.querySelector(`.card[data-id="${CSS.escape(openId)}"]`);
+        if (cur) setCardOpen(cur, false);
+        openId = null;
+      }
+      // Close modals
+      if (els.favoritesModal && els.favoritesModal.getAttribute('aria-hidden') === 'false') {
         hideModal(els.favoritesModal);
       }
-      if (els.historyModal.getAttribute('aria-hidden') === 'false') {
+      if (els.historyModal && els.historyModal.getAttribute('aria-hidden') === 'false') {
         hideModal(els.historyModal);
+      }
+      if (els.comparisonModal && els.comparisonModal.getAttribute('aria-hidden') === 'false') {
+        hideModal(els.comparisonModal);
+      }
+      if (els.helpModal && els.helpModal.getAttribute('aria-hidden') === 'false') {
+        hideModal(els.helpModal);
       }
     }
   });
@@ -1523,6 +2251,21 @@ function bind(){
   on(els.viewComparison, "click", () => {
     renderComparison();
     showModal(els.comparisonModal);
+  });
+  
+  // Share filters
+  if (els.shareFilters) {
+    on(els.shareFilters, "click", () => {
+      shareCurrentFilters();
+    });
+  }
+  
+  // Filter presets
+  document.querySelectorAll('.filter-preset-btn').forEach(btn => {
+    on(btn, "click", () => {
+      const preset = btn.dataset.preset;
+      applyFilterPreset(preset);
+    });
   });
 
   // Modal close buttons
@@ -1557,6 +2300,16 @@ function bind(){
   on(els.comparisonModal, "click", (e) => {
     if (e.target === els.comparisonModal) hideModal(els.comparisonModal);
   });
+  
+  // Help modal
+  if (els.helpModal) {
+    els.helpModal.querySelectorAll('.modal-close').forEach(btn => {
+      on(btn, "click", () => hideModal(els.helpModal));
+    });
+    on(els.helpModal, "click", (e) => {
+      if (e.target === els.helpModal) hideModal(els.helpModal);
+    });
+  }
 
   syncTopToggles();
   
@@ -1659,14 +2412,27 @@ function setupPrivacyControls() {
   }
 }
 
-async function loadPrograms(){
+async function loadPrograms(retryCount = 0){
+  const maxRetries = 3;
+  const retryDelay = 1000 * (retryCount + 1); // Exponential backoff
+  
   els.loadWarn.classList.remove("show");
   els.loadWarn.textContent = "";
   renderSkeletons();
 
   try{
-    const res = await fetch("programs.json", { cache:"no-store" });
-    if(!res.ok) throw new Error(`programs.json not found (HTTP ${res.status}). Make sure it is in the repo root next to index.html.`);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    
+    const res = await fetch("programs.json", { 
+      cache:"no-store",
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    
+    if(!res.ok) {
+      throw new Error(`Unable to load programs data (HTTP ${res.status}). Please try refreshing the page.`);
+    }
     const jsonText = await res.text();
     
     // Parse JSON - use validation if available, but always allow fallback
@@ -1695,7 +2461,46 @@ async function loadPrograms(){
     }
     if(!data || !Array.isArray(data.programs)) throw new Error("programs.json loaded but missing a top-level `programs` array.");
     
-    // Validate program structure
+    // Comprehensive data validation
+    if (typeof window.validateProgramsData === 'function') {
+      const validationResults = window.validateProgramsData(data);
+      
+      if (!validationResults.valid) {
+        console.warn('Data validation issues:', {
+          invalid: validationResults.invalidPrograms.length,
+          total: validationResults.totalPrograms,
+          duplicates: validationResults.duplicates.length,
+          stale: validationResults.stalePrograms.length
+        });
+        
+        if (typeof window.logSecurityEvent === 'function') {
+          window.logSecurityEvent('data_validation_issues', {
+            invalid: validationResults.invalidPrograms.length,
+            duplicates: validationResults.duplicates.length,
+            stale: validationResults.stalePrograms.length,
+            missingFields: Object.keys(validationResults.missingFields).length
+          });
+        }
+        
+        // Show warning to user if there are critical issues
+        if (validationResults.invalidPrograms.length > 0) {
+          els.loadWarn.textContent = `Warning: ${validationResults.invalidPrograms.length} program(s) have data quality issues. Some results may be incomplete.`;
+          els.loadWarn.classList.add("show");
+        }
+      }
+      
+      // Check for stale data
+      if (validationResults.stalePrograms.length > 0) {
+        console.info(`${validationResults.stalePrograms.length} programs haven't been verified in 90+ days`);
+      }
+      
+      // Check for duplicates
+      if (validationResults.duplicates.length > 0) {
+        console.warn(`Found ${validationResults.duplicates.length} potential duplicate program(s)`);
+      }
+    }
+    
+    // Legacy validation (keep for backward compatibility)
     if (typeof window.validateProgramStructure === 'function') {
       const invalidPrograms = [];
       data.programs.forEach((p, idx) => {
@@ -1709,34 +2514,43 @@ async function loadPrograms(){
           window.logSecurityEvent('data_integrity_issues', { count: invalidPrograms.length, programs: invalidPrograms.slice(0, 5) });
         }
         console.warn('Some programs failed validation:', invalidPrograms);
-        // Log detailed errors for debugging
-        invalidPrograms.forEach(invalid => {
-          console.warn(`Program ${invalid.programId} (index ${invalid.index}) failed:`, invalid.errors);
-        });
       }
     }
 
-    programs = data.programs.map(p => ({
-      program_id: p.program_id || "",
-      entry_type: p.entry_type || "Treatment Program",
-      organization: p.organization || "",
-      program_name: p.program_name || "",
-      level_of_care: p.level_of_care || "Unknown",
-      service_setting: p.service_setting || "Unknown",
-      ages_served: p.ages_served || "Unknown",
-      locations: Array.isArray(p.locations) ? p.locations : [],
-      phone: p.phone || "",
-      website_url: p.website_url || p.website || "",
-      website_domain: p.website_domain || "",
-      notes: p.notes || "",
-      transportation_available: p.transportation_available || "Unknown",
-      insurance_notes: p.insurance_notes || "Unknown",
-      verification_source: p.verification_source || "",
-      last_verified: p.last_verified || "",
-      accepting_new_patients: p.accepting_new_patients || "Unknown",
-      waitlist_status: p.waitlist_status || "Unknown",
-      accepted_insurance: p.accepted_insurance || null
-    }));
+    // Normalize data while mapping
+    const normalizeCity = typeof window.normalizeCityName === 'function' 
+      ? window.normalizeCityName 
+      : (city) => city;
+    
+    programs = data.programs.map(p => {
+      // Normalize locations
+      const normalizedLocations = Array.isArray(p.locations) ? p.locations.map(loc => ({
+        ...loc,
+        city: loc.city ? normalizeCity(loc.city) : loc.city
+      })) : [];
+      
+      return {
+        program_id: p.program_id || "",
+        entry_type: p.entry_type || "Treatment Program",
+        organization: p.organization || "",
+        program_name: p.program_name || "",
+        level_of_care: p.level_of_care || "Unknown",
+        service_setting: p.service_setting || "Unknown",
+        ages_served: p.ages_served || "Unknown",
+        locations: normalizedLocations,
+        phone: p.phone || "",
+        website_url: p.website_url || p.website || "",
+        website_domain: p.website_domain || "",
+        notes: p.notes || "",
+        transportation_available: p.transportation_available || "Unknown",
+        insurance_notes: p.insurance_notes || "Unknown",
+        verification_source: p.verification_source || "",
+        last_verified: p.last_verified || "",
+        accepting_new_patients: p.accepting_new_patients || "Unknown",
+        waitlist_status: p.waitlist_status || "Unknown",
+        accepted_insurance: p.accepted_insurance || null
+      };
+    });
 
     buildLocationOptions(programs);
     buildInsuranceOptions(programs);
@@ -1746,9 +2560,33 @@ async function loadPrograms(){
     openId = null;
     render();
   }catch(err){
-    console.error(err);
-    els.loadWarn.textContent = `Couldn't load programs.json. ${err.message}`;
+    console.error('Error loading programs:', err);
+    
+    // Retry logic for network errors
+    if (retryCount < maxRetries && (err.name === 'TypeError' || err.name === 'AbortError')) {
+      els.loadWarn.textContent = `Connection issue. Retrying... (${retryCount + 1}/${maxRetries})`;
+      els.loadWarn.classList.add("show");
+      
+      await new Promise(resolve => setTimeout(resolve, retryDelay));
+      return loadPrograms(retryCount + 1);
+    }
+    
+    // User-friendly error messages
+    let errorMessage = "Unable to load program data. ";
+    if (err.name === 'AbortError') {
+      errorMessage += "The request took too long. Please check your connection and try again.";
+    } else if (err.message.includes('HTTP')) {
+      errorMessage += err.message;
+    } else if (err.message.includes('parse')) {
+      errorMessage += "The data file appears to be corrupted. Please contact support.";
+    } else {
+      errorMessage += "Please check your internet connection and try refreshing the page.";
+    }
+    
+    els.loadWarn.textContent = errorMessage;
     els.loadWarn.classList.add("show");
+    announceToScreenReader(errorMessage, 'assertive');
+    
     ready = true;
     programs = [];
     buildLocationOptions(programs);
@@ -1876,10 +2714,109 @@ document.addEventListener('click', (e) => {
   }
 });
 
+// ========== URL State Management ==========
+function updateURLState() {
+  const params = new URLSearchParams();
+  
+  // Add search query
+  if (els.q && els.q.value) {
+    params.set('q', els.q.value);
+  }
+  
+  // Add location
+  if (els.loc && els.loc.value) {
+    params.set('loc', els.loc.value);
+  }
+  
+  // Add age
+  if (els.age && els.age.value) {
+    params.set('age', els.age.value);
+  }
+  
+  // Add level of care
+  if (els.care && els.care.value) {
+    params.set('care', els.care.value);
+  }
+  
+  // Add insurance
+  if (els.insurance && els.insurance.value) {
+    params.set('insurance', els.insurance.value);
+  }
+  
+  // Add toggles
+  if (els.showCrisis && els.showCrisis.checked) {
+    params.set('crisis', '1');
+  }
+  if (els.onlyVirtual && els.onlyVirtual.checked) {
+    params.set('virtual', '1');
+  }
+  
+  // Add sort
+  if (currentSort && currentSort !== 'relevance') {
+    params.set('sort', currentSort);
+  }
+  
+  // Update URL without reload
+  const newURL = params.toString() 
+    ? `${window.location.pathname}?${params.toString()}`
+    : window.location.pathname;
+  window.history.replaceState({ filters: params.toString() }, '', newURL);
+}
+
+function loadURLState() {
+  const params = new URLSearchParams(window.location.search);
+  
+  // Load search query
+  if (params.has('q') && els.q) {
+    els.q.value = params.get('q');
+  }
+  
+  // Load location
+  if (params.has('loc') && els.loc) {
+    els.loc.value = params.get('loc');
+  }
+  
+  // Load age
+  if (params.has('age') && els.age) {
+    els.age.value = params.get('age');
+    if (window.__ageDropdownSync) window.__ageDropdownSync();
+  }
+  
+  // Load level of care
+  if (params.has('care') && els.care) {
+    els.care.value = params.get('care');
+  }
+  
+  // Load insurance
+  if (params.has('insurance') && els.insurance) {
+    els.insurance.value = params.get('insurance');
+  }
+  
+  // Load toggles
+  if (els.showCrisis) {
+    els.showCrisis.checked = params.has('crisis');
+  }
+  if (els.onlyVirtual) {
+    els.onlyVirtual.checked = params.has('virtual');
+  }
+  syncTopToggles();
+  
+  // Load sort
+  if (params.has('sort') && els.sortSelect) {
+    currentSort = params.get('sort');
+    els.sortSelect.value = currentSort;
+  }
+}
+
 // Handle URL parameters for shared programs
 function handleURLParams() {
   const params = new URLSearchParams(window.location.search);
   let programId = params.get('program');
+  
+  // Load filter state from URL
+  if (ready) {
+    loadURLState();
+  }
   
   // Validate and sanitize program ID from URL
   if (programId) {
@@ -1923,6 +2860,7 @@ function handleURLParams() {
 // Initialize
 initAgeDropdown();
 bind();
+initSwipeGestures();
 loadPrograms().then(() => {
   handleURLParams();
   renderRecentSearches();

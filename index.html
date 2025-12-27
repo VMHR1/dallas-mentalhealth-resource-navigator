@@ -11,6 +11,12 @@
   <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
   <link rel="stylesheet" href="styles.css">
   <script src="security.js?v=2"></script>
+  <script src="js/data-validator.js"></script>
+  <script src="js/config/constants.js"></script>
+  <script src="js/utils/helpers.js"></script>
+  <script src="js/modules/storage.js"></script>
+  <script src="js/modules/search.js"></script>
+  <script src="js/state-manager.js"></script>
   
 </head>
 
@@ -143,15 +149,22 @@
       <div class="search-header">
         <h3>Search programs across the Dallas-Fort Worth Metroplex</h3>
         <p>Neutral directory view. No endorsements. Always confirm details directly with the program.</p>
+        <div class="filter-presets" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; justify-content: center;">
+          <button type="button" class="filter-preset-btn" data-preset="teens-dallas">Teens in Dallas</button>
+          <button type="button" class="filter-preset-btn" data-preset="crisis-support">Crisis Support</button>
+          <button type="button" class="filter-preset-btn" data-preset="virtual-therapy">Virtual Therapy</button>
+          <button type="button" class="filter-preset-btn" data-preset="iop-plano">IOP in Plano</button>
+        </div>
       </div>
 
       <!-- Smart Search -->
       <div class="search-simple">
         <div class="input-group-primary">
           <label for="q">What are you looking for?</label>
-          <div class="input-wrapper">
+          <div class="input-wrapper" style="position: relative;">
             <span class="input-icon" aria-hidden="true">🔍</span>
-            <input id="q" type="search" placeholder="Try: 'IOP in Plano for 14-year-old' or 'crisis support'" autocomplete="off" />
+            <input id="q" type="search" placeholder="Try: 'IOP in Plano for 14-year-old' or 'crisis support'" autocomplete="off" aria-autocomplete="list" aria-expanded="false" aria-controls="search-suggestions" />
+            <div id="search-suggestions" class="search-suggestions" role="listbox" aria-label="Search suggestions" style="display: none;"></div>
           </div>
         </div>
         
@@ -299,6 +312,10 @@
           <span class="btn-text">Compare</span>
           <span class="badge-count" id="comparisonCount">0</span>
         </button>
+        <button type="button" class="btn-icon" id="shareFilters" title="Share current filters" aria-label="Share current search">
+          <span class="icon">🔗</span>
+          <span class="btn-text">Share</span>
+        </button>
       </div>
     </div>
 
@@ -376,6 +393,35 @@
 
   <!-- Toast Notification -->
   <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Keyboard Shortcuts Help Modal -->
+  <div id="helpModal" class="modal" role="dialog" aria-labelledby="helpModalTitle" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="helpModalTitle">Keyboard Shortcuts</h2>
+        <button type="button" class="modal-close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: grid; gap: 16px;">
+          <div>
+            <strong>/</strong> - Focus search box
+          </div>
+          <div>
+            <strong>?</strong> - Show this help dialog
+          </div>
+          <div>
+            <strong>Escape</strong> - Close modals, close expanded cards
+          </div>
+          <div>
+            <strong>Arrow keys</strong> - Navigate autocomplete suggestions
+          </div>
+          <div>
+            <strong>Enter</strong> - Select autocomplete suggestion or expand card
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="app.js?v=3"></script>
 </body>

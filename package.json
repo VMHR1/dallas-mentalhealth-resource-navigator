@@ -1,0 +1,23 @@
+{
+  "name": "dallas-mentalhealth-resource-navigator",
+  "version": "1.0.0",
+  "description": "Neutral post-discharge mental health resource navigator for Dallas-Fort Worth area youth",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node build.js --watch",
+    "minify": "node build.js --minify"
+  },
+  "devDependencies": {
+    "esbuild": "^0.19.0"
+  },
+  "keywords": [
+    "mental-health",
+    "resource-navigator",
+    "dallas",
+    "texas"
+  ],
+  "author": "",
+  "license": "MIT"
+}
+
