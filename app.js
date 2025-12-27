@@ -468,11 +468,14 @@ function buildInsuranceOptions(list){
 }
 
 function matchesFilters(p){
-  const q = safeStr(els.q.value).toLowerCase();
-  const loc = safeStr(els.loc.value).toLowerCase();
-  const ageVal = safeStr(els.age.value);
-  const care = safeStr(els.care.value).toLowerCase();
-  const onlyVirtual = els.onlyVirtual.checked;
+  // #region agent log
+  let filterLog = {programId:p.program_id,programName:p.program_name,passed:true,reasons:[]};
+  // #endregion
+  const q = safeStr(els.q?.value || '').toLowerCase();
+  const loc = safeStr(els.loc?.value || '').toLowerCase();
+  const ageVal = safeStr(els.age?.value || '');
+  const care = safeStr(els.care?.value || '').toLowerCase();
+  const onlyVirtual = els.onlyVirtual?.checked || false;
 
   // Parse smart search to get additional filters
   const parsed = parseSmartSearch(els.q.value);
@@ -552,15 +555,38 @@ function matchesFilters(p){
       const normalizedTypes = insuranceTypes.map(t => 
         t.replace(/\(many\)/g, '').replace(/\(some\)/g, '').replace(/\(varies\)/g, '').replace(/\(listed\)/g, '').replace(/\(most major\)/g, '').trim()
       );
-      if (!normalizedTypes.some(t => t.includes(filterType) || filterType.includes(t))) return false;
+      if (!normalizedTypes.some(t => t.includes(filterType) || filterType.includes(t))) {
+        // #region agent log
+        filterLog.passed = false;
+        filterLog.reasons.push('insurance type filter');
+        // #endregion
+        return false;
+      }
     } else if (insuranceVal.startsWith('plan:')) {
       const filterPlan = insuranceVal.replace('plan:', '').toLowerCase();
-      if (!insurancePlans.some(pl => pl === filterPlan || pl.includes(filterPlan) || filterPlan.includes(pl))) return false;
+      if (!insurancePlans.some(pl => pl === filterPlan || pl.includes(filterPlan) || filterPlan.includes(pl))) {
+        // #region agent log
+        filterLog.passed = false;
+        filterLog.reasons.push('insurance plan filter');
+        // #endregion
+        return false;
+      }
     }
   }
 
-  if (onlyVirtual && !hasVirtual(p)) return false;
+  if (onlyVirtual && !hasVirtual(p)) {
+    // #region agent log
+    filterLog.passed = false;
+    filterLog.reasons.push('virtual filter');
+    // #endregion
+    return false;
+  }
 
+  // #region agent log
+  if (!filterLog.passed || filterLog.reasons.length > 0) {
+    fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:570',message:'Program filtered out',data:filterLog,timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'L'})}).catch(()=>{});
+  }
+  // #endregion
   return true;
 }
 
@@ -1248,11 +1274,25 @@ function renderCallHistory() {
 }
 
 function render(){
-  if (!ready) return;
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1250',message:'render() called',data:{ready,programsCount:programs.length,showCrisis:els.showCrisis?.checked},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'K'})}).catch(()=>{});
+  // #endregion
+  if (!ready) {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1252',message:'render() early return - not ready',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'K'})}).catch(()=>{});
+    // #endregion
+    return;
+  }
 
   const showCrisis = els.showCrisis.checked;
 
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1255',message:'Before filtering',data:{totalPrograms:programs.length,query:els.q?.value,location:els.loc?.value,age:els.age?.value,care:els.care?.value,insurance:els.insurance?.value},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'L'})}).catch(()=>{});
+  // #endregion
   const filtered = programs.filter(matchesFilters);
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1256',message:'After filtering',data:{filteredCount:filtered.length,filteredSample:filtered.slice(0,3).map(p=>p.program_name)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'L'})}).catch(()=>{});
+  // #endregion
 
   const treatment = filtered.filter(p => !isCrisis(p));
   const crisis = filtered.filter(p => isCrisis(p));
@@ -1571,6 +1611,9 @@ async function loadPrograms(){
     updateComparisonCount();
     ready = true;
     openId = null;
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:1614',message:'Programs loaded, calling render',data:{programsCount:programs.length,ready,firstProgramHasInsurance:!!programs[0]?.accepted_insurance},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'K'})}).catch(()=>{});
+    // #endregion
     render();
   }catch(err){
     console.error(err);
