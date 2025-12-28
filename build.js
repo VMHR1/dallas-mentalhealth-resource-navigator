@@ -35,38 +35,56 @@ const buildOptions = {
 
 // Copy static assets to dist directory
 function copyStaticAssets() {
-  const staticFiles = [
-    'index.html',
-    'admin.html',
-    'program.html',
-    'submit.html',
-    'styles.css',
-    'security.js',
-    'sw.js',
-    'programs.json'
-  ];
-  
-  // Ensure dist directory exists
-  if (!existsSync('dist')) {
-    mkdirSync('dist', { recursive: true });
-  }
-  
-  // Copy static files
-  staticFiles.forEach(file => {
-    if (existsSync(file)) {
-      writeFileSync(join('dist', file), readFileSync(file, 'utf8'));
+  try {
+    const staticFiles = [
+      'index.html',
+      'admin.html',
+      'program.html',
+      'submit.html',
+      'styles.css',
+      'security.js',
+      'sw.js',
+      'programs.json'
+    ];
+    
+    // Ensure dist directory exists
+    if (!existsSync('dist')) {
+      mkdirSync('dist', { recursive: true });
     }
-  });
-  
-  // Copy program-detail.js if it exists
-  if (existsSync('js/program-detail.js')) {
-    if (!existsSync('dist/js')) {
-      mkdirSync('dist/js', { recursive: true });
+    
+    // Copy static files
+    let copiedCount = 0;
+    staticFiles.forEach(file => {
+      if (existsSync(file)) {
+        try {
+          writeFileSync(join('dist', file), readFileSync(file, 'utf8'));
+          copiedCount++;
+        } catch (error) {
+          console.error(`Error copying ${file}:`, error.message);
+        }
+      } else {
+        console.warn(`Warning: ${file} not found, skipping`);
+      }
+    });
+    
+    // Copy program-detail.js if it exists
+    if (existsSync('js/program-detail.js')) {
+      if (!existsSync('dist/js')) {
+        mkdirSync('dist/js', { recursive: true });
+      }
+      try {
+        writeFileSync(join('dist/js', 'program-detail.js'), readFileSync('js/program-detail.js', 'utf8'));
+        copiedCount++;
+      } catch (error) {
+        console.error('Error copying js/program-detail.js:', error.message);
+      }
     }
-    writeFileSync(join('dist/js', 'program-detail.js'), readFileSync('js/program-detail.js', 'utf8'));
+    
+    console.log(`Static assets copied (${copiedCount} files)`);
+  } catch (error) {
+    console.error('Error in copyStaticAssets:', error);
+    throw error;
   }
-  
-  console.log('Static assets copied');
 }
 
 async function build() {
@@ -92,31 +110,64 @@ async function build() {
 
 // Also create a simple bundle for non-module environments
 async function createLegacyBundle() {
-  const files = [
-    'js/config/constants.js',
-    'js/utils/helpers.js',
-    'js/modules/storage.js',
-    'js/modules/search.js',
-    'js/state-manager.js',
-    'js/data-validator.js'
-  ];
-  
-  let bundle = '';
-  files.forEach(file => {
-    if (existsSync(file)) {
-      bundle += readFileSync(file, 'utf8') + '\n\n';
+  try {
+    const files = [
+      'js/config/constants.js',
+      'js/utils/helpers.js',
+      'js/modules/storage.js',
+      'js/modules/search.js',
+      'js/state-manager.js',
+      'js/data-validator.js'
+    ];
+    
+    let bundle = '';
+    let filesFound = 0;
+    
+    files.forEach(file => {
+      if (existsSync(file)) {
+        try {
+          bundle += readFileSync(file, 'utf8') + '\n\n';
+          filesFound++;
+        } catch (error) {
+          console.error(`Error reading ${file}:`, error.message);
+        }
+      } else {
+        console.warn(`Warning: ${file} not found, skipping`);
+      }
+    });
+    
+    if (bundle.length > 0) {
+      // Ensure js directory exists in dist
+      if (!existsSync('dist/js')) {
+        mkdirSync('dist/js', { recursive: true });
+      }
+      
+      // Write bundle to dist directory
+      writeFileSync(join('dist/js', 'bundle.js'), bundle);
+      console.log(`Legacy bundle created (${filesFound} files)`);
+    } else {
+      console.warn('Warning: No files found for legacy bundle');
     }
-  });
-  
-  writeFileSync('js/bundle.js', bundle);
-  console.log('Legacy bundle created');
+  } catch (error) {
+    console.error('Error creating legacy bundle:', error);
+    // Don't throw - legacy bundle is optional
+    console.warn('Continuing without legacy bundle...');
+  }
 }
 
-build().then(() => {
-  if (!isWatch) {
-    createLegacyBundle();
-  }
-});
+// Main execution with proper error handling
+build()
+  .then(async () => {
+    if (!isWatch) {
+      await createLegacyBundle();
+    }
+    console.log('Build process completed successfully');
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error('Build process failed:', error);
+    process.exit(1);
+  });
 
 
 
