@@ -44,7 +44,9 @@ function copyStaticAssets() {
       'styles.css',
       'security.js',
       'sw.js',
-      'programs.json'
+      'programs.json',
+      '_redirects',
+      '_headers'
     ];
     
     // Ensure dist directory exists

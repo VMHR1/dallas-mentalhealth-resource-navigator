@@ -1,0 +1,13 @@
+# Cloudflare Pages redirects and rewrites
+# https://developers.cloudflare.com/pages/platform/redirects/
+
+# SPA fallback - redirect all non-file requests to index.html
+# This ensures client-side routing works
+/*    /index.html   200
+
+# Example: Redirect old URLs (if you have any)
+# /old-path    /new-path    301
+
+# Example: Redirect HTTP to HTTPS (Cloudflare does this automatically, but you can be explicit)
+# http://example.com/*    https://example.com/:splat    301
+
