@@ -39,3 +39,6 @@ Thumbs.db
 .wrangler/
 .wrangler.toml
 
+# Documentation (local only)
+CLOUDFLARE_*.md
+
