@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Code Documentation</title>
+    <style>
+        @media print {
+            body { margin: 0; padding: 20px; }
+            .page-break { page-break-before: always; }
+            h1, h2 { page-break-after: avoid; }
+            pre, code { page-break-inside: avoid; }
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: #333;
+            background: #fff;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 8px;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #555;
+            margin-top: 25px;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+            line-height: 1.4;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #ecf0f1;
+            margin: 30px 0;
+        }
+        .emoji {
+            font-size: 1.2em;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 12px;
+            margin: 15px 0;
+        }
+        .info {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 12px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Complete Code Documentation</h1>
+    <h2>Step-by-Step Understanding of the Repository</h2>
+    
+    <hr>
+    
+    <h2><span class="emoji">📁</span> Repository Structure Overview</h2>
+    
+    <pre><code>dallas-mentalhealth-resource-navigator/
+├── Configuration Files
+│   ├── package.json          # Node.js project config
+│   ├── wrangler.jsonc        # Cloudflare Pages config
+│   ├── build.js              # Build script
+│   ├── _headers              # HTTP headers for Cloudflare
+│   └── _redirects             # URL redirects for Cloudflare
+│
+├── HTML Pages (User-Facing)
+│   ├── index.html              # Main search page
+│   ├── program.html           # Individual program detail page
+│   ├── submit.html            # Program submission form
+│   └── admin.html             # Admin dashboard
+│
+├── Core JavaScript
+│   ├── app.js                 # Main application logic (3250+ lines)
+│   ├── security.js            # Security utilities (encryption, validation)
+│   └── sw.js                  # Service Worker (PWA/offline support)
+│
+├── JavaScript Modules (js/)
+│   ├── config/
+│   │   └── constants.js       # Configuration constants
+│   ├── modules/
+│   │   ├── search.js          # Search functionality
+│   │   └── storage.js          # Data storage module
+│   ├── utils/
+│   │   └── helpers.js          # Utility functions
+│   ├── data-validator.js      # Data validation
+│   ├── state-manager.js       # State management
+│   └── program-detail.js      # Program detail page logic
+│
+├── Data & Assets
+│   ├── programs.json          # Program database (4500+ lines)
+│   └── styles.css             # All CSS styles
+│
+├── Cloudflare Functions
+│   └── functions/api/
+│       ├── submit-program.js  # Form submission API
+│       └── programs.js        # Programs API endpoint
+│
+└── Documentation
+    └── README.md              # Project description
+</code></pre>
+    
+    <hr>
+    
+    <h2><span class="emoji">🔧</span> Configuration Files</h2>
+    
+    <h3>1. `package.json`</h3>
+    <p><strong>Purpose:</strong> Node.js project configuration</p>
+    <p><strong>Why it's needed:</strong> Defines project metadata, dependencies, and build scripts</p>
+    <p><strong>Can it be removed?</strong> ❌ NO - Required for npm and build process</p>
+    
+    <p><strong>Key Contents:</strong></p>
+    <ul>
+        <li>Project name and version</li>
+        <li>Build scripts: <code>build</code>, <code>dev</code>, <code>minify</code></li>
+        <li>Dependency: <code>esbuild</code> (for building JavaScript)</li>
+    </ul>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Used by: <code>build.js</code>, Cloudflare Pages build process</li>
+        <li>Uses: <code>esbuild</code> package</li>
+    </ul>
+    
+    <hr>
+    
+    <h3>2. `wrangler.jsonc`</h3>
+    <p><strong>Purpose:</strong> Cloudflare Pages deployment configuration</p>
+    <p><strong>Why it's needed:</strong> Tells Cloudflare where to find built files (<code>dist/</code> directory)</p>
+    <p><strong>Can it be removed?</strong> ❌ NO - Required for Cloudflare Pages deployment</p>
+    
+    <p><strong>Key Contents:</strong></p>
+    <ul>
+        <li>Project name</li>
+        <li>Assets directory: <code>./dist</code></li>
+        <li>Compatibility date</li>
+    </ul>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Used by: Cloudflare Pages deployment</li>
+        <li>References: <code>dist/</code> directory (created by build)</li>
+    </ul>
+    
+    <hr>
+    
+    <h3>3. `build.js`</h3>
+    <p><strong>Purpose:</strong> Build script that compiles and prepares files for deployment</p>
+    <p><strong>Why it's needed:</strong> Transforms source code into production-ready files</p>
+    <p><strong>Can it be removed?</strong> ❌ NO - Required for building the site</p>
+    
+    <p><strong>What it does:</strong></p>
+    <ol>
+        <li><strong>Copies static files</strong> to <code>dist/</code>:
+            <ul>
+                <li>HTML files (index.html, admin.html, program.html, submit.html)</li>
+                <li>CSS (styles.css)</li>
+                <li>JSON data (programs.json)</li>
+                <li>Security script (security.js)</li>
+                <li>Service Worker (sw.js)</li>
+                <li>Cloudflare config files (_headers, _redirects)</li>
+            </ul>
+        </li>
+        <li><strong>Builds JavaScript files</strong> using esbuild:
+            <ul>
+                <li><code>app.js</code> → <code>dist/app.js</code></li>
+                <li><code>js/modules/search.js</code> → <code>dist/js/modules/search.js</code></li>
+                <li><code>js/modules/storage.js</code> → <code>dist/js/modules/storage.js</code></li>
+                <li><code>js/utils/helpers.js</code> → <code>dist/js/utils/helpers.js</code></li>
+                <li><code>js/config/constants.js</code> → <code>dist/js/config/constants.js</code></li>
+                <li><code>js/state-manager.js</code> → <code>dist/js/state-manager.js</code></li>
+                <li><code>js/data-validator.js</code> → <code>dist/js/data-validator.js</code></li>
+            </ul>
+        </li>
+        <li><strong>Creates legacy bundle</strong> (<code>dist/js/bundle.js</code>):
+            <ul>
+                <li>Combines multiple JS files for non-module environments</li>
+                <li><strong>Can this be removed?</strong> ⚠️ MAYBE - Check if <code>bundle.js</code> is referenced anywhere</li>
+            </ul>
+        </li>
+    </ol>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Uses: <code>esbuild</code> package, all source files</li>
+        <li>Creates: <code>dist/</code> directory with all built files</li>
+        <li>Called by: <code>npm run build</code> command</li>
+    </ul>
+    
+    <hr>
+    
+    <h3>4. `_headers`</h3>
+    <p><strong>Purpose:</strong> Custom HTTP headers for Cloudflare Pages</p>
+    <p><strong>Why it's needed:</strong> Sets security headers and cache control</p>
+    <p><strong>Can it be removed?</strong> ⚠️ OPTIONAL - Can be configured in Cloudflare Dashboard instead</p>
+    
+    <p><strong>What it does:</strong></p>
+    <ul>
+        <li>Sets security headers (X-Content-Type-Options, X-Frame-Options, etc.)</li>
+        <li>Configures cache control for different file types</li>
+        <li>Applied automatically by Cloudflare Pages</li>
+    </ul>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Used by: Cloudflare Pages (copied to dist during build)</li>
+        <li>Affects: All HTTP responses from your site</li>
+    </ul>
+    
+    <hr>
+    
+    <h3>5. `_redirects`</h3>
+    <p><strong>Purpose:</strong> URL redirects and rewrites for Cloudflare Pages</p>
+    <p><strong>Why it's needed:</strong> Handles URL routing (currently empty/commented)</p>
+    <p><strong>Can it be removed?</strong> ⚠️ OPTIONAL - Not currently used (SPA redirect removed)</p>
+    
+    <p><strong>What it does:</strong></p>
+    <ul>
+        <li>Currently has no active redirects</li>
+        <li>Can be used for URL redirects if needed</li>
+        <li>Can be configured in Cloudflare Dashboard instead</li>
+    </ul>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Used by: Cloudflare Pages (copied to dist during build)</li>
+    </ul>
+    
+    <div class="page-break"></div>
+    
+    <h2><span class="emoji">🌐</span> HTML Pages</h2>
+    
+    <h3>6. `index.html`</h3>
+    <p><strong>Purpose:</strong> Main search page - the primary user interface</p>
+    <p><strong>Why it's needed:</strong> This is your main page where users search for programs</p>
+    <p><strong>Can it be removed?</strong> ❌ NO - This is your homepage</p>
+    
+    <p><strong>What it contains:</strong></p>
+    <ul>
+        <li>HTML structure for search interface</li>
+        <li>Crisis banner (988 information)</li>
+        <li>Search form and filters</li>
+        <li>Results display area</li>
+        <li>Modals (favorites, history, comparison, help)</li>
+        <li>Script tags loading all JavaScript modules</li>
+    </ul>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Loads: All JavaScript files (app.js, security.js, modules, etc.)</li>
+        <li>References: <code>styles.css</code>, <code>programs.json</code></li>
+        <li>Uses: All JavaScript modules</li>
+    </ul>
+    
+    <p><strong>Script Loading Order:</strong></p>
+    <ol>
+        <li><code>security.js</code> - Must load first (encryption functions)</li>
+        <li><code>js/data-validator.js</code> - Data validation</li>
+        <li><code>js/config/constants.js</code> - Configuration</li>
+        <li><code>js/utils/helpers.js</code> - Utility functions</li>
+        <li><code>js/modules/storage.js</code> - Storage functions</li>
+        <li><code>js/modules/search.js</code> - Search functions</li>
+        <li><code>js/state-manager.js</code> - State management</li>
+        <li><code>app.js</code> - Main application (loads last, uses all above)</li>
+    </ol>
+    
+    <hr>
+    
+    <h3>7. `program.html`</h3>
+    <p><strong>Purpose:</strong> Individual program detail page</p>
+    <p><strong>Why it's needed:</strong> Shows detailed information about a single program</p>
+    <p><strong>Can it be removed?</strong> ⚠️ OPTIONAL - If you don't need separate detail pages</p>
+    
+    <p><strong>What it does:</strong></p>
+    <ul>
+        <li>Displays full program information</li>
+        <li>Shows related programs</li>
+        <li>Allows sharing/printing program details</li>
+        <li>Uses <code>js/program-detail.js</code> for logic</li>
+    </ul>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Uses: <code>js/program-detail.js</code>, <code>programs.json</code></li>
+        <li>Loads: Same JavaScript modules as index.html</li>
+    </ul>
+    
+    <hr>
+    
+    <h3>8. `submit.html`</h3>
+    <p><strong>Purpose:</strong> Form for submitting new programs</p>
+    <p><strong>Why it's needed:</strong> Allows organizations to submit programs for review</p>
+    <p><strong>Can it be removed?</strong> ⚠️ OPTIONAL - Only if you don't accept submissions</p>
+    
+    <p><strong>What it does:</strong></p>
+    <ul>
+        <li>Multi-step wizard form</li>
+        <li>Validates input</li>
+        <li>Submits to Formspree (or Cloudflare Function if configured)</li>
+        <li>Includes PHI warning</li>
+    </ul>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Uses: <code>security.js</code> for validation</li>
+        <li>Submits to: Formspree endpoint (or <code>/api/submit-program</code> if using Functions)</li>
+        <li>References: <code>styles.css</code></li>
+    </ul>
+    
+    <hr>
+    
+    <h3>9. `admin.html`</h3>
+    <p><strong>Purpose:</strong> Admin dashboard for managing programs</p>
+    <p><strong>Why it's needed:</strong> Allows admins to view and manage program data</p>
+    <p><strong>Can it be removed?</strong> ⚠️ OPTIONAL - Only if you don't need admin interface</p>
+    
+    <p><strong>What it does:</strong></p>
+    <ul>
+        <li>Displays statistics about programs</li>
+        <li>Shows data validation results</li>
+        <li>Allows viewing program data</li>
+        <li>No authentication currently (security risk!)</li>
+    </ul>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Uses: <code>programs.json</code>, <code>js/data-validator.js</code></li>
+        <li>Loads: <code>security.js</code>, <code>app.js</code></li>
+    </ul>
+    
+    <div class="warning">
+        <strong>⚠️ Security Note:</strong> This page has no authentication. Anyone can access it if they know the URL.
+    </div>
+    
+    <div class="page-break"></div>
+    
+    <h2><span class="emoji">🔐</span> Core JavaScript Files</h2>
+    
+    <h3>10. `security.js` (318 lines)</h3>
+    <p><strong>Purpose:</strong> Security utilities - encryption, validation, logging</p>
+    <p><strong>Why it's needed:</strong> Protects user data and validates inputs</p>
+    <p><strong>Can it be removed?</strong> ❌ NO - Critical for data security</p>
+    
+    <p><strong>What it provides:</strong></p>
+    <ol>
+        <li><strong>Encryption Functions:</strong>
+            <ul>
+                <li><code>encryptData()</code> - Encrypts data for localStorage</li>
+                <li><code>decryptData()</code> - Decrypts data from localStorage</li>
+                <li>Uses AES-GCM encryption with browser crypto API</li>
+            </ul>
+        </li>
+        <li><strong>Input Validation:</strong>
+            <ul>
+                <li><code>validateUrl()</code> - Validates URLs</li>
+                <li><code>validatePhone()</code> - Validates phone numbers</li>
+                <li><code>validateEmail()</code> - Validates email addresses</li>
+                <li><code>sanitizeText()</code> - Removes dangerous characters</li>
+                <li><code>sanitizeId()</code> - Sanitizes IDs</li>
+                <li><code>escapeHtml()</code> - Escapes HTML to prevent XSS</li>
+            </ul>
+        </li>
+        <li><strong>JSON Validation:</strong>
+            <ul>
+                <li><code>validateJSON()</code> - Validates JSON and prevents prototype pollution</li>
+            </ul>
+        </li>
+        <li><strong>Rate Limiting:</strong>
+            <ul>
+                <li><code>checkRateLimit()</code> - Prevents abuse (form submissions, etc.)</li>
+            </ul>
+        </li>
+        <li><strong>Security Logging:</strong>
+            <ul>
+                <li><code>logSecurityEvent()</code> - Logs security events</li>
+                <li><code>getSecurityLog()</code> - Retrieves security log</li>
+            </ul>
+        </li>
+        <li><strong>Data Integrity:</strong>
+            <ul>
+                <li><code>validateProgramStructure()</code> - Validates program data structure</li>
+            </ul>
+        </li>
+    </ol>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Used by: <code>app.js</code>, <code>js/modules/storage.js</code>, <code>js/utils/helpers.js</code>, <code>submit.html</code></li>
+        <li>Must load: Before other scripts that use encryption</li>
+    </ul>
+    
+    <p><strong>Why it's critical:</strong></p>
+    <ul>
+        <li>Encrypts user data (favorites, notes, history)</li>
+        <li>Prevents XSS attacks (HTML escaping)</li>
+        <li>Validates user inputs</li>
+        <li>Prevents data corruption (JSON validation)</li>
+    </ul>
+    
+    <hr>
+    
+    <h3>11. `app.js` (3250+ lines)</h3>
+    <p><strong>Purpose:</strong> Main application logic - the heart of your application</p>
+    <p><strong>Why it's needed:</strong> Handles all user interactions, search, filtering, rendering</p>
+    <p><strong>Can it be removed?</strong> ❌ NO - This IS your application</p>
+    
+    <p><strong>Major Sections:</strong></p>
+    
+    <ol>
+        <li><strong>State Management (Lines 1-100)</strong>
+            <ul>
+                <li>Global variables: <code>programs</code>, <code>ready</code>, <code>openId</code>, <code>currentSort</code></li>
+                <li>Encrypted storage initialization</li>
+                <li>DOM element references</li>
+            </ul>
+        </li>
+        <li><strong>Data Loading (Lines 2835-3017)</strong>
+            <ul>
+                <li><code>loadPrograms()</code> - Fetches programs.json</li>
+                <li>Validates data</li>
+                <li>Handles errors and retries</li>
+                <li>Builds location/insurance options</li>
+            </ul>
+        </li>
+        <li><strong>Search & Filtering (Lines 800-1000)</strong>
+            <ul>
+                <li><code>matchesFilters()</code> - Filters programs</li>
+                <li><code>calculateRelevanceScore()</code> - Ranks search results</li>
+                <li>Text search functionality</li>
+            </ul>
+        </li>
+        <li><strong>Rendering (Lines 1977-2100)</strong>
+            <ul>
+                <li><code>render()</code> - Main render function</li>
+                <li><code>renderProgressive()</code> - Progressive loading</li>
+                <li><code>renderCard()</code> - Individual program cards</li>
+            </ul>
+        </li>
+        <li><strong>User Interactions (Lines 150-800)</strong>
+            <ul>
+                <li>Favorites management</li>
+                <li>Call history tracking</li>
+                <li>Comparison functionality</li>
+                <li>Sharing features</li>
+                <li>Keyboard shortcuts</li>
+            </ul>
+        </li>
+        <li><strong>Event Handlers (Lines 2392-2737)</strong>
+            <ul>
+                <li><code>bind()</code> - Sets up all event listeners</li>
+                <li>Search input handling</li>
+                <li>Filter changes</li>
+                <li>Modal interactions</li>
+            </ul>
+        </li>
+        <li><strong>Utilities (Lines 1000-1977)</strong>
+            <ul>
+                <li>Sorting functions</li>
+                <li>URL manipulation</li>
+                <li>Print functionality</li>
+                <li>Toast notifications</li>
+            </ul>
+        </li>
+    </ol>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Uses: ALL other JavaScript modules</li>
+        <li>Depends on: <code>security.js</code> (must load first)</li>
+        <li>Reads: <code>programs.json</code></li>
+        <li>Updates: DOM elements in <code>index.html</code></li>
+    </ul>
+    
+    <p><strong>Why it's so large:</strong></p>
+    <ul>
+        <li>Contains all application logic in one file</li>
+        <li>Could potentially be split into smaller modules</li>
+        <li>But works fine as-is for current scope</li>
+    </ul>
+    
+    <hr>
+    
+    <h3>12. `sw.js` (Service Worker - 75 lines)</h3>
+    <p><strong>Purpose:</strong> Progressive Web App (PWA) support - offline functionality</p>
+    <p><strong>Why it's needed:</strong> Allows site to work offline, caches files</p>
+    <p><strong>Can it be removed?</strong> ⚠️ OPTIONAL - Site works without it, but loses offline support</p>
+    
+    <p><strong>What it does:</strong></p>
+    <ol>
+        <li><strong>Caches files</strong> on install:
+            <ul>
+                <li>HTML, CSS, JS files</li>
+                <li>programs.json</li>
+                <li>All JavaScript modules</li>
+            </ul>
+        </li>
+        <li><strong>Serves cached files</strong> when offline:
+            <ul>
+                <li>Intercepts fetch requests</li>
+                <li>Returns cached version if available</li>
+                <li>Falls back to network if cache miss</li>
+            </ul>
+        </li>
+        <li><strong>Cache management:</strong>
+            <ul>
+                <li>Cleans up old cache versions</li>
+                <li>Updates cache when new version available</li>
+            </ul>
+        </li>
+    </ol>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Registered by: <code>app.js</code> (if service workers supported)</li>
+        <li>Caches: All static files listed in <code>urlsToCache</code></li>
+        <li>Used by: Browser (runs in background)</li>
+    </ul>
+    
+    <p><strong>Benefits:</strong></p>
+    <ul>
+        <li>Site works offline</li>
+        <li>Faster loading (cached files)</li>
+        <li>Better mobile experience</li>
+        <li>Can be "installed" as PWA</li>
+    </ul>
+    
+    <p><strong>Can be removed if:</strong></p>
+    <ul>
+        <li>You don't need offline support</li>
+        <li>You don't want PWA functionality</li>
+        <li>You want to simplify the codebase</li>
+    </ul>
+    
+    <div class="page-break"></div>
+    
+    <h2><span class="emoji">📦</span> JavaScript Modules</h2>
+    
+    <h3>13. `js/config/constants.js` (53 lines)</h3>
+    <p><strong>Purpose:</strong> Configuration constants used throughout the app</p>
+    <p><strong>Why it's needed:</strong> Centralizes configuration values</p>
+    <p><strong>Can it be removed?</strong> ❌ NO - Used by multiple files</p>
+    
+    <p><strong>What it contains:</strong></p>
+    <ul>
+        <li><code>CITIES</code> - List of DFW area cities</li>
+        <li><code>LEVELS_OF_CARE</code> - Types of care (PHP, IOP, etc.)</li>
+        <li><code>FILTER_PRESETS</code> - Predefined filter combinations</li>
+        <li><code>PROGRESSIVE_LOAD_INCREMENT</code> - How many items to load at once</li>
+        <li><code>MAX_RECENT_SEARCHES</code> - Limit for search history</li>
+        <li><code>MAX_CALL_HISTORY</code> - Limit for call history</li>
+        <li><code>MAX_COMPARISON_ITEMS</code> - Max programs to compare</li>
+    </ul>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Used by: <code>app.js</code>, <code>js/modules/search.js</code></li>
+        <li>Exports to: <code>window</code> object for global access</li>
+    </ul>
+    
+    <p><strong>Why it's separate:</strong></p>
+    <ul>
+        <li>Easy to update configuration</li>
+        <li>Single source of truth</li>
+        <li>Can be modified without touching main code</li>
+    </ul>
+    
+    <hr>
+    
+    <h3>14. `js/utils/helpers.js` (149 lines)</h3>
+    <p><strong>Purpose:</strong> Utility functions used throughout the app</p>
+    <p><strong>Why it's needed:</strong> Reusable helper functions</p>
+    <p><strong>Can it be removed?</strong> ❌ NO - Used extensively</p>
+    
+    <p><strong>Key Functions:</strong></p>
+    <ul>
+        <li><code>safeStr()</code> - Safely converts to string</li>
+        <li><code>escapeHtml()</code> - Escapes HTML (XSS prevention)</li>
+        <li><code>safeUrl()</code> - Validates and sanitizes URLs</li>
+        <li><code>domainFromUrl()</code> - Extracts domain from URL</li>
+        <li><code>normalizePhoneForTel()</code> - Formats phone for tel: links</li>
+        <li><code>bestAddress()</code> - Gets best address from program</li>
+        <li><code>mapsLinkFor()</code> - Creates Google Maps link</li>
+        <li><code>stableIdFor()</code> - Creates stable ID for programs</li>
+        <li><code>locLabel()</code> - Formats location label</li>
+        <li><code>isCrisis()</code> - Checks if program is crisis service</li>
+        <li><code>hasVirtual()</code> - Checks if program offers virtual services</li>
+        <li><code>parseAgeSpec()</code> - Parses age range strings</li>
+    </ul>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Used by: <code>app.js</code>, <code>js/program-detail.js</code>, <code>js/modules/search.js</code></li>
+        <li>Uses: <code>window.validateUrl</code> from <code>security.js</code> (if available)</li>
+    </ul>
+    
+    <p><strong>Why it's separate:</strong></p>
+    <ul>
+        <li>Reusable across multiple files</li>
+        <li>Keeps main code cleaner</li>
+        <li>Easy to test independently</li>
+    </ul>
+    
+    <hr>
+    
+    <h3>15. `js/modules/storage.js` (107 lines)</h3>
+    <p><strong>Purpose:</strong> Data storage module - handles encrypted localStorage</p>
+    <p><strong>Why it's needed:</strong> Manages user data persistence</p>
+    <p><strong>Can it be removed?</strong> ❌ NO - Required for user features</p>
+    
+    <p><strong>What it provides:</strong></p>
+    <ol>
+        <li><strong>Encryption Wrappers:</strong>
+            <ul>
+                <li><code>loadEncryptedData()</code> - Loads and decrypts data</li>
+                <li><code>saveEncryptedData()</code> - Encrypts and saves data</li>
+            </ul>
+        </li>
+        <li><strong>UserDataStorage Class:</strong>
+            <ul>
+                <li>Manages: favorites, recent searches, call history</li>
+                <li>Manages: custom lists, program notes, tags</li>
+                <li>Saves/loads user preferences</li>
+            </ul>
+        </li>
+    </ol>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Uses: <code>window.encryptData</code> and <code>window.decryptData</code> from <code>security.js</code></li>
+        <li>Used by: <code>app.js</code> (though app.js also has its own storage functions - duplication!)</li>
+    </ul>
+    
+    <div class="warning">
+        <strong>⚠️ Note:</strong> There's some duplication - <code>app.js</code> also has <code>loadEncryptedData()</code> and <code>saveEncryptedData()</code>. The class in <code>storage.js</code> might not be fully used.
+    </div>
+    
+    <hr>
+    
+    <h3>16. `js/modules/search.js` (228 lines)</h3>
+    <p><strong>Purpose:</strong> Search functionality - fuzzy matching, autocomplete</p>
+    <p><strong>Why it's needed:</strong> Provides advanced search capabilities</p>
+    <p><strong>Can it be removed?</strong> ❌ NO - Core search functionality</p>
+    
+    <p><strong>What it provides:</strong></p>
+    <ol>
+        <li><strong>Fuzzy Search:</strong>
+            <ul>
+                <li><code>levenshteinDistance()</code> - Calculates string similarity</li>
+                <li><code>fuzzyMatch()</code> - Fuzzy string matching</li>
+                <li><code>fuzzyMatchSingleWord()</code> - Single word fuzzy match</li>
+            </ul>
+        </li>
+        <li><strong>Smart Search Parsing:</strong>
+            <ul>
+                <li>Parses natural language queries</li>
+                <li>Extracts: location, age, care level, keywords</li>
+                <li>Handles complex queries like "IOP in Plano for 14-year-old"</li>
+            </ul>
+        </li>
+        <li><strong>Autocomplete:</strong>
+            <ul>
+                <li>Suggests search terms</li>
+                <li>Based on actual program data</li>
+            </ul>
+        </li>
+    </ol>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Used by: <code>app.js</code> for search functionality</li>
+        <li>Uses: <code>js/config/constants.js</code> for cities/levels</li>
+    </ul>
+    
+    <p><strong>Why it's separate:</strong></p>
+    <ul>
+        <li>Complex search logic</li>
+        <li>Can be improved independently</li>
+        <li>Keeps app.js cleaner</li>
+    </ul>
+    
+    <hr>
+    
+    <h3>17. `js/state-manager.js` (201 lines)</h3>
+    <p><strong>Purpose:</strong> Centralized state management</p>
+    <p><strong>Why it's needed:</strong> Manages application state in a structured way</p>
+    <p><strong>Can it be removed?</strong> ⚠️ MAYBE - <code>app.js</code> also manages state directly</p>
+    
+    <p><strong>What it provides:</strong></p>
+    <ul>
+        <li><code>StateManager</code> class</li>
+        <li>State structure: programs, filters, sort, progressive load</li>
+        <li>State validation</li>
+        <li>State persistence</li>
+        <li>Event listeners for state changes</li>
+    </ul>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Used by: Potentially <code>app.js</code> (but app.js uses global variables instead)</li>
+        <li>Might be: Not fully integrated (app.js uses its own state management)</li>
+    </ul>
+    
+    <div class="warning">
+        <strong>⚠️ Note:</strong> <code>app.js</code> uses global variables for state (<code>programs</code>, <code>currentSort</code>, etc.) rather than this StateManager class. This might be unused or partially used.
+    </div>
+    
+    <hr>
+    
+    <h3>18. `js/data-validator.js` (309 lines)</h3>
+    <p><strong>Purpose:</strong> Validates program data structure and quality</p>
+    <p><strong>Why it's needed:</strong> Ensures data integrity, catches errors</p>
+    <p><strong>Can it be removed?</strong> ⚠️ OPTIONAL - Helpful but not critical for basic functionality</p>
+    
+    <p><strong>What it provides:</strong></p>
+    <ol>
+        <li><strong>Schema Validation:</strong>
+            <ul>
+                <li><code>validateProgramSchema()</code> - Validates individual program</li>
+                <li>Checks required fields, types, formats</li>
+            </ul>
+        </li>
+        <li><strong>Bulk Validation:</strong>
+            <ul>
+                <li><code>validateProgramsData()</code> - Validates entire dataset</li>
+                <li>Finds duplicates, missing fields, stale data</li>
+            </ul>
+        </li>
+        <li><strong>Data Quality:</strong>
+            <ul>
+                <li><code>checkDataFreshness()</code> - Identifies outdated data</li>
+                <li>Normalizes city names</li>
+                <li>Normalizes phone numbers</li>
+            </ul>
+        </li>
+    </ol>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Used by: <code>app.js</code> when loading programs.json</li>
+        <li>Used by: <code>admin.html</code> for data quality dashboard</li>
+        <li>Uses: <code>window.validateUrl</code> from <code>security.js</code></li>
+    </ul>
+    
+    <p><strong>Can be removed if:</strong></p>
+    <ul>
+        <li>You trust your data source completely</li>
+        <li>You don't need validation warnings</li>
+        <li>You want to simplify the codebase</li>
+    </ul>
+    
+    <p><strong>Recommendation:</strong> Keep it - helps catch data errors early</p>
+    
+    <hr>
+    
+    <h3>19. `js/program-detail.js` (262 lines)</h3>
+    <p><strong>Purpose:</strong> Logic for individual program detail page</p>
+    <p><strong>Why it's needed:</strong> Powers <code>program.html</code> page</p>
+    <p><strong>Can it be removed?</strong> ⚠️ OPTIONAL - Only if you remove <code>program.html</code></p>
+    
+    <p><strong>What it does:</strong></p>
+    <ul>
+        <li>Loads programs.json</li>
+        <li>Finds program by ID</li>
+        <li>Renders program details</li>
+        <li>Finds related programs</li>
+        <li>Handles sharing/printing</li>
+    </ul>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Used by: <code>program.html</code></li>
+        <li>Uses: <code>js/utils/helpers.js</code>, <code>programs.json</code></li>
+        <li>Uses: <code>window.stableIdFor</code> from helpers</li>
+    </ul>
+    
+    <div class="page-break"></div>
+    
+    <h2><span class="emoji">📊</span> Data Files</h2>
+    
+    <h3>20. `programs.json` (4500+ lines)</h3>
+    <p><strong>Purpose:</strong> Database of all mental health programs</p>
+    <p><strong>Why it's needed:</strong> This IS your data - all program information</p>
+    <p><strong>Can it be removed?</strong> ❌ NO - This is your core content</p>
+    
+    <p><strong>Structure:</strong></p>
+    <pre><code>{
+  "metadata": {
+    "generated_at": "2025-12-21",
+    "notes": "...",
+    ...
+  },
+  "programs": [
+    {
+      "program_id": "...",
+      "organization": "...",
+      "program_name": "...",
+      "level_of_care": "...",
+      "locations": [...],
+      "phone": "...",
+      ...
+    },
+    ...
+  ]
+}</code></pre>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Loaded by: <code>app.js</code>, <code>js/program-detail.js</code></li>
+        <li>Validated by: <code>js/data-validator.js</code></li>
+        <li>Cached by: <code>sw.js</code> (Service Worker)</li>
+    </ul>
+    
+    <p><strong>Size:</strong> Large file (~4500 lines)</p>
+    <p><strong>Update frequency:</strong> Monthly (based on metadata)</p>
+    
+    <hr>
+    
+    <h3>21. `styles.css`</h3>
+    <p><strong>Purpose:</strong> All CSS styling for the entire site</p>
+    <p><strong>Why it's needed:</strong> Makes the site look good</p>
+    <p><strong>Can it be removed?</strong> ❌ NO - Site would be unstyled</p>
+    
+    <p><strong>What it contains:</strong></p>
+    <ul>
+        <li>Layout styles</li>
+        <li>Component styles (cards, modals, forms)</li>
+        <li>Responsive design (mobile/desktop)</li>
+        <li>Animations and transitions</li>
+        <li>Accessibility styles</li>
+        <li>Print styles</li>
+    </ul>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Used by: All HTML pages</li>
+        <li>Referenced in: All HTML files via <code>&lt;link rel="stylesheet"&gt;</code></li>
+    </ul>
+    
+    <div class="page-break"></div>
+    
+    <h2><span class="emoji">☁️</span> Cloudflare Functions</h2>
+    
+    <h3>22. `functions/api/submit-program.js` (218 lines)</h3>
+    <p><strong>Purpose:</strong> API endpoint for form submissions (replaces Formspree)</p>
+    <p><strong>Why it's needed:</strong> Handles program submission form</p>
+    <p><strong>Can it be removed?</strong> ⚠️ OPTIONAL - Only if you're using Formspree instead</p>
+    
+    <p><strong>What it does:</strong></p>
+    <ul>
+        <li>Receives POST requests from submit form</li>
+        <li>Validates submission data</li>
+        <li>Rate limiting (prevents spam)</li>
+        <li>Sends email via Resend/GitHub/SMTP</li>
+        <li>Returns success/error response</li>
+    </ul>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Called by: <code>submit.html</code> (if configured)</li>
+        <li>Uses: Environment variables (RESEND_API_KEY, GITHUB_TOKEN, etc.)</li>
+        <li>Uses: KV storage (if configured for rate limiting)</li>
+    </ul>
+    
+    <p><strong>Status:</strong> Created but not yet integrated (submit.html still uses Formspree)</p>
+    
+    <hr>
+    
+    <h3>23. `functions/api/programs.js` (89 lines)</h3>
+    <p><strong>Purpose:</strong> API endpoint for programs data with filtering</p>
+    <p><strong>Why it's needed:</strong> Provides server-side filtering and caching</p>
+    <p><strong>Can it be removed?</strong> ⚠️ OPTIONAL - Not currently used (app loads programs.json directly)</p>
+    
+    <p><strong>What it does:</strong></p>
+    <ul>
+        <li>Serves programs.json with optional filtering</li>
+        <li>Query parameters: city, care, age, virtual</li>
+        <li>Sets cache headers</li>
+        <li>Returns filtered results</li>
+    </ul>
+    
+    <p><strong>Dependencies:</strong></p>
+    <ul>
+        <li>Could be used by: <code>app.js</code> instead of direct programs.json fetch</li>
+        <li>Currently: Not integrated</li>
+    </ul>
+    
+    <p><strong>Status:</strong> Created but not yet used</p>
+    
+    <div class="page-break"></div>
+    
+    <h2><span class="emoji">🔗</span> File Dependencies Map</h2>
+    
+    <pre><code>index.html
+  ├── styles.css
+  ├── security.js (loads first)
+  ├── js/data-validator.js
+  ├── js/config/constants.js
+  ├── js/utils/helpers.js
+  ├── js/modules/storage.js
+  ├── js/modules/search.js
+  ├── js/state-manager.js
+  └── app.js (loads last, uses all above)
+      ├── programs.json (fetched)
+      └── sw.js (registers Service Worker)
+
+program.html
+  ├── styles.css
+  ├── security.js
+  ├── js/data-validator.js
+  ├── js/config/constants.js
+  ├── js/utils/helpers.js
+  ├── js/modules/storage.js
+  ├── js/modules/search.js
+  ├── js/state-manager.js
+  └── js/program-detail.js
+      └── programs.json (fetched)
+
+submit.html
+  ├── styles.css
+  └── security.js
+      └── Formspree API (or /api/submit-program)
+
+admin.html
+  ├── styles.css
+  ├── security.js
+  ├── js/data-validator.js
+  └── programs.json
+
+build.js
+  ├── esbuild (npm package)
+  ├── All source files
+  └── Creates dist/ directory
+</code></pre>
+    
+    <hr>
+    
+    <h2><span class="emoji">❓</span> Can Files Be Removed?</h2>
+    
+    <h3>❌ <strong>CANNOT REMOVE</strong> (Critical)</h3>
+    <ul>
+        <li><code>package.json</code> - Required for npm/build</li>
+        <li><code>wrangler.jsonc</code> - Required for Cloudflare deployment</li>
+        <li><code>build.js</code> - Required for building</li>
+        <li><code>index.html</code> - Your main page</li>
+        <li><code>app.js</code> - Main application logic</li>
+        <li><code>security.js</code> - Data encryption/security</li>
+        <li><code>programs.json</code> - Your data</li>
+        <li><code>styles.css</code> - Styling</li>
+        <li><code>js/config/constants.js</code> - Configuration</li>
+        <li><code>js/utils/helpers.js</code> - Utility functions</li>
+        <li><code>js/modules/search.js</code> - Search functionality</li>
+    </ul>
+    
+    <h3>⚠️ <strong>OPTIONAL</strong> (Can remove if not needed)</h3>
+    <ul>
+        <li><code>program.html</code> + <code>js/program-detail.js</code> - If you don't need detail pages</li>
+        <li><code>submit.html</code> - If you don't accept submissions</li>
+        <li><code>admin.html</code> - If you don't need admin dashboard</li>
+        <li><code>sw.js</code> - If you don't need offline/PWA support</li>
+        <li><code>js/data-validator.js</code> - If you don't need validation</li>
+        <li><code>js/state-manager.js</code> - If not fully used (check first!)</li>
+        <li><code>js/modules/storage.js</code> - If app.js handles storage (check for duplication!)</li>
+        <li><code>functions/api/*.js</code> - If not using Cloudflare Functions</li>
+        <li><code>_headers</code> - Can configure in Cloudflare Dashboard</li>
+        <li><code>_redirects</code> - Currently empty, can remove</li>
+    </ul>
+    
+    <h3>🔍 <strong>UNUSED CODE FOUND</strong> (Can be removed)</h3>
+    <ul>
+        <li>✅ <strong>Legacy bundle</strong> (<code>dist/js/bundle.js</code>) - Created but never referenced in HTML</li>
+        <li>✅ <strong>StateManager class</strong> - Exported but <code>app.js</code> uses global variables instead</li>
+        <li>✅ <strong>UserDataStorage class</strong> - Exported but <code>app.js</code> has its own storage functions</li>
+    </ul>
+    
+    <div class="page-break"></div>
+    
+    <h2><span class="emoji">🧹</span> Potential Cleanup Opportunities</h2>
+    
+    <h3>1. <strong>Duplicate Storage Functions</strong> ⚠️ PARTIALLY USED</h3>
+    <p><strong>Issue:</strong> Both <code>app.js</code> and <code>js/modules/storage.js</code> have <code>loadEncryptedData()</code> and <code>saveEncryptedData()</code></p>
+    
+    <p><strong>Status:</strong></p>
+    <ul>
+        <li><code>app.js</code> has its own <code>loadEncryptedData()</code> and <code>saveEncryptedData()</code> functions (lines 12-48)</li>
+        <li><code>js/modules/storage.js</code> also has these functions AND a <code>UserDataStorage</code> class</li>
+        <li><code>app.js</code> uses its own functions, not the class</li>
+        <li>The standalone functions in <code>storage.js</code> are exported to <code>window</code> but <code>app.js</code> doesn't use them</li>
+    </ul>
+    
+    <p><strong>Action:</strong></p>
+    <ul>
+        <li><code>app.js</code> functions are used ✅</li>
+        <li><code>storage.js</code> functions are exported but not used</li>
+        <li><code>UserDataStorage</code> class is exported but not used</li>
+        <li>Can remove <code>UserDataStorage</code> class from <code>storage.js</code> OR keep for future use</li>
+    </ul>
+    
+    <h3>2. <strong>Unused StateManager</strong> ✅ CONFIRMED UNUSED</h3>
+    <p><strong>Issue:</strong> <code>js/state-manager.js</code> has StateManager class, but <code>app.js</code> uses global variables</p>
+    
+    <p><strong>Status:</strong> StateManager is exported to <code>window</code> but never used. <code>app.js</code> manages state with global variables instead.</p>
+    
+    <p><strong>Action:</strong></p>
+    <ul>
+        <li>✅ Can remove <code>js/state-manager.js</code> OR</li>
+        <li>Refactor <code>app.js</code> to use StateManager (better architecture but more work)</li>
+    </ul>
+    
+    <h3>3. <strong>Legacy Bundle</strong> ✅ CONFIRMED UNUSED</h3>
+    <p><strong>Issue:</strong> <code>build.js</code> creates <code>dist/js/bundle.js</code> but it's not referenced in HTML</p>
+    
+    <p><strong>Status:</strong> <code>bundle.js</code> is created but never loaded by any HTML file.</p>
+    
+    <p><strong>Action:</strong></p>
+    <ul>
+        <li>✅ Can remove <code>createLegacyBundle()</code> function from <code>build.js</code></li>
+        <li>Saves build time (~100-200ms)</li>
+    </ul>
+    
+    <h3>4. <strong>Unused Cloudflare Functions</strong></h3>
+    <p><strong>Issue:</strong> Functions created but not integrated</p>
+    
+    <p><strong>Action:</strong></p>
+    <ul>
+        <li>Either integrate them or remove them</li>
+        <li>Update submit.html to use <code>/api/submit-program</code> if keeping</li>
+    </ul>
+    
+    <div class="page-break"></div>
+    
+    <h2><span class="emoji">📝</span> Code Organization Notes</h2>
+    
+    <h3>Current Structure: <strong>Monolithic with Modules</strong></h3>
+    <ul>
+        <li><code>app.js</code> is very large (3250+ lines) but contains most logic</li>
+        <li>Modules provide reusable functions</li>
+        <li>Some duplication between files</li>
+    </ul>
+    
+    <h3>Potential Improvements:</h3>
+    <ol>
+        <li><strong>Split app.js</strong> into smaller modules:
+            <ul>
+                <li><code>js/modules/render.js</code> - Rendering functions</li>
+                <li><code>js/modules/filters.js</code> - Filtering logic</li>
+                <li><code>js/modules/ui.js</code> - UI interactions</li>
+            </ul>
+        </li>
+        <li><strong>Consolidate storage</strong>:
+            <ul>
+                <li>Use either app.js functions OR storage.js class, not both</li>
+            </ul>
+        </li>
+        <li><strong>Remove unused code</strong>:
+            <ul>
+                <li>StateManager if not used</li>
+                <li>Legacy bundle if not needed</li>
+            </ul>
+        </li>
+    </ol>
+    
+    <hr>
+    
+    <h2><span class="emoji">🎯</span> Quick Reference: What Each File Does</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>File</th>
+                <th>Purpose</th>
+                <th>Essential?</th>
+                <th>Lines</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>index.html</code></td>
+                <td>Main search page</td>
+                <td>✅ Yes</td>
+                <td>433</td>
+            </tr>
+            <tr>
+                <td><code>app.js</code></td>
+                <td>Main application logic</td>
+                <td>✅ Yes</td>
+                <td>3250+</td>
+            </tr>
+            <tr>
+                <td><code>security.js</code></td>
+                <td>Encryption & validation</td>
+                <td>✅ Yes</td>
+                <td>318</td>
+            </tr>
+            <tr>
+                <td><code>programs.json</code></td>
+                <td>Program database</td>
+                <td>✅ Yes</td>
+                <td>4500+</td>
+            </tr>
+            <tr>
+                <td><code>styles.css</code></td>
+                <td>All styling</td>
+                <td>✅ Yes</td>
+                <td>Large</td>
+            </tr>
+            <tr>
+                <td><code>build.js</code></td>
+                <td>Build script</td>
+                <td>✅ Yes</td>
+                <td>176</td>
+            </tr>
+            <tr>
+                <td><code>wrangler.jsonc</code></td>
+                <td>Cloudflare config</td>
+                <td>✅ Yes</td>
+                <td>7</td>
+            </tr>
+            <tr>
+                <td><code>package.json</code></td>
+                <td>NPM config</td>
+                <td>✅ Yes</td>
+                <td>22</td>
+            </tr>
+            <tr>
+                <td><code>js/config/constants.js</code></td>
+                <td>Configuration</td>
+                <td>✅ Yes</td>
+                <td>53</td>
+            </tr>
+            <tr>
+                <td><code>js/utils/helpers.js</code></td>
+                <td>Utilities</td>
+                <td>✅ Yes</td>
+                <td>149</td>
+            </tr>
+            <tr>
+                <td><code>js/modules/search.js</code></td>
+                <td>Search logic</td>
+                <td>✅ Yes</td>
+                <td>228</td>
+            </tr>
+            <tr>
+                <td><code>sw.js</code></td>
+                <td>Service Worker</td>
+                <td>⚠️ Optional</td>
+                <td>75</td>
+            </tr>
+            <tr>
+                <td><code>program.html</code></td>
+                <td>Detail page</td>
+                <td>⚠️ Optional</td>
+                <td>~200</td>
+            </tr>
+            <tr>
+                <td><code>js/program-detail.js</code></td>
+                <td>Detail logic</td>
+                <td>⚠️ Optional</td>
+                <td>262</td>
+            </tr>
+            <tr>
+                <td><code>submit.html</code></td>
+                <td>Submission form</td>
+                <td>⚠️ Optional</td>
+                <td>975</td>
+            </tr>
+            <tr>
+                <td><code>admin.html</code></td>
+                <td>Admin dashboard</td>
+                <td>⚠️ Optional</td>
+                <td>~600</td>
+            </tr>
+            <tr>
+                <td><code>js/data-validator.js</code></td>
+                <td>Data validation</td>
+                <td>⚠️ Optional</td>
+                <td>309</td>
+            </tr>
+            <tr>
+                <td><code>js/modules/storage.js</code></td>
+                <td>Storage module</td>
+                <td>⚠️ Check usage</td>
+                <td>107</td>
+            </tr>
+            <tr>
+                <td><code>js/state-manager.js</code></td>
+                <td>State management</td>
+                <td>⚠️ Check usage</td>
+                <td>201</td>
+            </tr>
+            <tr>
+                <td><code>functions/api/*.js</code></td>
+                <td>API endpoints</td>
+                <td>⚠️ Not integrated</td>
+                <td>307</td>
+            </tr>
+            <tr>
+                <td><code>_headers</code></td>
+                <td>HTTP headers</td>
+                <td>⚠️ Optional</td>
+                <td>47</td>
+            </tr>
+            <tr>
+                <td><code>_redirects</code></td>
+                <td>URL redirects</td>
+                <td>⚠️ Optional</td>
+                <td>13</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="page-break"></div>
+    
+    <h2><span class="emoji">🔍</span> Next Steps for Understanding</h2>
+    
+    <ol>
+        <li><strong>Check for unused code:</strong>
+            <ul>
+                <li>Search for <code>StateManager</code> usage</li>
+                <li>Search for <code>UserDataStorage</code> usage</li>
+                <li>Search for <code>bundle.js</code> references</li>
+            </ul>
+        </li>
+        <li><strong>Understand data flow:</strong>
+            <ul>
+                <li>How programs.json is loaded</li>
+                <li>How search works</li>
+                <li>How filters are applied</li>
+            </ul>
+        </li>
+        <li><strong>Identify dependencies:</strong>
+            <ul>
+                <li>What requires what</li>
+                <li>Load order importance</li>
+                <li>What breaks if removed</li>
+            </ul>
+        </li>
+    </ol>
+    
+    <hr>
+    
+    <h2><span class="emoji">✅</span> Summary: Unused Code Found</h2>
+    
+    <h3>Confirmed Unused (Can Remove):</h3>
+    
+    <ol>
+        <li><strong>Legacy Bundle (<code>createLegacyBundle()</code> in build.js)</strong>
+            <ul>
+                <li>Creates <code>dist/js/bundle.js</code> but it's never loaded</li>
+                <li><strong>Action:</strong> Remove function, saves ~100-200ms build time</li>
+            </ul>
+        </li>
+        <li><strong>StateManager Class (<code>js/state-manager.js</code>)</strong>
+            <ul>
+                <li>Class is exported but never instantiated</li>
+                <li><code>app.js</code> uses global variables instead</li>
+                <li><strong>Action:</strong> Remove file OR refactor app.js to use it</li>
+            </ul>
+        </li>
+        <li><strong>UserDataStorage Class (<code>js/modules/storage.js</code>)</strong>
+            <ul>
+                <li>Class is exported but never used</li>
+                <li><code>app.js</code> has its own storage functions</li>
+                <li><strong>Action:</strong> Remove class, keep the standalone functions (they're exported to window)</li>
+            </ul>
+        </li>
+    </ol>
+    
+    <h3>Partially Used:</h3>
+    
+    <ol start="4">
+        <li><strong>Storage Module Functions</strong>
+            <ul>
+                <li><code>loadEncryptedData()</code> and <code>saveEncryptedData()</code> exist in both:
+                    <ul>
+                        <li><code>app.js</code> (lines 12-48) - ✅ USED</li>
+                        <li><code>js/modules/storage.js</code> (lines 5-41) - ⚠️ EXPORTED BUT NOT USED</li>
+                    </ul>
+                </li>
+                <li><strong>Action:</strong> Keep app.js versions, remove duplicates from storage.js OR consolidate</li>
+            </ul>
+        </li>
+    </ol>
+    
+    <div class="page-break"></div>
+    
+    <h2><span class="emoji">🎯</span> Quick Action Items</h2>
+    
+    <h3>Safe to Remove Now:</h3>
+    <ol>
+        <li>Remove <code>createLegacyBundle()</code> function from <code>build.js</code> (lines 114-158)</li>
+        <li>Remove <code>UserDataStorage</code> class from <code>js/modules/storage.js</code> (keep the functions)</li>
+    </ol>
+    
+    <h3>Consider Removing:</h3>
+    <ol start="3">
+        <li>Remove <code>js/state-manager.js</code> entirely (if not planning to use it)</li>
+        <li>Consolidate storage functions (remove duplicates)</li>
+    </ol>
+    
+    <h3>Keep But Document:</h3>
+    <ol start="5">
+        <li>Cloudflare Functions - Created but not integrated yet</li>
+        <li><code>program.html</code> + <code>program-detail.js</code> - Optional feature</li>
+        <li><code>admin.html</code> - Optional feature (but add authentication!)</li>
+        <li><code>submit.html</code> - Optional feature</li>
+    </ol>
+    
+    <hr>
+    
+    <h2><span class="emoji">📊</span> Code Statistics</h2>
+    
+    <ul>
+        <li><strong>Total JavaScript Files:</strong> 13</li>
+        <li><strong>Total HTML Files:</strong> 4</li>
+        <li><strong>Largest File:</strong> <code>app.js</code> (3250+ lines)</li>
+        <li><strong>Data File:</strong> <code>programs.json</code> (4500+ lines, 92 programs)</li>
+        <li><strong>Total Lines of Code:</strong> ~10,000+ lines</li>
+    </ul>
+    
+    <hr>
+    
+    <h2><span class="emoji">🔄</span> Data Flow Summary</h2>
+    
+    <ol>
+        <li><strong>Page Load:</strong>
+            <ul>
+                <li>HTML loads → Scripts load in order → <code>app.js</code> initializes</li>
+                <li><code>app.js</code> fetches <code>programs.json</code></li>
+                <li>Data is validated by <code>js/data-validator.js</code></li>
+                <li>Programs are stored in memory</li>
+                <li>User data loaded from encrypted localStorage</li>
+            </ul>
+        </li>
+        <li><strong>User Interaction:</strong>
+            <ul>
+                <li>User types/search → <code>app.js</code> filters programs</li>
+                <li>Uses <code>js/modules/search.js</code> for fuzzy matching</li>
+                <li>Results rendered using <code>js/utils/helpers.js</code></li>
+                <li>User actions (favorites, notes) saved via <code>security.js</code> encryption</li>
+            </ul>
+        </li>
+        <li><strong>Build Process:</strong>
+            <ul>
+                <li><code>build.js</code> runs → Copies static files → Builds JS with esbuild</li>
+                <li>Outputs to <code>dist/</code> → Cloudflare Pages deploys <code>dist/</code></li>
+            </ul>
+        </li>
+    </ol>
+    
+    <hr>
+    
+    <p style="text-align: center; color: #666; margin-top: 40px;">
+        This documentation is saved locally and won't be pushed to git. Use it as a reference to understand your codebase!
+    </p>
+</body>
+</html>
+

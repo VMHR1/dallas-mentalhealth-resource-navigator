@@ -2578,19 +2578,12 @@ function bind(){
     on(els.locationConsentCancel, "click", handleLocationConsentCancel);
   }
   
-  // Close location consent modal with Escape or close button
+  // Close location consent modal with close button
   if (els.locationConsentModal) {
     const closeBtn = els.locationConsentModal.querySelector('.modal-close');
     if (closeBtn) {
       on(closeBtn, "click", handleLocationConsentCancel);
     }
-    
-    // Close on Escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && els.locationConsentModal.getAttribute('aria-hidden') === 'false') {
-        handleLocationConsentCancel();
-      }
-    });
   }
   
   // Handle browser back/forward buttons
@@ -2741,6 +2734,9 @@ function bind(){
       }
       if (els.helpModal && els.helpModal.getAttribute('aria-hidden') === 'false') {
         hideModal(els.helpModal);
+      }
+      if (els.locationConsentModal && els.locationConsentModal.getAttribute('aria-hidden') === 'false') {
+        handleLocationConsentCancel();
       }
     }
   });
@@ -2934,9 +2930,13 @@ async function loadGeocodedData() {
           geocodedPrograms.set(program.program_id, program);
         });
       }
+      console.log(`Loaded ${geocodedPrograms.size} geocoded programs`);
       return true;
+    } else {
+      console.warn('Geocoded data file not found (this is okay if not yet generated)');
     }
   } catch (error) {
+    // Silently fail - geocoded data is optional
     console.warn('Geocoded data not available:', error.message);
   }
   return false;
@@ -3005,7 +3005,10 @@ function requestUserLocation() {
 }
 
 function showLocationConsent() {
-  if (!els.locationConsentModal) return;
+  if (!els.locationConsentModal) {
+    console.error('Location consent modal not found');
+    return;
+  }
   showModal(els.locationConsentModal);
 }
 
@@ -3016,6 +3019,10 @@ function hideLocationConsent() {
 
 async function handleNearMeClick() {
   // Show consent modal first
+  if (!els.locationConsentModal) {
+    showToast('Location feature not available', 'error');
+    return;
+  }
   showLocationConsent();
 }
 
@@ -3023,8 +3030,20 @@ async function handleLocationConsentAllow() {
   hideLocationConsent();
   
   try {
+    // Check if distance module is loaded
+    if (typeof window.calculateProgramDistance !== 'function') {
+      showToast('Distance calculation not available. Please refresh the page.', 'error');
+      console.error('Distance module not loaded');
+      return;
+    }
+    
     // Request location
     userLocation = await requestUserLocation();
+    
+    if (!userLocation) {
+      showToast('Failed to get location', 'error');
+      return;
+    }
     
     // Set sort to distance
     currentSort = 'distance';
@@ -3041,6 +3060,7 @@ async function handleLocationConsentAllow() {
     
     showToast('Location found. Results sorted by distance.', 'success');
   } catch (error) {
+    console.error('Location error:', error);
     showToast(error.message || 'Failed to get location', 'error');
   }
 }
@@ -3189,11 +3209,20 @@ async function loadPrograms(retryCount = 0){
       };
     });
     
-    // Try to load and merge geocoded data
-    await loadGeocodedData();
-    if (geocodedPrograms && geocodedPrograms.size > 0) {
-      programs = mergeGeocodedData(programs);
-    }
+    // Try to load and merge geocoded data (non-blocking)
+    loadGeocodedData().then(() => {
+      if (geocodedPrograms && geocodedPrograms.size > 0) {
+        programs = mergeGeocodedData(programs);
+        programDataMap.clear();
+        programs.forEach(p => programDataMap.set(p.program_id, p));
+        // Re-render if already rendered
+        if (ready) {
+          render();
+        }
+      }
+    }).catch(err => {
+      console.warn('Failed to load geocoded data:', err);
+    });
 
     buildLocationOptions(programs);
     buildInsuranceOptions(programs);
