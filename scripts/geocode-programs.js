@@ -165,21 +165,25 @@ async function geocodePrograms() {
             location.address === existingLoc.address;
           const cityMatch = location.city === existingLoc.city;
           
-          if (addressMatch && cityMatch && existingLoc.geo && 
-              typeof existingLoc.geo.lat === 'number' && 
-              typeof existingLoc.geo.lng === 'number') {
-            
-            // If --retry-full-address flag is set and address exists, retry for more precision
-            if (retryFullAddress && location.address && location.address.trim()) {
-              console.log(`Retrying full address for: ${location.address}, ${location.city}, ${location.state}`);
-              // Don't preserve, let it geocode again with full address
-            } else {
+          if (addressMatch && cityMatch) {
+            // If address has valid coordinates, preserve them
+            if (existingLoc.geo && 
+                typeof existingLoc.geo.lat === 'number' && 
+                typeof existingLoc.geo.lng === 'number') {
               geocodedLocation.geo = existingLoc.geo;
               geocodedProgram.locations.push(geocodedLocation);
               preservedCount++;
               hasExistingGeo = true;
               continue;
             }
+            // If --retry-full-address flag is set and address failed before (geo is null), retry it
+            else if (retryFullAddress && (!existingLoc.geo || existingLoc.geo === null) && 
+                     location.address && location.address.trim()) {
+              console.log(`Retrying failed address: ${location.address}, ${location.city}, ${location.state}`);
+              // Don't preserve, let it geocode again with full address
+              // Continue to geocoding section below
+            }
+            // If no coordinates and no retry flag, skip (will be handled in geocoding section)
           }
         }
 
