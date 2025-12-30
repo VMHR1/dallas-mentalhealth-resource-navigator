@@ -20,10 +20,12 @@ const rootDir = join(__dirname, '..');
 const programsPath = join(rootDir, 'programs.json');
 const programsData = JSON.parse(readFileSync(programsPath, 'utf-8'));
 
-// Simple geocoding using a free service (Nominatim OpenStreetMap)
-// In production, you might want to use a paid service for better rate limits
+// Geocoding using Nominatim OpenStreetMap (free, open-source)
+// Terms: https://operations.osm.org/policies/nominatim/
+// Rate limit: 1 request per second (strictly enforced)
+// Attribution: Required - OpenStreetMap contributors
 const GEOCODE_API = 'https://nominatim.openstreetmap.org/search';
-const DELAY_MS = 1000; // Rate limit: 1 request per second for Nominatim
+const DELAY_MS = 1000; // Rate limit: 1 request per second for Nominatim (required by ToS)
 
 async function geocodeAddress(address, city, state, zip) {
   const query = [address, city, state, zip].filter(Boolean).join(', ');
@@ -35,7 +37,7 @@ async function geocodeAddress(address, city, state, zip) {
     const url = `${GEOCODE_API}?format=json&q=${encodeURIComponent(query)}&limit=1`;
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Dallas-Mental-Health-Resource-Navigator/1.0'
+        'User-Agent': 'Dallas-Mental-Health-Resource-Navigator/1.0 (https://github.com/VMHR1/mental-health-resource-navigator)'
       }
     });
 
@@ -64,7 +66,9 @@ async function geocodePrograms() {
       ...programsData.metadata,
       geocoded_at: new Date().toISOString(),
       geocoding_service: 'Nominatim OpenStreetMap',
-      note: 'DEV-ONLY file. Do not commit to production. Regenerate as needed.'
+      geocoding_attribution: '© OpenStreetMap contributors',
+      geocoding_terms: 'https://operations.osm.org/policies/nominatim/',
+      note: 'Geocoded data for distance calculations. Regenerate when program addresses change.'
     },
     programs: []
   };

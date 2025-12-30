@@ -45,6 +45,7 @@ function copyStaticAssets() {
       'security.js',
       'sw.js',
       'programs.json',
+      'programs.geocoded.json',
       '_redirects',
       '_headers'
     ];
