@@ -8,7 +8,7 @@
  * Requires: npm install node-fetch (or use built-in fetch in Node 18+)
  */
 
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -20,6 +20,28 @@ const rootDir = join(__dirname, '..');
 const programsPath = join(rootDir, 'programs.json');
 const programsData = JSON.parse(readFileSync(programsPath, 'utf-8'));
 
+// Try to load existing geocoded data
+const geocodedPath = join(rootDir, 'programs.geocoded.json');
+let existingGeocodedData = null;
+if (existsSync(geocodedPath)) {
+  try {
+    existingGeocodedData = JSON.parse(readFileSync(geocodedPath, 'utf-8'));
+    console.log('Found existing geocoded data. Will preserve existing coordinates and only geocode new addresses.\n');
+  } catch (error) {
+    console.warn('Could not read existing geocoded data, starting fresh:', error.message);
+  }
+}
+
+// Create a map of existing geocoded data for quick lookup
+const existingGeocodedMap = new Map();
+if (existingGeocodedData && Array.isArray(existingGeocodedData.programs)) {
+  existingGeocodedData.programs.forEach(program => {
+    if (program.program_id && Array.isArray(program.locations)) {
+      existingGeocodedMap.set(program.program_id, program.locations);
+    }
+  });
+}
+
 // Geocoding using Nominatim OpenStreetMap (free, open-source)
 // Terms: https://operations.osm.org/policies/nominatim/
 // Rate limit: 1 request per second (strictly enforced)
@@ -27,8 +49,17 @@ const programsData = JSON.parse(readFileSync(programsPath, 'utf-8'));
 const GEOCODE_API = 'https://nominatim.openstreetmap.org/search';
 const DELAY_MS = 1000; // Rate limit: 1 request per second for Nominatim (required by ToS)
 
-async function geocodeAddress(address, city, state, zip) {
-  const query = [address, city, state, zip].filter(Boolean).join(', ');
+async function geocodeAddress(address, city, state, zip, retryWithCityOnly = false) {
+  // Try different query formats
+  let query;
+  if (retryWithCityOnly) {
+    // Retry with just city and state if full address failed
+    query = [city, state].filter(Boolean).join(', ');
+  } else {
+    // First try: full address
+    query = [address, city, state, zip].filter(Boolean).join(', ');
+  }
+  
   if (!query || city === 'Virtual') {
     return null;
   }
@@ -42,7 +73,13 @@ async function geocodeAddress(address, city, state, zip) {
     });
 
     if (!response.ok) {
-      console.warn(`Geocoding failed for ${query}: ${response.status}`);
+      if (response.status === 429) {
+        // Rate limited - wait longer
+        console.warn(`Rate limited, waiting 2 seconds...`);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        return null; // Will retry on next run
+      }
+      console.warn(`Geocoding failed for ${query}: HTTP ${response.status}`);
       return null;
     }
 
@@ -53,6 +90,13 @@ async function geocodeAddress(address, city, state, zip) {
         lng: parseFloat(data[0].lon)
       };
     }
+    
+    // If full address failed and we haven't tried city-only, retry
+    if (!retryWithCityOnly && address) {
+      console.log(`  → Retrying with city/state only: ${city}, ${state}`);
+      return await geocodeAddress(address, city, state, zip, true);
+    }
+    
     return null;
   } catch (error) {
     console.warn(`Geocoding error for ${query}:`, error.message);
@@ -75,34 +119,65 @@ async function geocodePrograms() {
 
   let processed = 0;
   let geocodedCount = 0;
+  let preservedCount = 0;
   let skippedCount = 0;
+  let virtualCount = 0;
+  let failedAddresses = [];
 
   for (const program of programsData.programs) {
     const geocodedProgram = { ...program };
+    const existingLocations = existingGeocodedMap.get(program.program_id);
 
     if (Array.isArray(program.locations)) {
       geocodedProgram.locations = [];
 
-      for (const location of program.locations) {
+      for (let idx = 0; idx < program.locations.length; idx++) {
+        const location = program.locations[idx];
         const geocodedLocation = { ...location };
 
         // Skip Virtual locations
         if (location.city === 'Virtual' || program.service_setting === 'Virtual') {
           geocodedLocation.geo = null;
           geocodedProgram.locations.push(geocodedLocation);
+          virtualCount++;
           skippedCount++;
           continue;
         }
 
-        // Check if already has geo data
-        if (location.geo && typeof location.geo.lat === 'number' && typeof location.geo.lng === 'number') {
+        // Check if we have existing geocoded data for this location
+        let hasExistingGeo = false;
+        if (existingLocations && existingLocations[idx]) {
+          const existingLoc = existingLocations[idx];
+          // Match by address/city to ensure it's the same location
+          const addressMatch = !location.address || !existingLoc.address || 
+            location.address === existingLoc.address;
+          const cityMatch = location.city === existingLoc.city;
+          
+          if (addressMatch && cityMatch && existingLoc.geo && 
+              typeof existingLoc.geo.lat === 'number' && 
+              typeof existingLoc.geo.lng === 'number') {
+            geocodedLocation.geo = existingLoc.geo;
+            geocodedProgram.locations.push(geocodedLocation);
+            preservedCount++;
+            hasExistingGeo = true;
+            continue;
+          }
+        }
+
+        // Check if location already has geo data in programs.json
+        if (!hasExistingGeo && location.geo && 
+            typeof location.geo.lat === 'number' && 
+            typeof location.geo.lng === 'number') {
           geocodedLocation.geo = location.geo;
           geocodedProgram.locations.push(geocodedLocation);
+          preservedCount++;
           continue;
         }
 
-        // Geocode the address
-        console.log(`Geocoding: ${location.address || ''}, ${location.city}, ${location.state} ${location.zip || ''}`);
+        // Geocode the address (new or missing coordinates)
+        const addressStr = `${location.address || ''}, ${location.city}, ${location.state} ${location.zip || ''}`.trim();
+        console.log(`Geocoding: ${addressStr}`);
+        
         const geo = await geocodeAddress(
           location.address || '',
           location.city || '',
@@ -116,12 +191,18 @@ async function geocodePrograms() {
         } else {
           geocodedLocation.geo = null;
           skippedCount++;
+          failedAddresses.push({
+            program: program.program_name || program.organization,
+            address: addressStr
+          });
         }
 
         geocodedProgram.locations.push(geocodedLocation);
 
-        // Rate limiting
-        await new Promise(resolve => setTimeout(resolve, DELAY_MS));
+        // Rate limiting (only wait if we actually made an API call)
+        if (!hasExistingGeo) {
+          await new Promise(resolve => setTimeout(resolve, DELAY_MS));
+        }
       }
     }
 
@@ -139,9 +220,19 @@ async function geocodePrograms() {
 
   console.log('\n=== Geocoding Complete ===');
   console.log(`Total programs: ${processed}`);
-  console.log(`Locations geocoded: ${geocodedCount}`);
-  console.log(`Locations skipped (Virtual or failed): ${skippedCount}`);
-  console.log(`Output: ${outputPath}`);
+  console.log(`Locations geocoded (new): ${geocodedCount}`);
+  console.log(`Locations preserved (existing): ${preservedCount}`);
+  console.log(`Virtual locations (skipped): ${virtualCount}`);
+  console.log(`Failed geocoding attempts: ${failedAddresses.length}`);
+  
+  if (failedAddresses.length > 0) {
+    console.log('\nFailed addresses (you can manually verify these):');
+    failedAddresses.forEach((item, idx) => {
+      console.log(`  ${idx + 1}. ${item.program}: ${item.address}`);
+    });
+  }
+  
+  console.log(`\nOutput: ${outputPath}`);
 }
 
 geocodePrograms().catch(console.error);
