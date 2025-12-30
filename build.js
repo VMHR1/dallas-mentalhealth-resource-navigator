@@ -6,6 +6,7 @@ import * as esbuild from 'esbuild';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -69,18 +70,31 @@ function copyStaticAssets() {
       }
     });
     
-    // Copy program-detail.js if it exists
-    if (existsSync('js/program-detail.js')) {
-      if (!existsSync('dist/js')) {
-        mkdirSync('dist/js', { recursive: true });
+    // Copy js directory files
+    const jsFiles = [
+      'js/program-detail.js',
+      'js/modules/distance.js'
+    ];
+    
+    jsFiles.forEach(file => {
+      if (existsSync(file)) {
+        // Create dist/js structure matching source
+        const relativePath = file.replace(/^js\//, '');
+        const distPath = join('dist', 'js', relativePath);
+        const distDir = dirname(distPath);
+        
+        if (!existsSync(distDir)) {
+          mkdirSync(distDir, { recursive: true });
+        }
+        
+        try {
+          writeFileSync(distPath, readFileSync(file, 'utf8'));
+          copiedCount++;
+        } catch (error) {
+          console.error(`Error copying ${file}:`, error.message);
+        }
       }
-      try {
-        writeFileSync(join('dist/js', 'program-detail.js'), readFileSync('js/program-detail.js', 'utf8'));
-        copiedCount++;
-      } catch (error) {
-        console.error('Error copying js/program-detail.js:', error.message);
-      }
-    }
+    });
     
     console.log(`Static assets copied (${copiedCount} files)`);
   } catch (error) {
