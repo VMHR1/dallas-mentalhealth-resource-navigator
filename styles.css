@@ -1849,6 +1849,42 @@ footer{
   line-height: 1;
 }
 
+/* Stop Sharing Location Button (TDPSA Compliance) */
+.btn-stop-location{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(239,68,68,.3);
+  background: rgba(239,68,68,.12);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 10px 22px rgba(15,23,42,.06);
+  position: relative;
+  min-height: 44px;
+}
+
+.btn-stop-location:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 16px 34px rgba(15,23,42,.10);
+  background: rgba(239,68,68,.2);
+  border-color: rgba(239,68,68,.4);
+}
+
+.btn-stop-location:focus{
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(239,68,68,.28);
+}
+
+.btn-stop-location .icon{
+  font-size: 16px;
+  line-height: 1;
+}
+
 .badge.distance-badge{
   background: rgba(79,209,197,.15);
   border-color: rgba(79,209,197,.25);
@@ -1860,10 +1896,12 @@ footer{
   .btn-icon .btn-text{
     display: none;
   }
-  .btn-near-me .btn-text{
+  .btn-near-me .btn-text,
+  .btn-stop-location .btn-text{
     display: none;
   }
-  .btn-near-me{
+  .btn-near-me,
+  .btn-stop-location{
     padding: 10px 12px;
   }
   .results-actions{

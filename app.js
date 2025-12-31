@@ -130,6 +130,7 @@ const els = {
   helpModal: document.getElementById("helpModal"),
   shareFilters: document.getElementById("shareFilters"),
   nearMeBtn: document.getElementById("nearMeBtn"),
+  stopLocationBtn: document.getElementById("stopLocationBtn"),
   locationConsentModal: document.getElementById("locationConsentModal"),
   locationConsentAllow: document.getElementById("locationConsentAllow"),
   locationConsentCancel: document.getElementById("locationConsentCancel")
@@ -2585,6 +2586,11 @@ function bind(){
     on(els.nearMeBtn, "click", handleNearMeClick);
   }
   
+  // Stop sharing location button (TDPSA compliance: right to opt-out)
+  if (els.stopLocationBtn) {
+    on(els.stopLocationBtn, "click", handleStopLocationSharing);
+  }
+  
   // Location consent modal handlers
   if (els.locationConsentAllow) {
     on(els.locationConsentAllow, "click", handleLocationConsentAllow);
@@ -3076,6 +3082,9 @@ async function handleLocationConsentAllow() {
       render();
     }
     
+    // Update button visibility (show stop button, hide near me button)
+    updateLocationButtonVisibility();
+    
     showToast('Location found. Results sorted by distance.', 'success');
   } catch (error) {
     console.error('Location error:', error);
@@ -3085,6 +3094,48 @@ async function handleLocationConsentAllow() {
 
 function handleLocationConsentCancel() {
   hideLocationConsent();
+}
+
+// TDPSA Compliance: Stop sharing location (right to opt-out)
+function handleStopLocationSharing() {
+  // Clear location data (TDPSA: right to delete personal data)
+  userLocation = null;
+  
+  // Reset sort if it was set to distance
+  if (currentSort === 'distance') {
+    currentSort = 'relevance';
+    if (els.sortSelect) {
+      els.sortSelect.value = 'relevance';
+    }
+  }
+  
+  // Update UI to reflect location is no longer active
+  updateLocationButtonVisibility();
+  
+  // Re-render without distance sorting
+  if (typeof scheduleRenderFn === 'function') {
+    scheduleRenderFn();
+  } else {
+    render();
+  }
+  
+  // Provide user feedback (TDPSA: clear communication)
+  showToast('Location sharing stopped. Your location has been cleared.', 'success');
+}
+
+// Update button visibility based on location state (TDPSA: clear opt-out mechanism)
+function updateLocationButtonVisibility() {
+  if (!els.nearMeBtn || !els.stopLocationBtn) return;
+  
+  if (userLocation) {
+    // Location is active: show stop button, hide near me button
+    els.nearMeBtn.style.display = 'none';
+    els.stopLocationBtn.style.display = 'inline-flex';
+  } else {
+    // Location not active: show near me button, hide stop button
+    els.nearMeBtn.style.display = 'inline-flex';
+    els.stopLocationBtn.style.display = 'none';
+  }
 }
 
 async function loadPrograms(retryCount = 0){
