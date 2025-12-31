@@ -2292,9 +2292,13 @@ function render(){
     } else {
       els.treatmentEmpty.style.display = "none";
       // Remove inline display override to let CSS control layout (CSS defines .grid as flex, not grid)
-      els.treatmentGrid.style.removeProperty("display");
+      // IMPORTANT: Never set display="grid" here - it would override CSS flex layout and break multi-column wrapping
+      els.treatmentGrid.style.display = "";
     }
   }
+  
+  // Dev-only regression guard: warn if treatmentGrid computed display becomes "grid" (would break flex layout)
+  checkTreatmentGridDisplayRegression();
 
   const count = activeList.length;
   const label = showCrisis ? "crisis resources" : "treatment programs";
@@ -3313,6 +3317,34 @@ function updateLastUpdatedDisplay() {
 // Store metadata for display
 let programsMetadata = null;
 
+// Dev-only regression guard: track if we've already warned about display:grid issue
+let didWarnDisplayGrid = false;
+
+// Dev-only: Check if treatmentGrid has display:grid (would break flex layout)
+// This warns once per page load if the computed display becomes "grid" instead of "flex"
+function checkTreatmentGridDisplayRegression() {
+  // Only run in dev environments (localhost, pages.dev, or 127.0.0.1)
+  const isDev = typeof window !== 'undefined' && (
+    window.location.hostname.includes('localhost') ||
+    window.location.hostname.endsWith('.pages.dev') ||
+    window.location.hostname.includes('127.0.0.1')
+  );
+  
+  if (!isDev || didWarnDisplayGrid || !els.treatmentGrid) {
+    return;
+  }
+  
+  const computedDisplay = window.getComputedStyle(els.treatmentGrid).display;
+  if (computedDisplay === 'grid') {
+    didWarnDisplayGrid = true;
+    console.warn(
+      '⚠️ WARNING: treatmentGrid computed display is "grid" (expected "flex"). ' +
+      'Inline style or CSS regression may break multi-column layout. ' +
+      'The .grid class should use display:flex, not display:grid.'
+    );
+  }
+}
+
 async function loadPrograms(retryCount = 0){
   const maxRetries = 3;
   const retryDelay = 1000 * (retryCount + 1); // Exponential backoff
@@ -3484,6 +3516,9 @@ async function loadPrograms(retryCount = 0){
     updateLastUpdatedDisplay();
     
     render();
+    
+    // Dev-only: Check for display regression after initial render
+    checkTreatmentGridDisplayRegression();
     
     // Try to load and merge geocoded data (non-blocking, after initial render)
     loadGeocodedData().then(() => {
