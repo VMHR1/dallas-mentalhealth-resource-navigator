@@ -38,7 +38,7 @@ function copyStaticAssets() {
   try {
     const staticFiles = [
       'index.html',
-      'admin.html',
+      // admin.html excluded from public build - use Cloudflare Access for secure admin access
       'program.html',
       'submit.html',
       'styles.css',

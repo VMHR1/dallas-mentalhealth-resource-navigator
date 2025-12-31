@@ -44,3 +44,9 @@
 /programs.json
   Cache-Control: public, max-age=3600, must-revalidate
 
+# Block admin.html from public access (should be protected by Cloudflare Access)
+# This is a safety measure in case the file accidentally gets deployed
+/admin.html
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-cache, no-store, must-revalidate
+
