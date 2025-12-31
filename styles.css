@@ -1509,6 +1509,7 @@ footer{
 }
 
 /* Ensure card has proper overflow handling */
+/* Consolidated card styles - single authoritative definition */
 .card{
   border-radius: var(--radius);
   border: 1px solid rgba(15,23,42,.09);
@@ -1519,6 +1520,9 @@ footer{
   overflow: visible; /* Changed from hidden to visible for badge */
   transform: translateZ(0);
   transition: var(--transition);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  page-break-inside: avoid;
   animation: rise .35s ease both;
   contain: layout style paint;
   content-visibility: auto;
