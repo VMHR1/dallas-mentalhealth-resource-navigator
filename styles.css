@@ -1085,6 +1085,7 @@ a.btnlike:focus{
   gap: 14px;
   padding: 14px 14px 16px;
   align-items:flex-start;
+  width: 100%;
   max-width: 100%;
   overflow-x: hidden;
 }
