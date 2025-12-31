@@ -1320,11 +1320,11 @@ function createCard(p, idx){
 
       <div class="kv">
         <div class="k">Type</div>
-        <div class="v">${escapeHtml(safeStr(p.entry_type) || "Unknown")}</div>
+        <div class="v">${escapeHtml(safeStr(p.entry_type) || "Not listed")}</div>
       </div>
-      <div class="kv">
+        <div class="kv">
         <div class="k">Insurance</div>
-        <div class="v">${escapeHtml(safeStr(p.insurance_notes) || "Unknown")}</div>
+        <div class="v">${escapeHtml(safeStr(p.insurance_notes) || "Not listed — call to confirm")}</div>
       </div>
 
       ${website ? `
@@ -1340,7 +1340,7 @@ function createCard(p, idx){
       ` : ``}
       <div class="kv">
         <div class="k">Transportation</div>
-        <div class="v">${escapeHtml(safeStr(p.transportation_available) || "Unknown")}</div>
+        <div class="v">${escapeHtml(safeStr(p.transportation_available) || "Not listed")}</div>
       </div>
       <div class="kv">
         <div class="k">Notes</div>
@@ -2156,6 +2156,15 @@ function render(){
   if (els.sectionTitle) els.sectionTitle.textContent = activeLabel;
   if (els.resultsLabel) els.resultsLabel.textContent = showCrisis ? "crisis matches" : "treatment matches";
   if (els.totalCount) els.totalCount.textContent = String(activeList.length);
+  
+  // Update aria-live results count for screen readers
+  const resultsAnnouncer = document.getElementById('resultsCountAnnouncer');
+  if (resultsAnnouncer) {
+    const count = activeList.length;
+    resultsAnnouncer.textContent = count === 0 
+      ? 'No programs found' 
+      : `Showing ${count} program${count === 1 ? '' : 's'}`;
+  }
 
   // Use progressive loading for large result sets
   if (activeList.length > 20) {
@@ -2180,8 +2189,15 @@ function render(){
 
   if (els.treatmentCount) els.treatmentCount.textContent = `${activeList.length} result${activeList.length===1?"":"s"}`;
 
+  // Show/hide empty state with improved messaging
   if (els.treatmentEmpty) {
-    els.treatmentEmpty.style.display = activeList.length ? "none" : "block";
+    if (activeList.length === 0) {
+      els.treatmentEmpty.style.display = "block";
+      els.treatmentGrid.style.display = "none";
+    } else {
+      els.treatmentEmpty.style.display = "none";
+      els.treatmentGrid.style.display = "grid";
+    }
   }
 
   const count = activeList.length;
@@ -3164,6 +3180,37 @@ function updateLocationButtonVisibility() {
   }
 }
 
+// Display last updated date from metadata
+function updateLastUpdatedDisplay() {
+  const lastUpdatedEl = document.getElementById('lastUpdated');
+  if (!lastUpdatedEl || !programsMetadata) return;
+  
+  // Try generatedAt first (ISO format), then generated_at (date format)
+  const dateStr = programsMetadata.generatedAt || programsMetadata.generated_at;
+  if (dateStr) {
+    try {
+      const date = new Date(dateStr);
+      if (!isNaN(date.getTime())) {
+        const formatted = date.toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+        lastUpdatedEl.textContent = `Program list updated: ${formatted}`;
+        return;
+      }
+    } catch (e) {
+      // Invalid date, fall through to omit
+    }
+  }
+  
+  // No valid date found - omit display rather than fabricating
+  lastUpdatedEl.textContent = '';
+}
+
+// Store metadata for display
+let programsMetadata = null;
+
 async function loadPrograms(retryCount = 0){
   const maxRetries = 3;
   const retryDelay = 1000 * (retryCount + 1); // Exponential backoff
@@ -3194,6 +3241,11 @@ async function loadPrograms(retryCount = 0){
     try {
       // Try to parse directly first (most reliable)
       data = JSON.parse(jsonText);
+      
+      // Store metadata for display
+      if (data.metadata) {
+        programsMetadata = data.metadata;
+      }
       
       // If validation is available, run it but don't block on failure
       if (typeof window.validateJSON === 'function') {
@@ -3325,6 +3377,9 @@ async function loadPrograms(retryCount = 0){
     if (typeof updateLocationButtonVisibility === 'function') {
       updateLocationButtonVisibility();
     }
+    
+    // Display last updated date if available
+    updateLastUpdatedDisplay();
     
     render();
     
