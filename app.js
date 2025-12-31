@@ -2291,7 +2291,8 @@ function render(){
       els.treatmentGrid.style.display = "none";
     } else {
       els.treatmentEmpty.style.display = "none";
-      els.treatmentGrid.style.display = "grid";
+      // Remove inline display override to let CSS control layout (CSS defines .grid as flex, not grid)
+      els.treatmentGrid.style.removeProperty("display");
     }
   }
 
