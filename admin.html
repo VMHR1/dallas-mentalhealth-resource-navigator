@@ -239,98 +239,26 @@
 
   <script src="security.js"></script>
   <script>
-    // Password protection
-    const ADMIN_PASSWORD_HASH = '02df0b94b9d9f720c186549225f64fe6d75123813044cdf0e58d5c51ce27748a'; // SHA-256 hash of "Btmolly321"
-    let isAuthenticated = false;
-
-    async function hashPassword(password) {
-      const encoder = new TextEncoder();
-      const data = encoder.encode(password);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
+    // Cloudflare Access handles authentication - no client-side password needed
+    // If user reaches this page, they've already been authenticated by Access
+    let isAuthenticated = true;
 
     function checkAuth() {
-      try {
-        const sessionAuth = sessionStorage.getItem('admin_authenticated');
-        if (sessionAuth === 'true') {
-          isAuthenticated = true;
-          showDashboard();
-          // Initialize dashboard after showing it
-          setTimeout(() => {
-            if (typeof loadLogs === 'function') {
-              loadLogs();
-              checkSystemStatus();
-              checkRateLimits();
-              setInterval(() => {
-                loadLogs();
-                checkRateLimits();
-              }, 30000);
-            }
-          }, 100);
-          return;
+      // User is already authenticated by Cloudflare Access
+      // Just show the dashboard
+      showDashboard();
+      // Initialize dashboard
+      setTimeout(() => {
+        if (typeof loadLogs === 'function') {
+          loadLogs();
+          checkSystemStatus();
+          checkRateLimits();
+          setInterval(() => {
+            loadLogs();
+            checkRateLimits();
+          }, 30000);
         }
-        showLogin();
-      } catch (error) {
-        console.error('Auth check error:', error);
-        showLogin();
-      }
-    }
-
-    function showLogin() {
-      document.body.innerHTML = `
-        <div class="container" style="max-width: 400px; margin-top: 100px;">
-          <div class="section">
-            <h2 style="margin-bottom: 20px;">Admin Access</h2>
-            <div id="loginError" style="display: none; padding: 12px; background: #fee2e2; color: #991b1b; border-radius: 6px; margin-bottom: 16px; font-size: 14px;"></div>
-            <input type="password" id="passwordInput" placeholder="Enter password" style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 16px; margin-bottom: 12px;" autofocus>
-            <button class="btn" onclick="handleLogin()" style="width: 100%;">Login</button>
-            <p style="margin-top: 16px; font-size: 12px; color: #64748b; text-align: center;">Press Enter to submit</p>
-          </div>
-        </div>
-      `;
-      
-      const input = document.getElementById('passwordInput');
-      if (input) {
-        input.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') {
-            handleLogin();
-          }
-        });
-      }
-    }
-
-    async function handleLogin() {
-      const input = document.getElementById('passwordInput');
-      const errorDiv = document.getElementById('loginError');
-      
-      if (!input || !input.value) {
-        if (errorDiv) {
-          errorDiv.textContent = 'Please enter a password';
-          errorDiv.style.display = 'block';
-        }
-        return;
-      }
-
-      const password = input.value;
-      const hash = await hashPassword(password);
-      
-      if (hash === ADMIN_PASSWORD_HASH) {
-        sessionStorage.setItem('admin_authenticated', 'true');
-        isAuthenticated = true;
-        // Reload page to show dashboard (login screen replaced body HTML)
-        location.reload();
-      } else {
-        if (errorDiv) {
-          errorDiv.textContent = 'Incorrect password';
-          errorDiv.style.display = 'block';
-        }
-        if (input) {
-          input.value = '';
-          input.focus();
-        }
-      }
+      }, 100);
     }
 
     function showDashboard() {
@@ -345,9 +273,11 @@
     }
 
     function logout() {
-      sessionStorage.removeItem('admin_authenticated');
-      isAuthenticated = false;
-      location.reload();
+      // With Cloudflare Access, logout redirects to Access logout
+      // Clear any local session data
+      sessionStorage.clear();
+      // Redirect to Access logout or home
+      window.location.href = '/';
     }
 
     let allLogs = [];
@@ -583,18 +513,18 @@
       `).join('');
     }
 
-    // Initialize - check authentication first
+    // Initialize - Cloudflare Access has already authenticated user
     // Ensure body is visible
     document.body.style.display = 'block';
     
-    // Wait a moment for security.js to load, then check auth
+    // Wait a moment for security.js to load, then initialize dashboard
     setTimeout(() => {
       try {
         checkAuth();
       } catch (error) {
         console.error('Initialization error:', error);
-        // Show login screen even if there's an error
-        showLogin();
+        // Still try to show dashboard on error
+        showDashboard();
       }
     }, 100);
   </script>
