@@ -2,13 +2,15 @@
 // caching of HTML and JS so that new deployments are picked up immediately
 // for all users without requiring a hard refresh.
 
-const CACHE_NAME = 'mh-directory-v5';
+const CACHE_NAME = 'mh-directory-v6';
 
 // Only cache truly static assets that rarely change (e.g., CSS).
 // HTML and JS are intentionally excluded so that each deployment
 // is fetched fresh from the network.
+// Note: CSS is now versioned (styles.css?v=2) so cache updates automatically
 const urlsToCache = [
-  '/styles.css'
+  // CSS is versioned, so we don't need to cache it here
+  // This ensures CSS updates are picked up immediately
 ];
 
 self.addEventListener('install', (event) => {
@@ -39,17 +41,8 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
-        // Cache hit - validate response
-        if (response) {
-          // Verify response is for expected resource.
-          // Only serve from cache for known static assets (currently CSS).
-          const requestUrl = new URL(event.request.url);
-          const allowedPaths = ['/styles.css'];
-          if (allowedPaths.some(path => requestUrl.pathname === path || requestUrl.pathname.endsWith(path))) {
-            return response;
-          }
-        }
-        // Fetch and cache
+        // Always check network first for CSS (since it's now versioned)
+        // This ensures CSS updates are picked up immediately
         return fetch(event.request).then(response => {
           // Only cache successful responses
           if (response.status === 200) {
@@ -59,6 +52,9 @@ self.addEventListener('fetch', (event) => {
             });
           }
           return response;
+        }).catch(() => {
+          // If network fails, try cache as fallback
+          return caches.match(event.request);
         });
       }
     )
