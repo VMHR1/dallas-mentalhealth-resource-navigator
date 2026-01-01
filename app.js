@@ -229,7 +229,32 @@ if (isCoarsePointer && window.visualViewport) {
     const now = Date.now();
     const timeSinceLastEvent = now - __vvLastEventTime;
     __vvLastEventTime = now;
+    __vvEventCount++;
     
+    // CRITICAL: On real iOS devices, apply optimizations IMMEDIATELY on any resize
+    // Don't wait for thresholds - the stuttering happens during the delay
+    if (isRealIOSDevice) {
+      if (!__isVvChanging) {
+        __isVvChanging = true;
+        document.documentElement.classList.add('vv-changing');
+      }
+      
+      // Reset timeout on every event - keep optimizations active while events are firing
+      clearTimeout(__vvT);
+      __vvT = setTimeout(() => {
+        __isVvChanging = false;
+        __vvEventCount = 0;
+        document.documentElement.classList.remove('vv-changing');
+        // Update banner offset after viewport stabilizes
+        updateCrisisBannerOffset();
+      }, 600); // Longer timeout to ensure viewport has fully stabilized
+      
+      // Skip height checks on real devices - they cause layout reads
+      // Just apply optimizations immediately and debounce removal
+      return;
+    }
+    
+    // For emulation/desktop: use threshold-based approach
     // Cancel any pending RAF
     if (__vvRAF) {
       cancelAnimationFrame(__vvRAF);
@@ -237,26 +262,15 @@ if (isCoarsePointer && window.visualViewport) {
     
     // Use rAF to batch visualViewport events
     __vvRAF = requestAnimationFrame(() => {
-      // On real devices, apply optimizations immediately if events are firing rapidly
-      // This indicates active text-size adjustment
-      if (isRealIOSDevice && !__isVvChanging && timeSinceLastEvent < 50 && __vvEventCount > 2) {
-        __isVvChanging = true;
-        document.documentElement.classList.add('vv-changing');
-      }
-      
-      // Throttle height checks: more frequent on real devices
-      const checkInterval = isRealIOSDevice ? 100 : 200;
+      // Throttle height checks
       clearTimeout(__vvHeightCheckT);
       __vvHeightCheckT = setTimeout(() => {
         const currentHeight = window.visualViewport.height;
         const heightDiff = Math.abs(currentHeight - __lastVvHeight);
         
-        // CRITICAL: Apply vv-changing during text-size changes
-        // Real devices need lower threshold due to more frequent events
+        // Apply vv-changing during text-size changes
         if (heightDiff > HEIGHT_THRESHOLD) {
-          // Significant height change - likely text-size adjustment
           __lastVvHeight = currentHeight;
-          __vvEventCount++;
           
           if (!__isVvChanging) {
             __isVvChanging = true;
@@ -265,15 +279,13 @@ if (isCoarsePointer && window.visualViewport) {
           }
           
           // Reset timeout - keep class on while changes are happening
-          // Longer timeout on real devices to account for slower performance
           clearTimeout(__vvT);
           __vvT = setTimeout(() => {
             __isVvChanging = false;
             __vvEventCount = 0;
             document.documentElement.classList.remove('vv-changing');
-            // Update banner offset after viewport change completes
             updateCrisisBannerOffset();
-          }, isRealIOSDevice ? 500 : 400);
+          }, 400);
         } else if (__isVvChanging && heightDiff < STABILIZE_THRESHOLD) {
           // Height has stabilized - remove class after delay
           clearTimeout(__vvT);
@@ -282,21 +294,9 @@ if (isCoarsePointer && window.visualViewport) {
             __vvEventCount = 0;
             document.documentElement.classList.remove('vv-changing');
             updateCrisisBannerOffset();
-          }, isRealIOSDevice ? 400 : 300);
-        } else if (isRealIOSDevice && __vvEventCount > 0) {
-          // On real devices, if we've seen multiple events, keep optimizations active
-          // This handles the case where events fire rapidly but height changes are small
-          __vvEventCount++;
-          if (__vvEventCount > 5 && !__isVvChanging) {
-            __isVvChanging = true;
-            document.documentElement.classList.add('vv-changing');
-          }
-          // Reset counter after a delay
-          setTimeout(() => {
-            if (__vvEventCount > 0) __vvEventCount = 0;
           }, 300);
         }
-      }, checkInterval);
+      }, 200);
     });
   });
   

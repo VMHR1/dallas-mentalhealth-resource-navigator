@@ -671,7 +671,22 @@ h1{
   html.vv-changing .modal-content,
   html.vv-changing .hero-copy,
   html.vv-changing .section {
-    box-shadow: 0 1px 3px rgba(15,23,42,.1) !important;
+    box-shadow: 0 1px 2px rgba(15,23,42,.08) !important; /* Even simpler shadow */
+  }
+  
+  /* CRITICAL: On real iOS devices, disable ALL expensive properties immediately */
+  /* This prevents any paint cost during viewport changes */
+  html.vv-changing .trust-strip,
+  html.vv-changing .trust-item {
+    background: rgba(255,255,255,.9) !important; /* Remove gradients */
+    box-shadow: 0 1px 2px rgba(15,23,42,.08) !important;
+  }
+  
+  /* Simplify all text during viewport changes to reduce layout cost */
+  html.vv-changing h1,
+  html.vv-changing h2,
+  html.vv-changing h3 {
+    line-height: 1.2 !important; /* Fixed line-height to avoid recalculation */
   }
   
   /* Disable transforms and filters that cause expensive repaints */
