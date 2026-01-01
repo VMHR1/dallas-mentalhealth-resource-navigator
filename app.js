@@ -159,7 +159,7 @@ let __lastWidth = window.innerWidth;
 
 if (!isCoarsePointer) {
   // Only run on fine pointer devices (desktop)
-  window.addEventListener("resize", () => {
+window.addEventListener("resize", () => {
     // On coarse pointer devices, never toggle is-resizing
     if (isCoarsePointer) return;
     
@@ -177,10 +177,10 @@ if (!isCoarsePointer) {
     
     // Use rAF to batch resize events
     __rzRAF = requestAnimationFrame(() => {
-      document.documentElement.classList.add("is-resizing");
-      clearTimeout(__rzT);
-      __rzT = setTimeout(() => {
-        document.documentElement.classList.remove("is-resizing");
+  document.documentElement.classList.add("is-resizing");
+  clearTimeout(__rzT);
+  __rzT = setTimeout(() => {
+    document.documentElement.classList.remove("is-resizing");
       }, 150);
     });
   });
@@ -192,9 +192,15 @@ if (isCoarsePointer && window.visualViewport) {
   // Use visualViewport for mobile to avoid window resize spam
   let __vvT;
   let __vvRAF;
+  let __vvClassT;
+  let __vvHeightCheckT;
   let __lastVvHeight = window.visualViewport.height;
+  let __isVvChanging = false;
+  let __lastHeightCheck = 0;
   
   window.visualViewport.addEventListener('resize', () => {
+    const now = Date.now();
+    
     // Cancel any pending RAF
     if (__vvRAF) {
       cancelAnimationFrame(__vvRAF);
@@ -202,26 +208,42 @@ if (isCoarsePointer && window.visualViewport) {
     
     // Use rAF to batch visualViewport events
     __vvRAF = requestAnimationFrame(() => {
-      document.documentElement.classList.add('vv-changing');
-      
-      // Only update banner offset if viewport height changed significantly
-      const currentHeight = window.visualViewport.height;
-      if (Math.abs(currentHeight - __lastVvHeight) > 10) {
-        __lastVvHeight = currentHeight;
-        // Update banner offset after viewport stabilizes
-        clearTimeout(__vvT);
-        __vvT = setTimeout(() => {
-          document.documentElement.classList.remove('vv-changing');
-          // Update banner offset after viewport change completes
-          updateCrisisBannerOffset();
-        }, 250);
-      } else {
-        // Small height changes - just remove class after short delay
-        clearTimeout(__vvT);
-        __vvT = setTimeout(() => {
-          document.documentElement.classList.remove('vv-changing');
-        }, 200);
+      // Aggressively debounce class toggling: only add class once at start
+      // Keep it on until viewport stabilizes to avoid frequent style recalculations
+      clearTimeout(__vvClassT);
+      if (!__isVvChanging) {
+        // Add class immediately on first event to start optimizations
+        __isVvChanging = true;
+        document.documentElement.classList.add('vv-changing');
       }
+      
+      // Throttle height checks aggressively: only check every 150ms
+      // This reduces property access overhead during rapid viewport changes
+      clearTimeout(__vvHeightCheckT);
+      __vvHeightCheckT = setTimeout(() => {
+        const currentHeight = window.visualViewport.height;
+        const heightDiff = Math.abs(currentHeight - __lastVvHeight);
+        
+        // Only update banner offset if viewport height changed significantly
+        if (heightDiff > 10) {
+          __lastVvHeight = currentHeight;
+          // Update banner offset after viewport stabilizes
+          clearTimeout(__vvT);
+          __vvT = setTimeout(() => {
+            __isVvChanging = false;
+            document.documentElement.classList.remove('vv-changing');
+            // Update banner offset after viewport change completes
+            updateCrisisBannerOffset();
+          }, 350);
+        } else {
+          // Small height changes - remove class after delay
+          clearTimeout(__vvT);
+          __vvT = setTimeout(() => {
+            __isVvChanging = false;
+            document.documentElement.classList.remove('vv-changing');
+          }, 300);
+        }
+      }, 150);
     });
   });
   

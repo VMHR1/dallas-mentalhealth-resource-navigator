@@ -572,6 +572,7 @@ h1{
 /* Temporarily disable expensive animations and reduce paint cost during iOS visualViewport changes */
 /* This prevents jank when user adjusts text size via aA menu */
 @media (pointer: coarse) {
+  /* Disable all animations during viewport changes */
   html.vv-changing .bg-gradient {
     animation: none !important;
     transform: none !important;
@@ -595,13 +596,27 @@ h1{
     transform: none !important;
   }
   
-  /* Reduce paint cost during viewport changes by simplifying expensive properties */
+  /* CRITICAL: Disable ALL backdrop-filters during viewport changes (very expensive on iOS) */
+  html.vv-changing .hero-copy,
+  html.vv-changing .floating-card,
+  html.vv-changing .search-section,
+  html.vv-changing .section,
+  html.vv-changing .dd-menu,
+  html.vv-changing .search-suggestions,
+  html.vv-changing .modal-backdrop,
+  html.vv-changing .privacy-controls,
+  html.vv-changing * {
+    backdrop-filter: none !important;
+  }
+  
+  /* Reduce paint cost by simplifying box-shadows (expensive to recompute) */
   html.vv-changing .card,
   html.vv-changing .search-section,
   html.vv-changing .triage-card,
-  html.vv-changing .modal-content {
-    box-shadow: 0 2px 8px rgba(15,23,42,.08) !important;
-    backdrop-filter: none !important;
+  html.vv-changing .modal-content,
+  html.vv-changing .hero-copy,
+  html.vv-changing .section {
+    box-shadow: 0 1px 3px rgba(15,23,42,.1) !important;
   }
   
   /* Disable transforms and filters that cause expensive repaints */
@@ -610,11 +625,76 @@ h1{
     filter: none !important;
   }
   
-  /* Simplify transitions during viewport changes */
+  /* Disable all transitions during viewport changes to prevent recalculation */
   html.vv-changing *,
   html.vv-changing *::before,
   html.vv-changing *::after {
     transition: none !important;
+  }
+  
+  /* Use CSS containment to isolate paint operations during viewport changes */
+  html.vv-changing .card,
+  html.vv-changing .section,
+  html.vv-changing .search-section,
+  html.vv-changing .grid {
+    contain: layout style paint !important;
+  }
+  
+  /* Disable hover effects that use transforms during viewport changes */
+  html.vv-changing .card:hover,
+  html.vv-changing .card:hover::before,
+  html.vv-changing button:hover,
+  html.vv-changing .btnlike:hover,
+  html.vv-changing .linkBtn:hover {
+    transform: none !important;
+  }
+  
+  /* Simplify sticky positioning recalculation during viewport changes */
+  html.vv-changing .search-section {
+    will-change: auto !important;
+  }
+  
+  /* CRITICAL: Use content-visibility to skip paint of off-screen content during viewport changes */
+  /* This matches the performance when content is hidden, but keeps layout intact */
+  html.vv-changing .grid {
+    content-visibility: auto !important;
+  }
+  
+  /* Ensure cards in grid skip paint when not in viewport during changes */
+  html.vv-changing .grid .card {
+    content-visibility: auto !important;
+    contain-intrinsic-size: 240px !important;
+  }
+  
+  /* Skip paint on sections that are not currently in viewport */
+  html.vv-changing .section {
+    content-visibility: auto !important;
+  }
+  
+  /* Optimize text rendering during viewport changes */
+  html.vv-changing {
+    text-rendering: optimizeSpeed !important;
+    -webkit-font-smoothing: auto !important;
+  }
+  
+  /* Force GPU compositing on main containers to reduce paint cost */
+  html.vv-changing .grid,
+  html.vv-changing .section {
+    transform: translateZ(0) !important;
+    will-change: contents !important;
+  }
+  
+  /* Disable expensive pseudo-elements during viewport changes */
+  html.vv-changing .card::before,
+  html.vv-changing .card::after {
+    display: none !important;
+  }
+  
+  /* Simplify border-radius calculations during viewport changes */
+  html.vv-changing .card,
+  html.vv-changing .section,
+  html.vv-changing .search-section {
+    border-radius: 12px !important; /* Use fixed value instead of CSS variable */
   }
 }
 
