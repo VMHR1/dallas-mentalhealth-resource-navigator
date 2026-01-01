@@ -3,7 +3,7 @@
 // Simple build process for code splitting, minification, and optimization
 
 import * as esbuild from 'esbuild';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, statSync, copyFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -95,6 +95,29 @@ function copyStaticAssets() {
         }
       }
     });
+    
+    // Copy data/regions directory if it exists
+    const regionsDir = 'data/regions';
+    if (existsSync(regionsDir)) {
+      const distRegionsDir = join('dist', regionsDir);
+      if (!existsSync(distRegionsDir)) {
+        mkdirSync(distRegionsDir, { recursive: true });
+      }
+      
+      const regionFiles = readdirSync(regionsDir);
+      regionFiles.forEach(file => {
+        const srcPath = join(regionsDir, file);
+        const distPath = join(distRegionsDir, file);
+        if (statSync(srcPath).isFile()) {
+          try {
+            copyFileSync(srcPath, distPath);
+            copiedCount++;
+          } catch (error) {
+            console.error(`Error copying ${srcPath}:`, error.message);
+          }
+        }
+      });
+    }
     
     console.log(`Static assets copied (${copiedCount} files)`);
   } catch (error) {

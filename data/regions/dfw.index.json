@@ -1,0 +1,1314 @@
+{
+  "metadata": {
+    "generated_at": "2025-12-21",
+    "notes": "All program records have a fact-checked verification_source URL and last_verified date as of 2025-12-21; navigation-only psychiatry placeholders removed.",
+    "generatedAt": "2025-12-22T05:30:38.701524Z",
+    "insurance_verified_at": "2025-12-26",
+    "insurance_update_notes": "Added accepted_insurance object to each program; insurance was verified from provider websites where publicly stated. One program (Unity Behavioral Health) did not publicly list accepted insurance at time of verification.",
+    "insurance_verified_programs": 78,
+    "insurance_not_listed_programs": 1,
+    "insurance_not_applicable_entries": 13,
+    "website_links_added_on": "2025-12-26",
+    "website_links_method": "Parsed first URL from verification_source when present; else used accepted_insurance.source_url.",
+    "website_links_coverage": {
+      "with_website_url": 92,
+      "missing_website_url": 0
+    }
+  },
+  "programs": [
+    {
+      "program_id": "php-childrens-health-dallas",
+      "program_name": "Day Treatment / Partial Hospitalization Program",
+      "organization": "Children’s Health",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Dallas",
+          "state": "TX",
+          "zip": "75247",
+          "address": "1341 W. Mockingbird Ln., Ste. 500"
+        }
+      ]
+    },
+    {
+      "program_id": "php-dallas-behavioral-health-care-hospital-desoto",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Dallas Behavioral Health Care Hospital",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "DeSoto",
+          "state": "TX",
+          "zip": "75115",
+          "address": "800 Kirnwood Drive"
+        }
+      ]
+    },
+    {
+      "program_id": "php-texas-health-bh-center-richardson",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Texas Health Behavioral Health Center Richardson",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Richardson",
+          "state": "TX",
+          "zip": "75082",
+          "address": "3661 North Plano Road, Suite 2100"
+        }
+      ]
+    },
+    {
+      "program_id": "php-reflections-dallas",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Reflections Lifestyle Center - Dallas",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Dallas",
+          "state": "TX",
+          "zip": "75225",
+          "address": "8333 Douglas Ave., Ste. 350"
+        }
+      ]
+    },
+    {
+      "program_id": "php-reflections-richardson",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Reflections Lifestyle Center - Richardson",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Richardson",
+          "state": "TX",
+          "zip": "75080",
+          "address": "100 N. Central Expy., Ste. 300"
+        }
+      ]
+    },
+    {
+      "program_id": "php-changes-frisco",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Changes Frisco",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Frisco",
+          "state": "TX",
+          "zip": "75034",
+          "address": "6870 Lebanon Rd., Suite 300"
+        }
+      ]
+    },
+    {
+      "program_id": "php-changes-mckinney",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Changes McKinney",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75071",
+          "address": "1820 N. Lake Forest Drive"
+        }
+      ]
+    },
+    {
+      "program_id": "php-texas-health-seay-plano",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Texas Health Seay Behavioral Health Plano",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Plano",
+          "state": "TX",
+          "zip": "75093",
+          "address": "6110 W Parker Rd."
+        }
+      ]
+    },
+    {
+      "program_id": "php-connections-mckinney",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Connections Wellness Group McKinney",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75071",
+          "address": "7290 Virginia Parkway, Ste. 3100"
+        }
+      ]
+    },
+    {
+      "program_id": "php-connections-plano",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Connections Wellness Group Plano",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Plano",
+          "state": "TX",
+          "zip": "75093",
+          "address": "6101 West Plano Parkway, Suite 240"
+        }
+      ]
+    },
+    {
+      "program_id": "php-reflections-the-colony",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Reflections Lifestyle Center (The Colony)",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "The Colony",
+          "state": "TX",
+          "zip": "75056",
+          "address": "4901 Windhaven Pkwy., Ste. 200"
+        }
+      ]
+    },
+    {
+      "program_id": "php-carrus-frisco",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Carrus Care Frisco",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Frisco",
+          "state": "TX",
+          "zip": "75034",
+          "address": "2440 Timber Ridge Dr., Suite 105"
+        }
+      ]
+    },
+    {
+      "program_id": "php-carrus-mckinney",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Carrus Care McKinney",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75072",
+          "address": "3600 Eldorado Pkwy, Bldg C, Ste 1"
+        }
+      ]
+    },
+    {
+      "program_id": "php-carrus-plano",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Carrus Care Plano",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Plano",
+          "state": "TX",
+          "zip": "75093",
+          "address": "4701 Old Shepard Place, Ste. 200"
+        }
+      ]
+    },
+    {
+      "program_id": "php-basepoint-mckinney",
+      "program_name": "Day Treatment / PHP",
+      "organization": "BasePoint Academy McKinney",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75069",
+          "address": "4733 Medical Center Dr."
+        }
+      ]
+    },
+    {
+      "program_id": "php-basepoint-frisco",
+      "program_name": "Day Treatment / PHP",
+      "organization": "BasePoint Academy Frisco",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Frisco",
+          "state": "TX",
+          "zip": "75036",
+          "address": "8275 Judges Way, Suite 100"
+        }
+      ]
+    },
+    {
+      "program_id": "php-connections-denton",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Connections Wellness Group Denton",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Denton",
+          "state": "TX",
+          "zip": "76210",
+          "address": "2711 Shoreline Dr., Ste. 121"
+        }
+      ]
+    },
+    {
+      "program_id": "php-branches-denton",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Branches Denton",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Denton",
+          "state": "TX",
+          "zip": "76201",
+          "address": "2012 West University Dr."
+        }
+      ]
+    },
+    {
+      "program_id": "php-bricolage-flower-mound",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Bricolage Behavioral Health",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Flower Mound",
+          "state": "TX",
+          "zip": "75022",
+          "address": "3204 Long Prairie Road, Suite A"
+        }
+      ]
+    },
+    {
+      "program_id": "php-carrus-flower-mound",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Carrus Care Flower Mound",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Flower Mound",
+          "state": "TX",
+          "zip": "75022",
+          "address": "2750 Churchill Dr., Suite 110"
+        }
+      ]
+    },
+    {
+      "program_id": "php-texas-health-arlington",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Texas Health Arlington",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Arlington",
+          "state": "TX",
+          "zip": "76012",
+          "address": "1001 N. Waldrop Dr., Ste. 510"
+        }
+      ]
+    },
+    {
+      "program_id": "php-texas-health-springwood-bedford",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Texas Health Springwood",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Bedford",
+          "state": "TX",
+          "zip": "76022",
+          "address": "2717 Tibbets Dr."
+        }
+      ]
+    },
+    {
+      "program_id": "php-branches-fort-worth",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Branches Fort Worth",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Fort Worth",
+          "state": "TX",
+          "zip": "76104",
+          "address": "1307 8th Ave., Floor 5"
+        }
+      ]
+    },
+    {
+      "program_id": "php-mesa-springs-innovations-arlington",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Mesa Springs – Innovations (Arlington)",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Arlington",
+          "state": "TX",
+          "zip": "76018",
+          "address": "4935 S. Collins St."
+        }
+      ]
+    },
+    {
+      "program_id": "php-mesa-springs-innovations-fort-worth",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Mesa Springs – Innovations (Fort Worth)",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Fort Worth",
+          "state": "TX",
+          "zip": "76116",
+          "address": "6421 Camp Bowie Blvd., Ste. 200"
+        }
+      ]
+    },
+    {
+      "program_id": "php-mind-above-matter-keller",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Mind Above Matter (Keller)",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Keller",
+          "state": "TX",
+          "zip": "76244",
+          "address": "4232 Heritage Trace Pkwy"
+        }
+      ]
+    },
+    {
+      "program_id": "php-mind-above-matter-burleson",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Mind Above Matter (Burleson)",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Burleson",
+          "state": "TX",
+          "zip": "76028",
+          "address": "2915 S Burleson Blvd."
+        }
+      ]
+    },
+    {
+      "program_id": "php-connections-keller",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Connections Wellness Group (Keller)",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Keller",
+          "state": "TX",
+          "zip": "76244",
+          "address": "9726 North Beach Street"
+        }
+      ]
+    },
+    {
+      "program_id": "php-connections-mansfield",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Connections Wellness Group (Mansfield)",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Mansfield",
+          "state": "TX",
+          "zip": "76063",
+          "address": "1900 Matlock Rd., Building 2"
+        }
+      ]
+    },
+    {
+      "program_id": "php-carrus-mansfield",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Carrus Care Mansfield",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Mansfield",
+          "state": "TX",
+          "zip": "76063",
+          "address": "1707 Fountainview Dr."
+        }
+      ]
+    },
+    {
+      "program_id": "php-carrus-keller",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Carrus Care Keller",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Keller",
+          "state": "TX",
+          "zip": "76244",
+          "address": "4561 Heritage Trace Pkwy, Ste. 109"
+        }
+      ]
+    },
+    {
+      "program_id": "php-cook-childrens-fort-worth",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Cook Children’s",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Fort Worth",
+          "state": "TX",
+          "zip": "76104",
+          "address": "801 7th Ave."
+        }
+      ]
+    },
+    {
+      "program_id": "php-branches-excel-fort-worth",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Branches Excel Fort Worth",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Fort Worth",
+          "state": "TX",
+          "zip": "76104",
+          "address": "1307 8th Ave., Fl. 5"
+        }
+      ]
+    },
+    {
+      "program_id": "php-basepoint-forney",
+      "program_name": "Day Treatment / PHP",
+      "organization": "BasePoint Academy (Forney)",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Forney",
+          "state": "TX",
+          "zip": "75126",
+          "address": "713 W. Broad St., Suite 200"
+        }
+      ]
+    },
+    {
+      "program_id": "php-connections-rockwall",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Connections Wellness Group (Rockwall)",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Rockwall",
+          "state": "TX",
+          "zip": "75032",
+          "address": "1005 W. Ralph Hall Pkwy, Suite 201"
+        }
+      ]
+    },
+    {
+      "program_id": "php-carrus-sherman",
+      "program_name": "Day Treatment / PHP",
+      "organization": "Carrus Care Sherman",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Sherman",
+          "state": "TX",
+          "zip": "75092",
+          "address": "1724 US Highway 82 W, Suite 100"
+        }
+      ]
+    },
+    {
+      "program_id": "php-virtual-basepoint",
+      "program_name": "Virtual Day Treatment / PHP",
+      "organization": "BasePoint",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Virtual",
+          "state": "TX",
+          "zip": "",
+          "address": ""
+        }
+      ]
+    },
+    {
+      "program_id": "php-virtual-connections",
+      "program_name": "Virtual Day Treatment / PHP",
+      "organization": "Connections Wellness Group",
+      "level_of_care": "Partial Hospitalization (PHP)",
+      "locations": [
+        {
+          "city": "Virtual",
+          "state": "TX",
+          "zip": "",
+          "address": ""
+        }
+      ]
+    },
+    {
+      "program_id": "iop-childrens-sparc-dallas",
+      "program_name": "SPARC Program (Suicide Prevention and Resilience at Children’s)",
+      "organization": "Children’s Medical Center",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Dallas",
+          "state": "TX",
+          "zip": "75247",
+          "address": "Mockingbird Towers, 1341 W. Mockingbird Lane, Ste E1200"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-southern-area-dallas",
+      "program_name": "IOP",
+      "organization": "Southern Area Behavioral Health",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Dallas",
+          "state": "TX",
+          "zip": "75237",
+          "address": "4215 Gannon Lane"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-unity-richardson",
+      "program_name": "IOP",
+      "organization": "Unity Behavioral Health",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Richardson",
+          "state": "TX",
+          "zip": "75080",
+          "address": "660 W. Campbell Road, Suite 100"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-texas-health-bh-center-richardson",
+      "program_name": "IOP",
+      "organization": "Texas Health Behavioral Health Center Richardson",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Richardson",
+          "state": "TX",
+          "zip": "75082",
+          "address": "3661 North Plano Road, Suite 2100"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-dallas-behavioral-health-care-hospital-desoto",
+      "program_name": "IOP",
+      "organization": "Dallas Behavioral Health Care Hospital",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "DeSoto",
+          "state": "TX",
+          "zip": "75115",
+          "address": "800 Kirnwood Drive"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-reflections-dallas",
+      "program_name": "IOP",
+      "organization": "Reflections Lifestyle Center - Dallas",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Dallas",
+          "state": "TX",
+          "zip": "75225",
+          "address": "8333 Douglas Ave., Ste. 350"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-changes-frisco",
+      "program_name": "IOP",
+      "organization": "Changes Frisco",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Frisco",
+          "state": "TX",
+          "zip": "75034",
+          "address": "6870 Lebanon Rd., Suite 300"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-changes-mckinney",
+      "program_name": "IOP",
+      "organization": "Changes McKinney",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75071",
+          "address": "1820 N. Lake Forest Drive"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-texas-health-bh-center-frisco",
+      "program_name": "IOP",
+      "organization": "Texas Health Behavioral Health Center Frisco",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Frisco",
+          "state": "TX",
+          "zip": "75034",
+          "address": "5858 Main Street, Suite 101"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-texas-health-seay-plano",
+      "program_name": "IOP",
+      "organization": "Texas Health Seay Behavioral Health Plano",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Plano",
+          "state": "TX",
+          "zip": "75093",
+          "address": "6110 W Parker Rd."
+        }
+      ]
+    },
+    {
+      "program_id": "iop-connections-plano",
+      "program_name": "IOP",
+      "organization": "Connections Wellness Group Plano",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Plano",
+          "state": "TX",
+          "zip": "75093",
+          "address": "6101 West Plano Parkway, Suite 240"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-connections-mckinney",
+      "program_name": "IOP",
+      "organization": "Connections Wellness Group McKinney",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75071",
+          "address": "7290 Virginia Parkway, Ste. 3100"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-connections-denton",
+      "program_name": "IOP",
+      "organization": "Connections Wellness Group Denton",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Denton",
+          "state": "TX",
+          "zip": "76210",
+          "address": "2711 Shoreline Dr., Ste. 121"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-reflections-richardson",
+      "program_name": "IOP",
+      "organization": "Reflections Lifestyle Center - Richardson",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Richardson",
+          "state": "TX",
+          "zip": "75080",
+          "address": "100 N. Central Expy., Ste. 300"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-bricolage-flower-mound",
+      "program_name": "IOP",
+      "organization": "Bricolage Behavioral Health",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Flower Mound",
+          "state": "TX",
+          "zip": "75022",
+          "address": "3204 Long Prairie Road, Suite A"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-carrus-flower-mound",
+      "program_name": "IOP",
+      "organization": "Carrus Care Flower Mound",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Flower Mound",
+          "state": "TX",
+          "zip": "75022",
+          "address": "2750 Churchill Dr., Suite 110"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-reflections-the-colony",
+      "program_name": "IOP",
+      "organization": "Reflections Lifestyle Center (The Colony)",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "The Colony",
+          "state": "TX",
+          "zip": "75056",
+          "address": "4901 Windhaven Parkway, Suite 200"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-branches-denton",
+      "program_name": "IOP",
+      "organization": "Branches Denton",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Denton",
+          "state": "TX",
+          "zip": "76201",
+          "address": "2012 West University Dr."
+        }
+      ]
+    },
+    {
+      "program_id": "iop-carrus-plano",
+      "program_name": "IOP",
+      "organization": "Carrus Care Plano",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Plano",
+          "state": "TX",
+          "zip": "75093",
+          "address": "4701 Old Shepard Place, Ste 200"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-basepoint-mckinney",
+      "program_name": "IOP",
+      "organization": "BasePoint Academy McKinney",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75069",
+          "address": "4733 Medical Center Dr."
+        }
+      ]
+    },
+    {
+      "program_id": "iop-basepoint-frisco",
+      "program_name": "IOP",
+      "organization": "BasePoint Academy Frisco",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Frisco",
+          "state": "TX",
+          "zip": "75036",
+          "address": "8275 Judges Way, Suite 100"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-carrus-mckinney",
+      "program_name": "IOP",
+      "organization": "Carrus Care McKinney",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75072",
+          "address": "3600 Eldorado Pkwy, Bldg C, Ste 1"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-reflections-the-colony-10plus",
+      "program_name": "IOP",
+      "organization": "Reflections Lifestyle Center - The Colony",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "The Colony",
+          "state": "TX",
+          "zip": "75056",
+          "address": "4901 Windhaven Pkwy., Ste. 200"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-carrus-frisco",
+      "program_name": "IOP",
+      "organization": "Carrus Care Frisco",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Frisco",
+          "state": "TX",
+          "zip": "75034",
+          "address": "2440 Timber Ridge Dr., Suite 105"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-branches-fort-worth",
+      "program_name": "IOP",
+      "organization": "Branches Fort Worth",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Fort Worth",
+          "state": "TX",
+          "zip": "76104",
+          "address": "1307 8 Ave., Floor 5"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-mesa-springs-fort-worth",
+      "program_name": "IOP",
+      "organization": "Mesa Springs – Innovations (Fort Worth)",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Fort Worth",
+          "state": "TX",
+          "zip": "76116",
+          "address": "6421 Camp Bowie Blvd., Ste. 200"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-mesa-springs-arlington",
+      "program_name": "IOP",
+      "organization": "Mesa Springs – Innovations (Arlington)",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Arlington",
+          "state": "TX",
+          "zip": "76018",
+          "address": "4935 S. Collins St."
+        }
+      ]
+    },
+    {
+      "program_id": "iop-mind-above-matter-keller",
+      "program_name": "IOP",
+      "organization": "Mind Above Matter (Keller)",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Keller",
+          "state": "TX",
+          "zip": "76244",
+          "address": "4232 Heritage Trace Pkwy"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-mind-above-matter-burleson",
+      "program_name": "IOP",
+      "organization": "Mind Above Matter (Burleson)",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Burleson",
+          "state": "TX",
+          "zip": "76028",
+          "address": "2915 S Burlseon Blvd."
+        }
+      ]
+    },
+    {
+      "program_id": "iop-connections-keller",
+      "program_name": "IOP",
+      "organization": "Connections Wellness Group (Keller)",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Keller",
+          "state": "TX",
+          "zip": "76244",
+          "address": "9726 North Beach Street"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-connections-mansfield",
+      "program_name": "IOP",
+      "organization": "Connections Wellness Group (Mansfield)",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Mansfield",
+          "state": "TX",
+          "zip": "76063",
+          "address": "1900 Matlock Rd., Building 2"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-virtual-charlie-health",
+      "program_name": "Virtual IOP",
+      "organization": "Charlie Health",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Virtual",
+          "state": "TX",
+          "zip": "",
+          "address": ""
+        }
+      ]
+    },
+    {
+      "program_id": "iop-virtual-basepoint",
+      "program_name": "Virtual IOP",
+      "organization": "BasePoint",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Virtual",
+          "state": "TX",
+          "zip": "",
+          "address": ""
+        }
+      ]
+    },
+    {
+      "program_id": "iop-virtual-connections",
+      "program_name": "Virtual IOP",
+      "organization": "Connections Wellness Group",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Virtual",
+          "state": "TX",
+          "zip": "",
+          "address": ""
+        }
+      ]
+    },
+    {
+      "program_id": "iop-basepoint-forney",
+      "program_name": "IOP",
+      "organization": "BasePoint Academy (Forney)",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Forney",
+          "state": "TX",
+          "zip": "75126",
+          "address": "713 W. Broad St., Suite 200"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-texas-health-rockwall",
+      "program_name": "IOP",
+      "organization": "Texas Health Behavioral Health Center Rockwall",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Rockwall",
+          "state": "TX",
+          "zip": "75032",
+          "address": "890 Rockwall Parkway, Suite 115"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-connections-rockwall",
+      "program_name": "IOP",
+      "organization": "Connections Wellness Group (Rockwall)",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Rockwall",
+          "state": "TX",
+          "zip": "75032",
+          "address": "1005 W. Ralph Hall Pkwy, Suite 201"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-carrus-sherman",
+      "program_name": "IOP",
+      "organization": "Carrus Care Sherman",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Sherman",
+          "state": "TX",
+          "zip": "75092",
+          "address": "1724 US Highway 82 W, Suite 100"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-carrus-mansfield",
+      "program_name": "IOP",
+      "organization": "Carrus Care Mansfield",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Mansfield",
+          "state": "TX",
+          "zip": "76063",
+          "address": "1707 Fountainview Dr."
+        }
+      ]
+    },
+    {
+      "program_id": "iop-carrus-keller",
+      "program_name": "IOP",
+      "organization": "Carrus Care Keller",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Keller",
+          "state": "TX",
+          "zip": "76244",
+          "address": "4561 Heritage Trace Pkwy, Ste. 109"
+        }
+      ]
+    },
+    {
+      "program_id": "iop-basepoint-arlington",
+      "program_name": "IOP",
+      "organization": "BasePoint Academy (Arlington)",
+      "level_of_care": "Intensive Outpatient (IOP)",
+      "locations": [
+        {
+          "city": "Arlington",
+          "state": "TX",
+          "zip": "76018",
+          "address": "3900 Arlington Highlands Blvd., Ste. 237"
+        }
+      ]
+    },
+    {
+      "program_id": "crisis-mcot-ntbha",
+      "program_name": "Mobile Crisis Outreach Team / Crisis Line",
+      "organization": "North Texas Behavioral Health Authority (NTBHA)",
+      "level_of_care": "Mobile Crisis",
+      "locations": [
+        {
+          "city": "Multiple",
+          "state": "TX",
+          "zip": "",
+          "address": ""
+        }
+      ]
+    },
+    {
+      "program_id": "crisis-mcot-lifepath",
+      "program_name": "Mobile Crisis Outreach Team / Crisis Line",
+      "organization": "LifePath Systems",
+      "level_of_care": "Mobile Crisis",
+      "locations": [
+        {
+          "city": "Multiple",
+          "state": "TX",
+          "zip": "",
+          "address": ""
+        }
+      ]
+    },
+    {
+      "program_id": "crisis-mcot-denton-mhmr",
+      "program_name": "Mobile Crisis Outreach Team / Crisis Line",
+      "organization": "Denton County MHMR",
+      "level_of_care": "Mobile Crisis",
+      "locations": [
+        {
+          "city": "Multiple",
+          "state": "TX",
+          "zip": "",
+          "address": ""
+        }
+      ]
+    },
+    {
+      "program_id": "crisis-mcot-icare-tarrant",
+      "program_name": "Mobile Crisis Outreach Team / Crisis Line",
+      "organization": "ICARE Call Center",
+      "level_of_care": "Mobile Crisis",
+      "locations": [
+        {
+          "city": "Multiple",
+          "state": "TX",
+          "zip": "",
+          "address": ""
+        }
+      ]
+    },
+    {
+      "program_id": "crisis-mcot-lakes-regional",
+      "program_name": "Mobile Crisis Outreach Team / Crisis Line",
+      "organization": "Lakes Regional Community Center",
+      "level_of_care": "Mobile Crisis",
+      "locations": [
+        {
+          "city": "Multiple",
+          "state": "TX",
+          "zip": "",
+          "address": ""
+        }
+      ]
+    },
+    {
+      "program_id": "crisis-988",
+      "program_name": "Crisis Support",
+      "organization": "988 Suicide & Crisis Lifeline",
+      "level_of_care": "Crisis Hotline",
+      "locations": [
+        {
+          "city": "National",
+          "state": "US",
+          "zip": "",
+          "address": ""
+        }
+      ]
+    },
+    {
+      "program_id": "crisis-trevor",
+      "program_name": "Crisis Support (LGBTQ)",
+      "organization": "Trevor Lifeline",
+      "level_of_care": "Crisis Hotline",
+      "locations": [
+        {
+          "city": "National",
+          "state": "US",
+          "zip": "",
+          "address": ""
+        }
+      ]
+    },
+    {
+      "program_id": "crisis-sccntx",
+      "program_name": "Crisis Support",
+      "organization": "Suicide and Crisis Center of North Texas",
+      "level_of_care": "Crisis Hotline",
+      "locations": [
+        {
+          "city": "North Texas",
+          "state": "TX",
+          "zip": "",
+          "address": ""
+        }
+      ]
+    },
+    {
+      "program_id": "crisis-textline-741741",
+      "program_name": "Crisis Text Support",
+      "organization": "National Crisis Text Line",
+      "level_of_care": "Crisis Hotline",
+      "locations": [
+        {
+          "city": "National",
+          "state": "US",
+          "zip": "",
+          "address": ""
+        }
+      ]
+    },
+    {
+      "program_id": "crisis-walkin-southern-area-urgent-care",
+      "program_name": "Walk-in Urgent Care Clinic (Emergency Psychiatric Care)",
+      "organization": "Southern Area Behavioral Healthcare",
+      "level_of_care": "Walk-In Crisis / Urgent",
+      "locations": [
+        {
+          "city": "Dallas",
+          "state": "TX",
+          "zip": "75237",
+          "address": "4215 Gannon Lane"
+        }
+      ]
+    },
+    {
+      "program_id": "crisis-walkin-lifepath-outpatient-clinic",
+      "program_name": "Walk-in Outpatient Clinic",
+      "organization": "LifePath Systems Outpatient Clinic",
+      "level_of_care": "Walk-In Outpatient",
+      "locations": [
+        {
+          "city": "Plano",
+          "state": "TX",
+          "zip": "75025",
+          "address": "7308 Alma Drive"
+        },
+        {
+          "city": "McKinney",
+          "state": "TX",
+          "zip": "75069",
+          "address": "1515 Heritage Drive, Suite 105"
+        }
+      ]
+    },
+    {
+      "program_id": "crisis-walkin-denton-mhmr-triage",
+      "program_name": "Psychiatric Triage (Walk-in)",
+      "organization": "Denton County MHMR Psychiatric Triage Facility",
+      "level_of_care": "Psychiatric Triage",
+      "locations": [
+        {
+          "city": "Denton",
+          "state": "TX",
+          "zip": "76201",
+          "address": "2509 Scripture Street, Suite 100"
+        }
+      ]
+    },
+    {
+      "program_id": "crisis-walkin-metrocare",
+      "program_name": "Walk-in Services (Multiple Locations)",
+      "organization": "Metrocare Services",
+      "level_of_care": "Walk-In Outpatient",
+      "locations": [
+        {
+          "city": "Dallas County",
+          "state": "TX",
+          "zip": "",
+          "address": "Multiple locations (Westmoreland, Samuell, Grand Prairie, Skillman, Midway)"
+        }
+      ]
+    }
+  ]
+}

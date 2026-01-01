@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "regions": [
+    {
+      "id": "dfw",
+      "label": "Dallas–Fort Worth",
+      "counties": [],
+      "indexPath": "/data/regions/dfw.index.json",
+      "detailsPath": "/data/regions/dfw.details.json"
+    }
+  ]
+}
+

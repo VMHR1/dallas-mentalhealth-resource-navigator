@@ -3744,6 +3744,62 @@ function checkTreatmentGridDisplayRegression() {
   }
 }
 
+// Try to load regional data (manifest-based)
+async function tryLoadRegionalData() {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout for manifest
+    
+    const manifestRes = await fetch("data/regions/manifest.json", {
+      cache: "no-cache",
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    
+    if (!manifestRes.ok) {
+      // Manifest doesn't exist - return null to trigger fallback
+      return null;
+    }
+    
+    const manifest = await manifestRes.json();
+    if (!manifest || !manifest.regions || manifest.regions.length === 0) {
+      return null;
+    }
+    
+    // For now, load the first region (dfw)
+    // Later, this can be extended to support multiple regions or region selection
+    const region = manifest.regions[0];
+    if (!region || !region.detailsPath) {
+      return null;
+    }
+    
+    // Load details file (contains full program data)
+    const detailsController = new AbortController();
+    const detailsTimeoutId = setTimeout(() => detailsController.abort(), 10000);
+    
+    const detailsRes = await fetch(region.detailsPath, {
+      cache: "no-cache",
+      signal: detailsController.signal
+    });
+    clearTimeout(detailsTimeoutId);
+    
+    if (!detailsRes.ok) {
+      return null;
+    }
+    
+    const detailsText = await detailsRes.text();
+    const detailsData = JSON.parse(detailsText);
+    
+    return detailsData;
+  } catch (err) {
+    // Any error loading regional data - return null to trigger fallback
+    if (err.name !== 'AbortError') {
+      console.info('Regional data not available, falling back to programs.json:', err.message);
+    }
+    return null;
+  }
+}
+
 async function loadPrograms(retryCount = 0){
   const maxRetries = 3;
   const retryDelay = 1000 * (retryCount + 1); // Exponential backoff
@@ -3753,21 +3809,62 @@ async function loadPrograms(retryCount = 0){
   renderSkeletons();
 
   try{
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    let jsonText;
+    let data;
     
-    // Allow browser caching (with revalidation) for faster repeat visits.
-    // "no-store" forces a full network fetch every time and defeats SW caching.
-    const res = await fetch("programs.json", {
-      cache: "no-cache",
-      signal: controller.signal
-    });
-    clearTimeout(timeoutId);
+    // Try to load regional data first (manifest-based)
+    const regionalData = await tryLoadRegionalData();
     
-    if(!res.ok) {
-      throw new Error(`Unable to load programs data (HTTP ${res.status}). Please try refreshing the page.`);
+    if (regionalData) {
+      // Use regional data structure (same as programs.json format)
+      data = regionalData;
+    } else {
+      // Fall back to programs.json
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
+      // Allow browser caching (with revalidation) for faster repeat visits.
+      // "no-store" forces a full network fetch every time and defeats SW caching.
+      const res = await fetch("programs.json", {
+        cache: "no-cache",
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      
+      if(!res.ok) {
+        throw new Error(`Unable to load programs data (HTTP ${res.status}). Please try refreshing the page.`);
+      }
+      jsonText = await res.text();
+      
+      // Parse JSON - use validation if available, but always allow fallback
+      try {
+        // Try to parse directly first (most reliable)
+        data = JSON.parse(jsonText);
+        
+        // If validation is available, run it but don't block on failure
+        if (typeof window.validateJSON === 'function') {
+          const jsonValidation = window.validateJSON(jsonText);
+          if (!jsonValidation.valid) {
+            // Log warning but don't fail - validation might be too strict
+            console.warn('JSON validation warning (non-blocking):', jsonValidation.error);
+            if (typeof window.logSecurityEvent === 'function') {
+              window.logSecurityEvent('json_validation_warning', { error: jsonValidation.error });
+            }
+            // Continue with parsed data anyway
+          }
+        }
+      } catch (parseError) {
+        if (typeof window.logSecurityEvent === 'function') {
+          window.logSecurityEvent('json_parse_error', { error: parseError.message });
+        }
+        throw new Error(`Failed to parse programs.json: ${parseError.message}`);
+      }
     }
-    const jsonText = await res.text();
+    
+    // Store metadata for display
+    if (data.metadata) {
+      programsMetadata = data.metadata;
+    }
     
     // Parse JSON - use validation if available, but always allow fallback
     let data;
@@ -3775,30 +3872,27 @@ async function loadPrograms(retryCount = 0){
       // Try to parse directly first (most reliable)
       data = JSON.parse(jsonText);
       
-      // Store metadata for display
-      if (data.metadata) {
-        programsMetadata = data.metadata;
-      }
-      
-      // If validation is available, run it but don't block on failure
-      if (typeof window.validateJSON === 'function') {
-        const jsonValidation = window.validateJSON(jsonText);
-        if (!jsonValidation.valid) {
-          // Log warning but don't fail - validation might be too strict
-          console.warn('JSON validation warning (non-blocking):', jsonValidation.error);
-          if (typeof window.logSecurityEvent === 'function') {
-            window.logSecurityEvent('json_validation_warning', { error: jsonValidation.error });
-          }
-          // Continue with parsed data anyway
-        }
-      }
-    } catch (parseError) {
-      if (typeof window.logSecurityEvent === 'function') {
-        window.logSecurityEvent('json_parse_error', { error: parseError.message });
-      }
-      throw new Error(`Failed to parse programs.json: ${parseError.message}`);
+    // Store metadata for display
+    if (data.metadata) {
+      programsMetadata = data.metadata;
     }
-    if(!data || !Array.isArray(data.programs)) throw new Error("programs.json loaded but missing a top-level `programs` array.");
+    
+    // If validation is available and we have jsonText (fallback case), run it
+    if (jsonText && typeof window.validateJSON === 'function') {
+      const jsonValidation = window.validateJSON(jsonText);
+      if (!jsonValidation.valid) {
+        // Log warning but don't fail - validation might be too strict
+        console.warn('JSON validation warning (non-blocking):', jsonValidation.error);
+        if (typeof window.logSecurityEvent === 'function') {
+          window.logSecurityEvent('json_validation_warning', { error: jsonValidation.error });
+        }
+        // Continue with parsed data anyway
+      }
+    }
+    
+    if(!data || !Array.isArray(data.programs)) {
+      throw new Error("Programs data loaded but missing a top-level `programs` array.");
+    }
     
     // Comprehensive data validation
     if (typeof window.validateProgramsData === 'function') {
