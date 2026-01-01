@@ -1,6 +1,34 @@
 # mental-health-resource-navigator
 Neutral post-discharge mental health resource navigator for Dallas-FortWorth area youth
 
+## Mobile Performance
+
+This application is optimized for mobile performance with comprehensive monitoring and optimization tools.
+
+### Quick Start - Performance Testing
+
+1. **Enable performance monitoring**: Add `?perf=1` to any URL
+   - Example: `https://your-site.com/?perf=1`
+   - Shows real-time FPS, jank count, and performance metrics
+
+2. **Test with kill switches**: Isolate performance issues
+   - `?perf=1&noAnim=1` - Disable animations
+   - `?perf=1&noShadow=1` - Remove shadows
+   - `?perf=1&noFixedBg=1` - Hide fixed background
+
+3. **Check console logs**: Every 10 seconds, detailed metrics are logged
+
+### Mobile Performance Policy
+
+On mobile/coarse pointer devices:
+- ✅ No infinite background animations
+- ✅ No moving shadow animations  
+- ✅ Simplified shadows and backdrop-filters
+- ✅ Content-visibility optimizations for offscreen content
+- ✅ GPU-optimized sticky elements
+
+**Full documentation**: See [MOBILE_PERFORMANCE.md](./MOBILE_PERFORMANCE.md) for complete details.
+
 ## Geocoding for Distance Features
 
 The "Near Me" feature requires geocoded location data. To generate it:

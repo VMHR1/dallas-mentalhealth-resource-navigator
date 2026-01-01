@@ -116,6 +116,182 @@ initializeEncryptedStorage();
 // Detect pointer type early for mobile optimizations
 const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
 
+// ========== Performance Monitoring (Phase 0) ==========
+// Only active when ?perf=1 is in URL
+const PERF_MODE = new URLSearchParams(window.location.search).get('perf') === '1';
+let perfMetrics = {
+  fps: 60,
+  jankCount: 0,
+  worstFrame: 0,
+  activeAnimations: 0,
+  viewportHeight: 0,
+  visualViewportHeight: 0,
+  domNodes: 0,
+  cardCount: 0,
+  activeTimers: 0,
+  lastRenderDuration: 0,
+  lastProgressiveDuration: 0
+};
+let perfFrameTimes = [];
+let perfLastFrameTime = performance.now();
+let perfJankThreshold = 50; // ms
+let perfUpdateInterval = 166; // ~6Hz (update every ~166ms)
+let perfLastUpdate = 0;
+let perfActiveTimers = new Set();
+
+// Track timers for perf mode
+const originalSetTimeout = window.setTimeout;
+const originalSetInterval = window.setInterval;
+if (PERF_MODE) {
+  window.setTimeout = function(...args) {
+    const id = originalSetTimeout.apply(this, args);
+    perfActiveTimers.add(id);
+    originalSetTimeout(() => perfActiveTimers.delete(id), args[1] || 0);
+    return id;
+  };
+  window.setInterval = function(...args) {
+    const id = originalSetInterval.apply(this, args);
+    perfActiveTimers.add(id);
+    return id;
+  };
+}
+
+// FPS and jank tracking
+function perfTrackFrame() {
+  if (!PERF_MODE) return;
+  
+  const now = performance.now();
+  const delta = now - perfLastFrameTime;
+  perfLastFrameTime = now;
+  
+  perfFrameTimes.push(delta);
+  if (perfFrameTimes.length > 60) perfFrameTimes.shift();
+  
+  if (delta > perfJankThreshold) {
+    perfMetrics.jankCount++;
+  }
+  
+  perfMetrics.worstFrame = Math.max(perfMetrics.worstFrame, delta);
+  
+  requestAnimationFrame(perfTrackFrame);
+}
+
+// Update HUD and metrics
+function perfUpdateHUD() {
+  if (!PERF_MODE) return;
+  
+  const now = performance.now();
+  if (now - perfLastUpdate < perfUpdateInterval) {
+    requestAnimationFrame(perfUpdateHUD);
+    return;
+  }
+  perfLastUpdate = now;
+  
+  // Calculate FPS
+  if (perfFrameTimes.length > 0) {
+    const avgFrameTime = perfFrameTimes.reduce((a, b) => a + b, 0) / perfFrameTimes.length;
+    perfMetrics.fps = Math.round(1000 / avgFrameTime);
+  }
+  
+  // Count active animations
+  let animCount = 0;
+  try {
+    const allElements = document.querySelectorAll('*');
+    allElements.forEach(el => {
+      const style = window.getComputedStyle(el);
+      const animName = style.animationName;
+      if (animName && animName !== 'none') {
+        animCount++;
+      }
+    });
+  } catch (e) {}
+  perfMetrics.activeAnimations = animCount;
+  
+  // Viewport heights
+  perfMetrics.viewportHeight = window.innerHeight;
+  if (window.visualViewport) {
+    perfMetrics.visualViewportHeight = window.visualViewport.height;
+  }
+  
+  // DOM metrics
+  const grid = document.getElementById('treatmentGrid');
+  if (grid) {
+    perfMetrics.domNodes = grid.querySelectorAll('*').length;
+    perfMetrics.cardCount = grid.querySelectorAll('.card').length;
+  }
+  
+  // Active timers
+  perfMetrics.activeTimers = perfActiveTimers.size;
+  
+  // Update HUD
+  const hud = document.getElementById('perf-hud');
+  if (hud) {
+    hud.innerHTML = `
+      <div><strong>FPS:</strong> ${perfMetrics.fps}</div>
+      <div><strong>Jank (10s):</strong> ${perfMetrics.jankCount}</div>
+      <div><strong>Worst Frame:</strong> ${perfMetrics.worstFrame.toFixed(1)}ms</div>
+      <div><strong>Animations:</strong> ${perfMetrics.activeAnimations}</div>
+      <div><strong>Viewport:</strong> ${perfMetrics.viewportHeight}/${perfMetrics.visualViewportHeight || 'N/A'}</div>
+      <div><strong>DOM Nodes:</strong> ${perfMetrics.domNodes}</div>
+      <div><strong>Cards:</strong> ${perfMetrics.cardCount}</div>
+      <div><strong>Timers:</strong> ${perfMetrics.activeTimers}</div>
+      <div><strong>Last Render:</strong> ${perfMetrics.lastRenderDuration}ms</div>
+    `;
+  }
+  
+  // Reset jank count every 10s
+  if (now % 10000 < perfUpdateInterval) {
+    perfMetrics.jankCount = 0;
+    perfMetrics.worstFrame = 0;
+  }
+  
+  requestAnimationFrame(perfUpdateHUD);
+}
+
+// Console logging every 10s
+let perfLogInterval;
+if (PERF_MODE) {
+  perfLogInterval = setInterval(() => {
+    console.log('[PERF]', JSON.stringify({
+      ...perfMetrics,
+      timestamp: Date.now()
+    }, null, 2));
+  }, 10000);
+  
+  // Create HUD
+  document.addEventListener('DOMContentLoaded', () => {
+    const hud = document.createElement('div');
+    hud.id = 'perf-hud';
+    hud.style.cssText = `
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.85);
+      color: #0f0;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 11px;
+      z-index: 999999;
+      border-radius: 6px;
+      max-width: 250px;
+      line-height: 1.4;
+    `;
+    document.body.appendChild(hud);
+    perfTrackFrame();
+    perfUpdateHUD();
+  });
+}
+
+// Kill switches for perf mode
+if (PERF_MODE) {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('noAnim') === '1') document.documentElement.classList.add('perf-no-anim');
+  if (params.get('noHero') === '1') document.documentElement.classList.add('perf-no-hero');
+  if (params.get('noShadow') === '1') document.documentElement.classList.add('perf-no-shadow');
+  if (params.get('noFixedBg') === '1') document.documentElement.classList.add('perf-no-fixed-bg');
+  if (params.get('noSticky') === '1') document.documentElement.classList.add('perf-no-sticky');
+}
+
 // Update crisis banner height CSS variable for sticky positioning
 // Cached to avoid repeated getBoundingClientRect calls during viewport changes
 let __cachedBannerHeight = 0;
@@ -2597,6 +2773,8 @@ let progressiveLoadState = {
 function renderProgressive(activeList, isCrisisList = false) {
   if (!els.treatmentGrid) return;
   
+  const renderStart = PERF_MODE ? performance.now() : 0;
+  
   const toDisplay = activeList.slice(0, progressiveLoadState.displayedCount);
   els.treatmentGrid.innerHTML = "";
   
@@ -2613,6 +2791,10 @@ function renderProgressive(activeList, isCrisisList = false) {
   
   // Append all cards at once
   els.treatmentGrid.appendChild(fragment);
+  
+  if (PERF_MODE) {
+    perfMetrics.lastProgressiveDuration = Math.round(performance.now() - renderStart);
+  }
   
   // Event delegation is handled at document level - no need to set up here
   
@@ -2631,7 +2813,13 @@ function renderProgressive(activeList, isCrisisList = false) {
           progressiveLoadState.displayedCount + 20,
           activeList.length
         );
-        renderProgressive(activeList);
+        // Use requestIdleCallback for progressive loading if available
+        const loadMore = () => renderProgressive(activeList);
+        if (window.requestIdleCallback) {
+          requestIdleCallback(loadMore, { timeout: 1000 });
+        } else {
+          setTimeout(loadMore, 0);
+        }
       });
       els.treatmentGrid.parentElement.appendChild(btn);
     } else {
@@ -2648,6 +2836,7 @@ function render(){
     return;
   }
 
+  const renderStart = PERF_MODE ? performance.now() : 0;
   const showCrisis = els.showCrisis?.checked || false;
 
   const filtered = programs.filter(p => matchesFilters(p));
@@ -2756,6 +2945,10 @@ function render(){
   const label = showCrisis ? "crisis resources" : "treatment programs";
   announceToScreenReader(`${count} ${label} found${count === 0 ? '. Try adjusting your filters.' : ''}`);
   updateComparisonCount();
+  
+  if (PERF_MODE) {
+    perfMetrics.lastRenderDuration = Math.round(performance.now() - renderStart);
+  }
 }
 
 function syncTopToggles(){
