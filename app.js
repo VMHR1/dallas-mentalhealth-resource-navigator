@@ -221,9 +221,11 @@ if (isCoarsePointer && window.visualViewport) {
   const isRealIOSDevice = /iPhone|iPad|iPod/.test(navigator.userAgent) && 
                           !window.chrome; // Chrome DevTools has window.chrome
   
-  // Lower threshold for real devices - they fire events more frequently
-  const HEIGHT_THRESHOLD = isRealIOSDevice ? 8 : 15;
-  const STABILIZE_THRESHOLD = isRealIOSDevice ? 3 : 5;
+  // Higher threshold to prevent triggering during normal scrolling
+  // Text-size changes cause much larger height changes than normal scrolling
+  const HEIGHT_THRESHOLD = isRealIOSDevice ? 20 : 25; // Increased from 8/15
+  const STABILIZE_THRESHOLD = isRealIOSDevice ? 5 : 8; // Increased from 3/5
+  const MIN_EVENTS_FOR_TEXT_SIZE = 3; // Require multiple events to confirm text-size change
   
   window.visualViewport.addEventListener('resize', () => {
     const now = Date.now();
@@ -240,92 +242,58 @@ if (isCoarsePointer && window.visualViewport) {
     __vvRAF = requestAnimationFrame(() => {
       // On real devices, check height more frequently but still use thresholds
       // This prevents applying optimizations during normal scrolling
-      const checkInterval = isRealIOSDevice ? 50 : 200;
+      const checkInterval = isRealIOSDevice ? 100 : 200;
       clearTimeout(__vvHeightCheckT);
       __vvHeightCheckT = setTimeout(() => {
         const currentHeight = window.visualViewport.height;
         const heightDiff = Math.abs(currentHeight - __lastVvHeight);
         
         // CRITICAL: Only apply vv-changing during ACTUAL text-size changes
-        // Text-size changes cause sustained, significant height changes
-        // Normal scrolling/searching causes small, transient changes
+        // Text-size changes cause sustained, significant height changes (>20px)
+        // Normal scrolling/searching causes small, transient changes (<10px)
+        // Require multiple events with significant changes to confirm text-size adjustment
         if (heightDiff > HEIGHT_THRESHOLD) {
-          // Significant height change - likely text-size adjustment
+          // Significant height change detected
           __lastVvHeight = currentHeight;
+          __vvEventCount++;
           
-          if (!__isVvChanging) {
+          // Only apply if we've seen multiple events with significant changes
+          // This filters out single large scroll events
+          if (__vvEventCount >= MIN_EVENTS_FOR_TEXT_SIZE && !__isVvChanging) {
             __isVvChanging = true;
             __vvStartTime = Date.now();
             document.documentElement.classList.add('vv-changing');
+          } else if (__isVvChanging) {
+            // Already active, keep it active
+            clearTimeout(__vvT);
+            __vvT = setTimeout(() => {
+              __isVvChanging = false;
+              __vvEventCount = 0;
+              document.documentElement.classList.remove('vv-changing');
+              // Update banner offset after viewport change completes
+              updateCrisisBannerOffset();
+            }, isRealIOSDevice ? 500 : 400);
           }
-          
-          // Reset timeout - keep class on while changes are happening
-          clearTimeout(__vvT);
-          __vvT = setTimeout(() => {
-            __isVvChanging = false;
+        } else if (heightDiff < STABILIZE_THRESHOLD) {
+          // Height has stabilized - reset event count and remove class if active
+          if (__isVvChanging) {
+            clearTimeout(__vvT);
+            __vvT = setTimeout(() => {
+              __isVvChanging = false;
+              __vvEventCount = 0;
+              document.documentElement.classList.remove('vv-changing');
+              updateCrisisBannerOffset();
+            }, isRealIOSDevice ? 400 : 300);
+          } else {
+            // Reset event count if we're not in vv-changing state
             __vvEventCount = 0;
-            document.documentElement.classList.remove('vv-changing');
-            // Update banner offset after viewport change completes
-            updateCrisisBannerOffset();
-          }, isRealIOSDevice ? 500 : 400);
-        } else if (__isVvChanging && heightDiff < STABILIZE_THRESHOLD) {
-          // Height has stabilized - remove class after delay
-          clearTimeout(__vvT);
-          __vvT = setTimeout(() => {
-            __isVvChanging = false;
-            __vvEventCount = 0;
-            document.documentElement.classList.remove('vv-changing');
-            updateCrisisBannerOffset();
-          }, isRealIOSDevice ? 400 : 300);
+          }
+        } else {
+          // Medium height changes - might be text-size, but not confirmed yet
+          // Don't apply optimizations, but keep counting events
+          __vvEventCount = 0; // Reset on medium changes to require fresh sequence
         }
-        // Small height changes during normal scrolling - don't apply class
-        // This prevents optimizations from affecting normal scroll/search behavior
       }, checkInterval);
-    });
-    
-    // For emulation/desktop: use threshold-based approach
-    // Cancel any pending RAF
-    if (__vvRAF) {
-      cancelAnimationFrame(__vvRAF);
-    }
-    
-    // Use rAF to batch visualViewport events
-    __vvRAF = requestAnimationFrame(() => {
-      // Throttle height checks
-      clearTimeout(__vvHeightCheckT);
-      __vvHeightCheckT = setTimeout(() => {
-        const currentHeight = window.visualViewport.height;
-        const heightDiff = Math.abs(currentHeight - __lastVvHeight);
-        
-        // Apply vv-changing during text-size changes
-        if (heightDiff > HEIGHT_THRESHOLD) {
-          __lastVvHeight = currentHeight;
-          
-          if (!__isVvChanging) {
-            __isVvChanging = true;
-            __vvStartTime = Date.now();
-            document.documentElement.classList.add('vv-changing');
-          }
-          
-          // Reset timeout - keep class on while changes are happening
-          clearTimeout(__vvT);
-          __vvT = setTimeout(() => {
-            __isVvChanging = false;
-            __vvEventCount = 0;
-            document.documentElement.classList.remove('vv-changing');
-            updateCrisisBannerOffset();
-          }, 400);
-        } else if (__isVvChanging && heightDiff < STABILIZE_THRESHOLD) {
-          // Height has stabilized - remove class after delay
-          clearTimeout(__vvT);
-          __vvT = setTimeout(() => {
-            __isVvChanging = false;
-            __vvEventCount = 0;
-            document.documentElement.classList.remove('vv-changing');
-            updateCrisisBannerOffset();
-          }, 300);
-        }
-      }, 200);
     });
   });
   
