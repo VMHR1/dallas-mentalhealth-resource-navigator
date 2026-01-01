@@ -72,7 +72,14 @@ async function decryptData(encryptedData) {
     const decoder = new TextDecoder();
     return JSON.parse(decoder.decode(decrypted));
   } catch (error) {
-    console.error('Decryption error:', error);
+    // Decryption can fail if:
+    // 1. Data was encrypted with a different key (user agent changed, different device)
+    // 2. Data is corrupted
+    // 3. Invalid format
+    // This is expected and handled gracefully - only log in debug mode
+    if (window.location.search.includes('debug=1')) {
+      console.warn('Decryption failed (expected if key changed or data corrupted):', error.name);
+    }
     return null;
   }
 }

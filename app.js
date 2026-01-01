@@ -30,12 +30,29 @@ async function loadEncryptedData(key, defaultValue = []) {
     if (!encrypted) return defaultValue;
     if (typeof window.decryptData === 'function') {
       const decrypted = await window.decryptData(encrypted);
+      // If decryption failed (returns null), data may be corrupted or encrypted with different key
+      // Clear the corrupted data to prevent repeated failures
+      if (decrypted === null && encrypted) {
+        // Only clear if we're sure it's corrupted (not just missing)
+        // Check if it looks like valid base64
+        try {
+          atob(encrypted);
+          // Valid base64 but decryption failed - likely key mismatch, clear it
+          localStorage.removeItem(`encrypted_${key}`);
+        } catch {
+          // Invalid base64 - already corrupted, clear it
+          localStorage.removeItem(`encrypted_${key}`);
+        }
+      }
       return decrypted || defaultValue;
     }
     // Fallback if security.js not loaded
     return JSON.parse(localStorage.getItem(key) || JSON.stringify(defaultValue));
   } catch (error) {
-    console.error(`Error loading ${key}:`, error);
+    // Only log unexpected errors, not expected decryption failures
+    if (!error.message || !error.message.includes('OperationError')) {
+      console.error(`Error loading ${key}:`, error);
+    }
     return defaultValue;
   }
 }
