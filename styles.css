@@ -1281,6 +1281,12 @@ a.btnlike:focus{
   transition: max-height .24s ease, opacity .18s ease, transform .18s ease;
   will-change: max-height, opacity, transform;
   contain: layout paint;
+  /* Ensure panel is in-flow and constrained */
+  position: static;
+  width: 100%;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
 }
 .card[data-open="true"] .panel{
   max-height: 5000px;
@@ -2334,21 +2340,24 @@ footer{
 }
 
 /* Favorites grid in modal - 2 cards per row on desktop */
-.favorites-grid {
-  gap: 14px;
+/* Center cards in Saved Programs modal */
+#favoritesModal .favorites-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 16px;
 }
 
-.favorites-grid > .card {
-  flex: 1 1 calc(50% - 14px);
-  max-width: calc(50% - 14px);
-  min-width: 320px;
+#favoritesModal .favorites-grid > .card {
+  flex: 1 1 420px;
+  max-width: 520px;
 }
 
 @media (max-width: 760px) {
-  .favorites-grid > .card {
+  #favoritesModal .favorites-grid > .card {
     flex-basis: 100%;
     max-width: 100%;
-    min-width: 0;
   }
 }
 

@@ -1284,12 +1284,20 @@ function toggleOpen(id){
   if (openId){
     const cur = document.querySelector(`.card[data-id="${CSS.escape(openId)}"]`);
     if (cur) {
+      // Only scroll on main page cards, not inside modals
+      const isInModal = cur.closest('.modal');
+      
       setCardOpen(cur, true);
 
-      // Scroll into view if needed
-      const rect = cur.getBoundingClientRect();
-      if (rect.top < 0 || rect.bottom > window.innerHeight){
-        window.scrollTo({ top: window.scrollY + rect.top - 14, behavior: "smooth" });
+      // Scroll expanded panel into view (only for main page, not modals)
+      if (!isInModal) {
+        // Use requestAnimationFrame to ensure DOM has updated
+        requestAnimationFrame(() => {
+          const panel = cur.querySelector('.panel');
+          if (panel) {
+            panel.scrollIntoView({ block: "nearest", behavior: "smooth" });
+          }
+        });
       }
     }
   }
