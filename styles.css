@@ -2359,6 +2359,62 @@ footer{
   overflow-wrap: break-word;
 }
 
+/* Fix meta header layout in Saved Programs modal - prevent badge overlap */
+#favoritesModal .card-meta-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 10px;
+  width: 100%;
+  position: relative;
+}
+
+#favoritesModal .card-meta-header .badgeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  max-width: 100%;
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+#favoritesModal .card-meta-header .badge {
+  max-width: 100%;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Make "Recently Updated" badge participate in flex flow in modal (remove absolute positioning) */
+#favoritesModal .card[data-recent="true"]::after {
+  position: static !important;
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  top: auto !important;
+  right: auto !important;
+  max-width: none;
+  white-space: nowrap;
+}
+
+/* Center the meta header content when it wraps */
+#favoritesModal .card[data-recent="true"] .card-meta-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Remove padding that was added for absolute badge */
+#favoritesModal .card[data-recent="true"] .cardTop {
+  padding-right: 0;
+}
+
 /* Toast Notification */
 .toast{
   position: fixed;

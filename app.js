@@ -1357,17 +1357,19 @@ function createCard(p, idx){
   }
 
   div.innerHTML = `
-    <div class="badgeRow">
-      <span class="badge ${crisis ? "crisis" : ""}">${escapeHtml(care)}</span>
-      <span class="badge ${crisis ? "crisis" : "loc"}">${escapeHtml(loc)}</span>
-      ${hasVirtual(p) ? `<span class="badge ${crisis ? "crisis" : "loc2"}">Virtual option</span>` : ``}
-      ${userLocation && currentSort === 'distance' && typeof window.calculateProgramDistance === 'function' ? (() => {
-        const distance = window.calculateProgramDistance(p, userLocation.lat, userLocation.lng);
-        if (distance !== null && distance !== Infinity) {
-          return `<span class="badge distance-badge">${distance.toFixed(1)} mi</span>`;
-        }
-        return '';
-      })() : ''}
+    <div class="card-meta-header">
+      <div class="badgeRow">
+        <span class="badge ${crisis ? "crisis" : ""}">${escapeHtml(care)}</span>
+        <span class="badge ${crisis ? "crisis" : "loc"}">${escapeHtml(loc)}</span>
+        ${hasVirtual(p) ? `<span class="badge ${crisis ? "crisis" : "loc2"}">Virtual option</span>` : ``}
+        ${userLocation && currentSort === 'distance' && typeof window.calculateProgramDistance === 'function' ? (() => {
+          const distance = window.calculateProgramDistance(p, userLocation.lat, userLocation.lng);
+          if (distance !== null && distance !== Infinity) {
+            return `<span class="badge distance-badge">${distance.toFixed(1)} mi</span>`;
+          }
+          return '';
+        })() : ''}
+      </div>
     </div>
 
     <div class="cardTop">
