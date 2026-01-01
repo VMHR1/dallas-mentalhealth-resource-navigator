@@ -569,7 +569,7 @@ h1{
   }
 }
 
-/* Temporarily disable expensive animations during iOS visualViewport changes */
+/* Temporarily disable expensive animations and reduce paint cost during iOS visualViewport changes */
 /* This prevents jank when user adjusts text size via aA menu */
 @media (pointer: coarse) {
   html.vv-changing .bg-gradient {
@@ -593,6 +593,28 @@ h1{
   html.vv-changing .floating-card {
     animation: none !important;
     transform: none !important;
+  }
+  
+  /* Reduce paint cost during viewport changes by simplifying expensive properties */
+  html.vv-changing .card,
+  html.vv-changing .search-section,
+  html.vv-changing .triage-card,
+  html.vv-changing .modal-content {
+    box-shadow: 0 2px 8px rgba(15,23,42,.08) !important;
+    backdrop-filter: none !important;
+  }
+  
+  /* Disable transforms and filters that cause expensive repaints */
+  html.vv-changing * {
+    transform: none !important;
+    filter: none !important;
+  }
+  
+  /* Simplify transitions during viewport changes */
+  html.vv-changing *,
+  html.vv-changing *::before,
+  html.vv-changing *::after {
+    transition: none !important;
   }
 }
 
