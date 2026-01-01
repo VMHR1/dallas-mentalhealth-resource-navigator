@@ -497,8 +497,12 @@ h1{
   padding: 14px 14px;
   box-shadow: var(--shadow-lg);
   animation: float 6.5s ease-in-out infinite;
-  backdrop-filter: blur(14px);
+  /* CRITICAL: Reduce backdrop-filter blur on desktop - 14px is very expensive */
+  /* Use lighter blur or remove if performance is still an issue */
+  backdrop-filter: blur(8px);
   width: min(220px, 72%);
+  /* Optimize: Only use will-change when animating */
+  will-change: transform;
 }
 .floating-card strong{
   display:block;
