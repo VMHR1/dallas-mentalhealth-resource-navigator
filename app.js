@@ -379,6 +379,13 @@ window.addEventListener("resize", () => {
   });
 }
 
+// ========== Scroll Activity Tracker (TASK A) ==========
+// Track scroll activity to prevent vv-changing from activating during Safari toolbar collapse/expand
+let lastScrollTs = 0;
+window.addEventListener('scroll', () => {
+  lastScrollTs = Date.now();
+}, { passive: true });
+
 // Update banner offset on resize/orientation
 // On mobile, prefer visualViewport events to avoid layout thrash during text-size changes
 // SECURITY AUDIT FIX: Prevent duplicate listener attachment
@@ -394,6 +401,7 @@ if (isCoarsePointer && window.visualViewport && !__vvListenerAttached) {
   let __vvEventCount = 0;
   let __vvStartTime = 0;
   let __vvLastEventTime = 0;
+  let __vvEventSequence = []; // Track sequence of height changes for pattern detection
   
   // Detect if we're on a real iOS device (not DevTools emulation)
   // Real devices need more aggressive optimizations
@@ -402,9 +410,10 @@ if (isCoarsePointer && window.visualViewport && !__vvListenerAttached) {
   
   // Higher threshold to prevent triggering during normal scrolling
   // Text-size changes cause much larger height changes than normal scrolling
-  const HEIGHT_THRESHOLD = isRealIOSDevice ? 20 : 25; // Increased from 8/15
-  const STABILIZE_THRESHOLD = isRealIOSDevice ? 5 : 8; // Increased from 3/5
+  const HEIGHT_THRESHOLD = isRealIOSDevice ? 20 : 25;
+  const STABILIZE_THRESHOLD = isRealIOSDevice ? 5 : 8;
   const MIN_EVENTS_FOR_TEXT_SIZE = 3; // Require multiple events to confirm text-size change
+  const SCROLL_COOLDOWN_MS = 400; // Don't trigger vv-changing if scroll happened within this time
   
   window.visualViewport.addEventListener('resize', () => {
     const now = Date.now();
@@ -419,6 +428,10 @@ if (isCoarsePointer && window.visualViewport && !__vvListenerAttached) {
     
     // Use rAF to batch visualViewport events
     __vvRAF = requestAnimationFrame(() => {
+      // TASK A: Check if user is actively scrolling - if so, ignore this viewport change
+      const timeSinceScroll = Date.now() - lastScrollTs;
+      const isScrolling = timeSinceScroll < SCROLL_COOLDOWN_MS;
+      
       // On real devices, check height more frequently but still use thresholds
       // This prevents applying optimizations during normal scrolling
       const checkInterval = isRealIOSDevice ? 100 : 200;
@@ -427,31 +440,61 @@ if (isCoarsePointer && window.visualViewport && !__vvListenerAttached) {
         const currentHeight = window.visualViewport.height;
         const heightDiff = Math.abs(currentHeight - __lastVvHeight);
         
+        // TASK A: CRITICAL - Do NOT activate vv-changing during active scrolling
+        // Safari toolbar collapse/expand during scroll triggers visualViewport changes
+        // but these are NOT text-size changes and should be ignored
+        if (isScrolling) {
+          // User is scrolling - this is likely Safari chrome UI, not text-size change
+          // Do NOT toggle vv-changing, do NOT call updateCrisisBannerOffset
+          // Just update the cached height to prevent false positives later
+          __lastVvHeight = currentHeight;
+          __vvEventCount = 0; // Reset count during scroll
+          __vvEventSequence = []; // Clear sequence
+          return; // Exit early - don't process this viewport change
+        }
+        
+        // Track event sequence for pattern detection
+        const now = Date.now();
+        __vvEventSequence.push({ height: currentHeight, time: now });
+        // Keep only last 5 events for pattern analysis
+        if (__vvEventSequence.length > 5) {
+          __vvEventSequence.shift();
+        }
+        
         // CRITICAL: Only apply vv-changing during ACTUAL text-size changes
         // Text-size changes cause sustained, significant height changes (>20px)
-        // Normal scrolling/searching causes small, transient changes (<10px)
-        // Require multiple events with significant changes to confirm text-size adjustment
+        // Require multiple events with significant changes over >=250ms to confirm
         if (heightDiff > HEIGHT_THRESHOLD) {
           // Significant height change detected
           __lastVvHeight = currentHeight;
           __vvEventCount++;
           
-          // Only apply if we've seen multiple events with significant changes
-          // This filters out single large scroll events
-          if (__vvEventCount >= MIN_EVENTS_FOR_TEXT_SIZE && !__isVvChanging) {
+          // TASK A: Require sustained pattern - 3+ events over >=250ms
+          const sequenceDuration = __vvEventSequence.length >= 2 
+            ? __vvEventSequence[__vvEventSequence.length - 1].time - __vvEventSequence[0].time
+            : 0;
+          const hasSustainedPattern = __vvEventCount >= MIN_EVENTS_FOR_TEXT_SIZE && 
+                                      sequenceDuration >= 250;
+          
+          // Only apply if we have sustained pattern and NOT scrolling
+          if (hasSustainedPattern && !__isVvChanging && !isScrolling) {
             __isVvChanging = true;
             __vvStartTime = Date.now();
             document.documentElement.classList.add('vv-changing');
           } else if (__isVvChanging) {
-            // Already active, keep it active
-            clearTimeout(__vvT);
-            __vvT = setTimeout(() => {
-              __isVvChanging = false;
-              __vvEventCount = 0;
-              document.documentElement.classList.remove('vv-changing');
-              // Update banner offset after viewport change completes
-              updateCrisisBannerOffset();
-            }, isRealIOSDevice ? 500 : 400);
+            // Already active, keep it active (but only if not scrolling)
+            if (!isScrolling) {
+              clearTimeout(__vvT);
+              __vvT = setTimeout(() => {
+                __isVvChanging = false;
+                __vvEventCount = 0;
+                __vvEventSequence = [];
+                document.documentElement.classList.remove('vv-changing');
+                // TASK C: Only update banner offset after confirmed text-size change completes
+                // Do NOT update during scroll-driven viewport changes
+                updateCrisisBannerOffset();
+              }, isRealIOSDevice ? 500 : 400);
+            }
           }
         } else if (heightDiff < STABILIZE_THRESHOLD) {
           // Height has stabilized - reset event count and remove class if active
@@ -460,17 +503,23 @@ if (isCoarsePointer && window.visualViewport && !__vvListenerAttached) {
             __vvT = setTimeout(() => {
               __isVvChanging = false;
               __vvEventCount = 0;
+              __vvEventSequence = [];
               document.documentElement.classList.remove('vv-changing');
-              updateCrisisBannerOffset();
+              // TASK C: Only update banner offset after stabilization, not during scroll
+              if (!isScrolling) {
+                updateCrisisBannerOffset();
+              }
             }, isRealIOSDevice ? 400 : 300);
           } else {
             // Reset event count if we're not in vv-changing state
             __vvEventCount = 0;
+            __vvEventSequence = [];
           }
         } else {
           // Medium height changes - might be text-size, but not confirmed yet
           // Don't apply optimizations, but keep counting events
           __vvEventCount = 0; // Reset on medium changes to require fresh sequence
+          __vvEventSequence = [];
         }
       }, checkInterval);
     });

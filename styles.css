@@ -688,7 +688,9 @@ html.perf-no-sticky .search-section {
     transform: none !important;
   }
   
-  /* CRITICAL: Disable ALL backdrop-filters during viewport changes (very expensive on iOS) */
+  /* TASK B: Targeted backdrop-filter removal (replaces wildcard to avoid massive recalculation)
+   * Only disable backdrop-filter on known elements that have it, not globally
+   */
   html.vv-changing .hero-copy,
   html.vv-changing .floating-card,
   html.vv-changing .search-section,
@@ -696,8 +698,7 @@ html.perf-no-sticky .search-section {
   html.vv-changing .dd-menu,
   html.vv-changing .search-suggestions,
   html.vv-changing .modal-backdrop,
-  html.vv-changing .privacy-controls,
-  html.vv-changing * {
+  html.vv-changing .privacy-controls {
     backdrop-filter: none !important;
   }
   
@@ -727,23 +728,10 @@ html.perf-no-sticky .search-section {
     box-shadow: 0 2px 8px rgba(15,23,42,.08) !important;
   }
   
-  /* CRITICAL: Disable clamp() recalculation by using fixed font sizes during viewport changes */
-  html.vv-changing h1 {
-    font-size: 32px !important; /* Fixed size instead of clamp() */
-  }
-  
-  html.vv-changing .triage-card h2 {
-    font-size: 20px !important; /* Fixed size instead of clamp() */
-  }
-  
-  html.vv-changing .triage-card p {
-    font-size: 14px !important; /* Fixed size instead of clamp() */
-  }
-  
-  html.vv-changing .triage-card .btn-emergency,
-  html.vv-changing .triage-card .btn-secondary {
-    font-size: 16px !important; /* Fixed size instead of clamp() */
-  }
+  /* TASK B: REMOVED - Fixed font-size overrides cause layout shifts during scroll
+   * These were causing visible jumps when vv-changing toggled during Safari toolbar collapse/expand
+   * vv-changing should only disable expensive effects, not change layout/typography
+   */
   
   /* CRITICAL: Disable expensive gradient backgrounds during viewport changes */
   html.vv-changing .triage-card.emergency,
@@ -774,12 +762,9 @@ html.perf-no-sticky .search-section {
     box-shadow: 0 1px 2px rgba(15,23,42,.08) !important;
   }
   
-  /* Simplify all text during viewport changes to reduce layout cost */
-  html.vv-changing h1,
-  html.vv-changing h2,
-  html.vv-changing h3 {
-    line-height: 1.2 !important; /* Fixed line-height to avoid recalculation */
-  }
+  /* TASK B: REMOVED - Fixed line-height overrides cause layout shifts
+   * vv-changing should only disable expensive effects, not change layout metrics
+   */
   
   /* Disable transforms and filters that cause expensive repaints */
   /* BUT: Allow transforms on cards for hover effects (only disable animations) */
