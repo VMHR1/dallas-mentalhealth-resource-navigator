@@ -1483,7 +1483,8 @@ a.btnlike:focus{
   background: rgba(255,255,255,.62);
   box-shadow: var(--shadow-md);
   overflow:hidden;
-  backdrop-filter: blur(12px);
+  /* CRITICAL: Reduce backdrop-filter blur on desktop - 12px is expensive */
+  backdrop-filter: blur(6px);
   width: 100%;
   max-width: 100%;
 }
