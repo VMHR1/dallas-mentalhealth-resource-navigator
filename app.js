@@ -96,15 +96,53 @@ async function initializeEncryptedStorage() {
 // Initialize on load
 initializeEncryptedStorage();
 
-// Disable animations during resize to prevent stuttering
+// Update crisis banner height CSS variable for sticky positioning
+function updateCrisisBannerOffset() {
+  const banner = document.querySelector('.crisis-banner');
+  const h = banner ? banner.getBoundingClientRect().height : 0;
+  document.documentElement.style.setProperty('--crisis-banner-h', `${h}px`);
+}
+
+// Throttled resize handler for banner offset (runs on all devices)
+let __bannerOffsetT;
+function handleBannerOffsetResize() {
+  clearTimeout(__bannerOffsetT);
+  __bannerOffsetT = setTimeout(() => {
+    updateCrisisBannerOffset();
+  }, 150);
+}
+
+// Disable animations during resize to prevent stuttering (desktop only)
+// On mobile/coarse pointer devices, this causes constant stutter due to frequent resize events
 let __rzT;
-window.addEventListener("resize", () => {
-  document.documentElement.classList.add("is-resizing");
-  clearTimeout(__rzT);
-  __rzT = setTimeout(() => {
-    document.documentElement.classList.remove("is-resizing");
-  }, 200);
-}, { passive: true });
+let __rzRAF;
+const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+
+if (!isCoarsePointer) {
+  // Only run on fine pointer devices (desktop)
+  window.addEventListener("resize", () => {
+    // Cancel any pending RAF
+    if (__rzRAF) {
+      cancelAnimationFrame(__rzRAF);
+    }
+    
+    // Use rAF to batch resize events
+    __rzRAF = requestAnimationFrame(() => {
+      document.documentElement.classList.add("is-resizing");
+      clearTimeout(__rzT);
+      __rzT = setTimeout(() => {
+        document.documentElement.classList.remove("is-resizing");
+      }, 150);
+    });
+  });
+}
+
+// Update banner offset on resize/orientation (all devices)
+window.addEventListener("resize", handleBannerOffsetResize);
+window.addEventListener("orientationchange", () => {
+  // Small delay to allow layout to settle after orientation change
+  setTimeout(updateCrisisBannerOffset, 100);
+});
 
 let comparisonSet = new Set(JSON.parse(localStorage.getItem('comparison') || '[]'));
 
@@ -2392,12 +2430,19 @@ function renderProgressive(activeList, isCrisisList = false) {
   const toDisplay = activeList.slice(0, progressiveLoadState.displayedCount);
   els.treatmentGrid.innerHTML = "";
   
+  // Use DocumentFragment to batch DOM operations
+  const fragment = document.createDocumentFragment();
+  
   toDisplay.forEach((p, idx) => {
     const realIdx = isCrisisList ? (idx + 10000) : idx;
     const card = createCard(p, realIdx);
-    card.style.animationDelay = `${Math.min(idx, 18) * 18}ms`;
-    els.treatmentGrid.appendChild(card);
+    // Use CSS variable instead of inline style for animation delay
+    card.style.setProperty('--enter-delay', `${Math.min(idx, 18) * 18}ms`);
+    fragment.appendChild(card);
   });
+  
+  // Append all cards at once
+  els.treatmentGrid.appendChild(fragment);
   
   // Event delegation is handled at document level - no need to set up here
   
@@ -2497,12 +2542,20 @@ function render(){
     // Small result sets - render all at once
     if (els.treatmentGrid) {
       els.treatmentGrid.innerHTML = "";
+      
+      // Use DocumentFragment to batch DOM operations
+      const fragment = document.createDocumentFragment();
+      
       activeList.forEach((p, idx) => {
         const realIdx = showCrisis ? (idx + 10000) : idx;
         const card = createCard(p, realIdx);
-        card.style.animationDelay = `${Math.min(idx, 18) * 18}ms`;
-        els.treatmentGrid.appendChild(card);
+        // Use CSS variable instead of inline style for animation delay
+        card.style.setProperty('--enter-delay', `${Math.min(idx, 18) * 18}ms`);
+        fragment.appendChild(card);
       });
+      
+      // Append all cards at once
+      els.treatmentGrid.appendChild(fragment);
       // Event delegation is handled at document level
     }
     
@@ -3935,20 +3988,23 @@ let didWarnDisplayGrid = false;
 // Dev-only: Check if treatmentGrid has display:grid (would break flex layout)
 // This warns once per page load if the computed display becomes "grid" instead of "flex"
 function checkTreatmentGridDisplayRegression() {
-  // Only run in dev environments (localhost, pages.dev, or 127.0.0.1)
+  // Only run in dev environments (localhost or 127.0.0.1, or with ?debug=1)
   const isDev = typeof window !== 'undefined' && (
     window.location.hostname.includes('localhost') ||
-    window.location.hostname.endsWith('.pages.dev') ||
-    window.location.hostname.includes('127.0.0.1')
+    window.location.hostname.includes('127.0.0.1') ||
+    new URLSearchParams(window.location.search).get('debug') === '1'
   );
   
+  // Set flag immediately to prevent multiple runs, even if check doesn't trigger warning
   if (!isDev || didWarnDisplayGrid || !els.treatmentGrid) {
     return;
   }
   
+  // Mark as checked immediately to prevent re-running
+  didWarnDisplayGrid = true;
+  
   const computedDisplay = window.getComputedStyle(els.treatmentGrid).display;
   if (computedDisplay === 'grid') {
-    didWarnDisplayGrid = true;
     console.warn(
       '⚠️ WARNING: treatmentGrid computed display is "grid" (expected "flex"). ' +
       'Inline style or CSS regression may break multi-column layout. ' +
@@ -4306,6 +4362,9 @@ async function loadPrograms(retryCount = 0){
     
     render();
     
+    // Update crisis banner offset after initial render
+    updateCrisisBannerOffset();
+    
     // Dev-only: Check for display regression after initial render
     checkTreatmentGridDisplayRegression();
     
@@ -4374,7 +4433,17 @@ if('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(() => {
       // Silent fail - service worker is optional enhancement
     });
+    // Update banner offset after fonts and layout settle
+    updateCrisisBannerOffset();
   });
+}
+
+// Update banner offset when DOM is ready (before fonts may load)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', updateCrisisBannerOffset);
+} else {
+  // DOM already ready
+  updateCrisisBannerOffset();
 }
 // Handle call tracking via event delegation
 document.addEventListener('click', (e) => {

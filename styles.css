@@ -572,7 +572,7 @@ h1{
   
   .search-section {
     position: sticky;
-    top: 0;
+    top: calc(var(--crisis-banner-h, 0px) + env(safe-area-inset-top, 0px));
     z-index: 15;
     margin-top: -34px;
     margin-bottom: 12px;
@@ -587,7 +587,7 @@ h1{
   
   /* Ensure crisis banner doesn't overlap */
   .crisis-banner + .container .search-section {
-    top: 0;
+    top: calc(var(--crisis-banner-h, 0px) + env(safe-area-inset-top, 0px));
   }
 }
 
@@ -1181,6 +1181,7 @@ a.btnlike:focus{
   transform: translateZ(0);
   transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   animation: rise .35s ease both;
+  animation-delay: var(--enter-delay, 0ms);
   contain: layout style paint;
   content-visibility: auto;
   contain-intrinsic-size: 240px;
