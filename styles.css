@@ -607,13 +607,16 @@ html.perf-no-sticky .search-section {
     background: var(--bg0) !important;
   }
   
-  /* CRITICAL: Disable all infinite animations on mobile */
+  /* CRITICAL: Hide floating cards completely on mobile - they cause paint cost even without animation */
+  /* The animated "signs" in hero section are expensive to repaint during scroll */
   .floating-card {
-    animation: none !important;
-    transform: none !important;
-    /* CRITICAL FIX: Disable expensive backdrop-filter on mobile */
-    backdrop-filter: none !important;
-    background: rgba(255,255,255,.90) !important;
+    display: none !important; /* Completely remove from paint/compositing */
+  }
+  
+  /* Simplify hero-visual container on mobile - remove gradient background */
+  .hero-visual {
+    background: rgba(79,209,197,.05) !important; /* Simple solid color instead of gradient */
+    box-shadow: none !important; /* Remove shadow */
   }
   
   .btn-emergency {
@@ -1566,6 +1569,28 @@ a.btnlike:focus{
     will-change: auto; /* Don't hint unless needed */
     /* Disable card animations on mobile for better scroll performance */
     animation: none !important;
+    /* CRITICAL FIX: Disable expensive hover transforms during scroll */
+    /* Transform and box-shadow changes on hover cause repaints - disable on mobile */
+    transition: opacity 0.2s ease !important; /* Only allow opacity, not transform */
+  }
+  
+  /* CRITICAL FIX: Completely disable ALL hover effects on mobile - they cause repaints during scroll */
+  /* Mobile devices don't have true hover, but CSS still evaluates hover states during touch */
+  .card:hover,
+  .card:focus-within {
+    transform: none !important; /* Prevent transform changes that cause repaints */
+    box-shadow: 0 1px 3px rgba(15,23,42,.06) !important; /* Keep minimal shadow, don't increase */
+    border-color: rgba(15,23,42,.12) !important; /* Keep border color static */
+  }
+  
+  /* Disable card::before gradient line animation on mobile */
+  .card::before {
+    display: none !important; /* Remove animated gradient line */
+  }
+  
+  /* CRITICAL: Disable all card transitions on mobile - transitions cause repaints during scroll */
+  .card {
+    transition: none !important; /* Remove all transitions to prevent repaints */
   }
 }
 .card::before{
