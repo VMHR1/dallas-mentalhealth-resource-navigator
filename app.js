@@ -181,9 +181,18 @@ document.addEventListener('click', (e) => {
   }
   
   if (expandBtn) {
+    // Check if this is inside a modal - if so, let modal handler take over
+    const card = expandBtn.closest('.card');
+    if (card && card.closest('.modal')) {
+      // Modal card - handled by modal-local handler, but prevent main page handler
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    
+    // Main page card - handle normally
     e.preventDefault();
     e.stopPropagation();
-    const card = expandBtn.closest('.card');
     if (card) {
       const id = card.dataset.id || card.getAttribute('data-id');
       if (id) {
@@ -1265,6 +1274,35 @@ function setCardOpen(cardEl, isOpen){
   if (btn) btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
 }
 
+// Toggle modal-local card details (self-contained, doesn't affect main page)
+function toggleModalCardDetails(cardEl) {
+  if (!cardEl) return;
+  
+  const details = cardEl.querySelector('.card-details');
+  if (!details) return;
+  
+  const isOpen = !details.hasAttribute('hidden');
+  const expandBtn = cardEl.querySelector('.expandBtn');
+  
+  if (isOpen) {
+    // Collapse
+    details.setAttribute('hidden', '');
+    cardEl.dataset.open = 'false';
+    if (expandBtn) {
+      expandBtn.setAttribute('aria-expanded', 'false');
+      expandBtn.setAttribute('title', 'Expand details');
+    }
+  } else {
+    // Expand
+    details.removeAttribute('hidden');
+    cardEl.dataset.open = 'true';
+    if (expandBtn) {
+      expandBtn.setAttribute('aria-expanded', 'true');
+      expandBtn.setAttribute('title', 'Collapse details');
+    }
+  }
+}
+
 function toggleOpen(id){
   if (!id) return;
   
@@ -2138,10 +2176,43 @@ function renderFavorites() {
   
   favoritePrograms.forEach((p, idx) => {
     const card = createCard(p, idx);
+    
+    // Make modal cards self-contained: replace panel with modal-local details
+    const panel = card.querySelector('.panel');
+    if (panel) {
+      // Create modal-local details container
+      const modalDetails = document.createElement('div');
+      modalDetails.className = 'card-details';
+      modalDetails.setAttribute('hidden', '');
+      modalDetails.innerHTML = panel.innerHTML;
+      
+      // Replace panel with modal details
+      panel.replaceWith(modalDetails);
+      
+      // Set initial state: card starts collapsed
+      card.dataset.open = 'false';
+      
+      // Update expand button to target modal details instead of main page
+      const expandBtn = card.querySelector('.expandBtn');
+      if (expandBtn) {
+        expandBtn.setAttribute('aria-controls', `modal-details-${card.dataset.id}`);
+        expandBtn.setAttribute('aria-expanded', 'false');
+        expandBtn.setAttribute('title', 'Expand details');
+        modalDetails.id = `modal-details-${card.dataset.id}`;
+        
+        // Remove any existing click handlers and add modal-local handler
+        expandBtn.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleModalCardDetails(card);
+        };
+      }
+    }
+    
     grid.appendChild(card);
   });
   
-  // Setup event delegation for favorites grid
+  // Setup event delegation for favorites grid (but exclude expand buttons which are handled above)
   setupCardEventDelegation(grid);
   
   // Show export button
