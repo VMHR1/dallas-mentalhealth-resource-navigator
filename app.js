@@ -2844,6 +2844,17 @@ function bind(){
       lastSpan.textContent = isHidden ? "Hide Filters" : "Advanced Filters";
     }
   });
+  
+  // Handle statewide filters accordion toggle
+  const statewideAccordion = document.getElementById('statewideFiltersAccordion');
+  if (statewideAccordion) {
+    statewideAccordion.addEventListener('toggle', () => {
+      const summary = statewideAccordion.querySelector('.advanced-filters-summary');
+      if (summary) {
+        summary.setAttribute('aria-expanded', statewideAccordion.open ? 'true' : 'false');
+      }
+    });
+  }
 
   // Triage buttons
   on(els.viewCrisisResources, "click", () => {
@@ -3231,13 +3242,37 @@ function computeAvailableFilters(programsList) {
 
 // Update filter UI visibility based on availableFilters
 function updateFilterVisibility() {
-  // This function will be called to show/hide filter UI elements
-  // For now, we'll store the state and filters can check it
-  // Future: Add specific UI elements for county, service_domains, SUD, etc.
+  const accordion = document.getElementById('statewideFiltersAccordion');
+  if (!accordion) return;
   
-  // Log available filters for debugging (can be removed in production)
-  if (typeof window !== 'undefined' && window.console) {
-    console.log('Available filters:', availableFilters);
+  // Show accordion only if at least one advanced filter is available
+  const hasAnyAdvancedFilter = availableFilters.hasCounty || 
+                                availableFilters.hasServiceDomains || 
+                                availableFilters.hasSUD || 
+                                availableFilters.hasVerification ||
+                                availableFilters.hasServiceArea;
+  
+  accordion.style.display = hasAnyAdvancedFilter ? 'block' : 'none';
+  
+  // Show/hide individual filter groups
+  const countyGroup = document.getElementById('countyFilterGroup');
+  if (countyGroup) countyGroup.style.display = availableFilters.hasCounty ? 'block' : 'none';
+  
+  const serviceDomainGroup = document.getElementById('serviceDomainFilterGroup');
+  if (serviceDomainGroup) {
+    serviceDomainGroup.style.display = (availableFilters.hasServiceDomains || availableFilters.hasSUD) ? 'block' : 'none';
+  }
+  
+  const sudServicesGroup = document.getElementById('sudServicesFilterGroup');
+  if (sudServicesGroup) sudServicesGroup.style.display = availableFilters.hasSUD ? 'block' : 'none';
+  
+  const verificationGroup = document.getElementById('verificationFilterGroup');
+  if (verificationGroup) verificationGroup.style.display = availableFilters.hasVerification ? 'block' : 'none';
+  
+  // Update ARIA expanded state
+  const summary = accordion.querySelector('.advanced-filters-summary');
+  if (summary) {
+    summary.setAttribute('aria-expanded', accordion.open ? 'true' : 'false');
   }
 }
 
