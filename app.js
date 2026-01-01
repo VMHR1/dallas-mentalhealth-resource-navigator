@@ -1100,61 +1100,84 @@ function matchesFilters(p){
     return false;
   }
 
-  // County filter - read from UI element
-  const countyVal = els.county ? safeStr(els.county.value || '') : '';
-  if (countyVal) {
-    const programCounty = safeStr(p.primary_county || '').toLowerCase();
-    const serviceAreaCounties = Array.isArray(p.service_area?.counties) 
-      ? p.service_area.counties.map(c => safeStr(c).toLowerCase())
-      : [];
-    const countyMatch = programCounty === countyVal.toLowerCase() ||
-                        serviceAreaCounties.includes(countyVal.toLowerCase());
-    if (!countyMatch) return false;
-  }
-
-  // Service domain filter - read from UI element
-  const serviceDomainVal = els.serviceDomain ? safeStr(els.serviceDomain.value || '') : '';
-  if (serviceDomainVal) {
-    const programDomains = Array.isArray(p.service_domains) 
-      ? p.service_domains.map(d => safeStr(d).toLowerCase())
-      : [];
-    // Check if program's service_domains includes the selected domain
-    if (!programDomains.includes(serviceDomainVal.toLowerCase())) return false;
-  }
-
-  // SUD services filter - read from UI element (multi-select)
-  if (els.sudServices) {
-    const selectedOptions = Array.from(els.sudServices.selectedOptions).map(opt => opt.value);
-    if (selectedOptions.length > 0) {
-      const programSudServices = Array.isArray(p.sud_services)
-        ? p.sud_services.map(s => safeStr(s).toLowerCase())
+  // ========== Statewide Filters (Feature Flag Protected) ==========
+  // These filters only apply when the corresponding feature flags are enabled
+  const flags = window.FEATURE_FLAGS || {};
+  
+  // County filter - only applies when STATEWIDE_MODE is enabled
+  if (flags.STATEWIDE_MODE) {
+    const countyVal = els.county ? safeStr(els.county.value || '') : '';
+    if (countyVal) {
+      const programCounty = safeStr(p.primary_county || '').toLowerCase();
+      const serviceAreaCounties = Array.isArray(p.service_area?.counties) 
+        ? p.service_area.counties.map(c => safeStr(c).toLowerCase())
         : [];
-      // Check if there's any intersection between selected and program SUD services
-      const hasMatch = selectedOptions.some(selected =>
-        programSudServices.includes(selected.toLowerCase())
-      );
-      if (!hasMatch) return false;
+      // Also check locations for county data
+      const locationCounties = (p.locations || [])
+        .map(loc => safeStr(loc.county || '').toLowerCase())
+        .filter(c => c);
+      const countyMatch = programCounty === countyVal.toLowerCase() ||
+                          serviceAreaCounties.includes(countyVal.toLowerCase()) ||
+                          locationCounties.includes(countyVal.toLowerCase());
+      if (!countyMatch) return false;
+    }
+    
+    // Placeholder for Texas-wide location filtering (future enhancement)
+    // When STATEWIDE_MODE is enabled, can filter by state == "TX" and optionally city/county
+    // For now, existing location filter handles city-level filtering
+    // Future: if (flags.STATEWIDE_MODE && selectedState && selectedState !== 'TX') {
+    //   const programStates = (p.locations || []).map(loc => safeStr(loc.state).toUpperCase());
+    //   if (!programStates.includes(selectedState.toUpperCase())) return false;
+    // }
+  }
+
+  // Service domain filter - only applies when SHOW_SUD_FILTERS is enabled
+  if (flags.SHOW_SUD_FILTERS) {
+    const serviceDomainVal = els.serviceDomain ? safeStr(els.serviceDomain.value || '') : '';
+    if (serviceDomainVal) {
+      const programDomains = Array.isArray(p.service_domains) 
+        ? p.service_domains.map(d => safeStr(d).toLowerCase())
+        : [];
+      // Check if program's service_domains includes the selected domain
+      if (!programDomains.includes(serviceDomainVal.toLowerCase())) return false;
+    }
+
+    // SUD services filter - only applies when SHOW_SUD_FILTERS is enabled
+    if (els.sudServices) {
+      const selectedOptions = Array.from(els.sudServices.selectedOptions).map(opt => opt.value);
+      if (selectedOptions.length > 0) {
+        const programSudServices = Array.isArray(p.sud_services)
+          ? p.sud_services.map(s => safeStr(s).toLowerCase())
+          : [];
+        // Check if there's any intersection between selected and program SUD services
+        const hasMatch = selectedOptions.some(selected =>
+          programSudServices.includes(selected.toLowerCase())
+        );
+        if (!hasMatch) return false;
+      }
     }
   }
 
-  // Verification recency filter - read from UI element
-  const verificationRecencyVal = els.verificationRecency ? safeStr(els.verificationRecency.value || '') : '';
-  if (verificationRecencyVal) {
-    const recencyDays = parseInt(verificationRecencyVal, 10);
-    if (!isNaN(recencyDays) && recencyDays > 0) {
-      const verifiedAt = p.verification?.last_verified_at || p.last_verified; // Support legacy field
-      if (!verifiedAt) return false; // Program must have verification date
-      
-      try {
-        const verifiedDate = new Date(verifiedAt);
-        if (isNaN(verifiedDate.getTime())) return false; // Invalid date
+  // Verification recency filter - only applies when SHOW_VERIFICATION_FILTERS is enabled
+  if (flags.SHOW_VERIFICATION_FILTERS) {
+    const verificationRecencyVal = els.verificationRecency ? safeStr(els.verificationRecency.value || '') : '';
+    if (verificationRecencyVal) {
+      const recencyDays = parseInt(verificationRecencyVal, 10);
+      if (!isNaN(recencyDays) && recencyDays > 0) {
+        const verifiedAt = p.verification?.last_verified_at || p.last_verified; // Support legacy field
+        if (!verifiedAt) return false; // Program must have verification date
         
-        const now = new Date();
-        const daysDiff = Math.floor((now - verifiedDate) / (1000 * 60 * 60 * 24));
-        if (daysDiff > recencyDays) return false;
-      } catch (e) {
-        // Invalid date format - exclude programs with malformed dates
-        return false;
+        try {
+          const verifiedDate = new Date(verifiedAt);
+          if (isNaN(verifiedDate.getTime())) return false; // Invalid date
+          
+          const now = new Date();
+          const daysDiff = Math.floor((now - verifiedDate) / (1000 * 60 * 60 * 24));
+          if (daysDiff > recencyDays) return false;
+        } catch (e) {
+          // Invalid date format - exclude programs with malformed dates
+          return false;
+        }
       }
     }
   }
@@ -3371,52 +3394,115 @@ function computeAvailableFilters(programsList) {
   };
 }
 
-// Update filter UI visibility based on availableFilters
+// Apply feature flags to UI - enforces "no-clutter" by hiding filters when flags are disabled
+function applyFeatureFlagsToUI() {
+  const flags = window.FEATURE_FLAGS || {};
+  
+  // County filter group - only visible when STATEWIDE_MODE is enabled
+  const countyGroup = document.getElementById('countyFilterGroup');
+  if (countyGroup) {
+    if (!flags.STATEWIDE_MODE) {
+      countyGroup.style.display = 'none';
+      // Reset county filter value to avoid accidental filtering
+      const countySelect = document.getElementById('county');
+      if (countySelect) countySelect.value = '';
+    }
+  }
+  
+  // Service domain and SUD services filters - only visible when SHOW_SUD_FILTERS is enabled
+  if (!flags.SHOW_SUD_FILTERS) {
+    const serviceDomainGroup = document.getElementById('serviceDomainFilterGroup');
+    if (serviceDomainGroup) {
+      serviceDomainGroup.style.display = 'none';
+      const serviceDomainSelect = document.getElementById('serviceDomain');
+      if (serviceDomainSelect) serviceDomainSelect.value = '';
+    }
+    
+    const sudServicesGroup = document.getElementById('sudServicesFilterGroup');
+    if (sudServicesGroup) {
+      sudServicesGroup.style.display = 'none';
+      const sudServicesSelect = document.getElementById('sudServices');
+      if (sudServicesSelect) {
+        // Clear all selected options
+        Array.from(sudServicesSelect.options).forEach(opt => opt.selected = false);
+      }
+    }
+  }
+  
+  // Verification filter - only visible when SHOW_VERIFICATION_FILTERS is enabled
+  const verificationGroup = document.getElementById('verificationFilterGroup');
+  if (verificationGroup) {
+    if (!flags.SHOW_VERIFICATION_FILTERS) {
+      verificationGroup.style.display = 'none';
+      const verificationSelect = document.getElementById('verificationRecency');
+      if (verificationSelect) verificationSelect.value = '';
+    }
+  }
+  
+  // Update active filter chips after applying flags
+  if (typeof updateActiveFilterChips === 'function') {
+    updateActiveFilterChips();
+  }
+}
+
+// Update filter UI visibility based on availableFilters AND feature flags
 function updateFilterVisibility() {
   const accordion = document.getElementById('statewideFiltersAccordion');
   if (!accordion) return;
   
-  // Show accordion only if at least one advanced filter is available
-  const hasAnyAdvancedFilter = availableFilters.hasCounty || 
-                                availableFilters.hasServiceDomains || 
-                                availableFilters.hasSUD || 
-                                availableFilters.hasVerification ||
-                                availableFilters.hasServiceArea;
+  const flags = window.FEATURE_FLAGS || {};
+  
+  // Check if any advanced filter is available AND enabled by feature flags
+  const hasAnyAdvancedFilter = 
+    (flags.STATEWIDE_MODE && availableFilters.hasCounty) ||
+    (flags.SHOW_SUD_FILTERS && (availableFilters.hasServiceDomains || availableFilters.hasSUD)) ||
+    (flags.SHOW_VERIFICATION_FILTERS && availableFilters.hasVerification) ||
+    availableFilters.hasServiceArea; // Service area is always available if present
   
   accordion.style.display = hasAnyAdvancedFilter ? 'block' : 'none';
   
-  // Show/hide individual filter groups
+  // Show/hide individual filter groups (respect both data availability and feature flags)
   const countyGroup = document.getElementById('countyFilterGroup');
-  if (countyGroup) countyGroup.style.display = availableFilters.hasCounty ? 'block' : 'none';
+  if (countyGroup) {
+    countyGroup.style.display = (flags.STATEWIDE_MODE && availableFilters.hasCounty) ? 'block' : 'none';
+  }
   
   const serviceDomainGroup = document.getElementById('serviceDomainFilterGroup');
   if (serviceDomainGroup) {
-    serviceDomainGroup.style.display = (availableFilters.hasServiceDomains || availableFilters.hasSUD) ? 'block' : 'none';
+    serviceDomainGroup.style.display = (flags.SHOW_SUD_FILTERS && (availableFilters.hasServiceDomains || availableFilters.hasSUD)) ? 'block' : 'none';
   }
   
   const sudServicesGroup = document.getElementById('sudServicesFilterGroup');
-  if (sudServicesGroup) sudServicesGroup.style.display = availableFilters.hasSUD ? 'block' : 'none';
+  if (sudServicesGroup) {
+    sudServicesGroup.style.display = (flags.SHOW_SUD_FILTERS && availableFilters.hasSUD) ? 'block' : 'none';
+  }
   
   const verificationGroup = document.getElementById('verificationFilterGroup');
-  if (verificationGroup) verificationGroup.style.display = availableFilters.hasVerification ? 'block' : 'none';
+  if (verificationGroup) {
+    verificationGroup.style.display = (flags.SHOW_VERIFICATION_FILTERS && availableFilters.hasVerification) ? 'block' : 'none';
+  }
   
   // Update ARIA expanded state
   const summary = accordion.querySelector('.advanced-filters-summary');
   if (summary) {
     summary.setAttribute('aria-expanded', accordion.open ? 'true' : 'false');
   }
+  
+  // Apply feature flags to ensure disabled filters are hidden and cleared
+  applyFeatureFlagsToUI();
 }
 
-// Update active filter chips display
+// Update active filter chips display (respects feature flags)
 function updateActiveFilterChips() {
   const container = document.getElementById('activeFiltersContainer');
   const chipsContainer = document.getElementById('activeFiltersChips');
   if (!container || !chipsContainer) return;
   
+  const flags = window.FEATURE_FLAGS || {};
   const activeFilters = [];
   
-  // County filter
-  if (els.county && els.county.value) {
+  // County filter - only show if STATEWIDE_MODE is enabled
+  if (flags.STATEWIDE_MODE && els.county && els.county.value) {
     activeFilters.push({
       type: 'county',
       label: `County: ${els.county.options[els.county.selectedIndex]?.text || els.county.value}`,
@@ -3428,8 +3514,8 @@ function updateActiveFilterChips() {
     });
   }
   
-  // Service domain filter
-  if (els.serviceDomain && els.serviceDomain.value) {
+  // Service domain filter - only show if SHOW_SUD_FILTERS is enabled
+  if (flags.SHOW_SUD_FILTERS && els.serviceDomain && els.serviceDomain.value) {
     const domainLabels = {
       'mental_health': 'Mental Health',
       'substance_use': 'Substance Use',
@@ -3446,8 +3532,8 @@ function updateActiveFilterChips() {
     });
   }
   
-  // SUD services filter (multi-select)
-  if (els.sudServices) {
+  // SUD services filter (multi-select) - only show if SHOW_SUD_FILTERS is enabled
+  if (flags.SHOW_SUD_FILTERS && els.sudServices) {
     const selectedOptions = Array.from(els.sudServices.selectedOptions);
     if (selectedOptions.length > 0) {
       const sudLabels = {
@@ -3473,8 +3559,8 @@ function updateActiveFilterChips() {
     }
   }
   
-  // Verification recency filter
-  if (els.verificationRecency && els.verificationRecency.value) {
+  // Verification recency filter - only show if SHOW_VERIFICATION_FILTERS is enabled
+  if (flags.SHOW_VERIFICATION_FILTERS && els.verificationRecency && els.verificationRecency.value) {
     const recencyLabels = {
       '30': 'Last 30 days',
       '90': 'Last 90 days',
@@ -3744,6 +3830,134 @@ function checkTreatmentGridDisplayRegression() {
   }
 }
 
+// ========== Program Data Normalization ==========
+// Normalizes program data to a canonical internal format
+// Supports both program-level and location-level service_domain/sud_services
+// Returns a normalized program object ready for filtering and rendering
+function normalizeProgramData(p, normalizeCityFn = (city) => city) {
+  // Normalize locations and migrate lat/lng to geo structure
+  const normalizedLocations = Array.isArray(p.locations) ? p.locations.map(loc => {
+    const normalized = {
+      ...loc,
+      city: loc.city ? normalizeCityFn(loc.city) : loc.city
+    };
+    
+    // Migrate existing lat/lng to geo structure (backward compatibility)
+    if (loc.lat !== undefined || loc.lng !== undefined) {
+      normalized.geo = {
+        lat: typeof loc.lat === 'number' ? loc.lat : (loc.geo?.lat),
+        lng: typeof loc.lng === 'number' ? loc.lng : (loc.geo?.lng),
+        precision: loc.geo?.precision || (loc.lat && loc.lng ? 'street' : 'city')
+      };
+      // Remove old lat/lng from location to avoid duplication
+      delete normalized.lat;
+      delete normalized.lng;
+    } else if (loc.geo) {
+      // Preserve existing geo structure
+      normalized.geo = loc.geo;
+    }
+    
+    return normalized;
+  }) : [];
+  
+  // Determine service_domains - check program level first, then location level, then infer
+  let service_domains = p.service_domains;
+  if (!service_domains || !Array.isArray(service_domains) || service_domains.length === 0) {
+    // Check location-level service_domains (aggregate unique values)
+    const locationDomains = normalizedLocations
+      .map(loc => loc.service_domains)
+      .filter(Boolean)
+      .flat()
+      .filter((v, i, arr) => arr.indexOf(v) === i); // unique
+    
+    if (locationDomains.length > 0) {
+      service_domains = locationDomains;
+    } else {
+      // Infer from SUD indicators in existing fields
+      const hasSUD = p.sud_services && Array.isArray(p.sud_services) && p.sud_services.length > 0;
+      const levelOfCare = (p.level_of_care || '').toLowerCase();
+      const notes = (p.notes || '').toLowerCase();
+      const hasSUDKeywords = levelOfCare.includes('substance') || 
+                            levelOfCare.includes('sud') ||
+                            notes.includes('substance') ||
+                            notes.includes('detox') ||
+                            notes.includes('opioid') ||
+                            notes.includes('addiction');
+      
+      if (hasSUD || hasSUDKeywords) {
+        // Check if it's co-occurring (mental health + SUD)
+        const hasMentalHealth = levelOfCare.includes('mental') || 
+                               levelOfCare.includes('psychiatric') ||
+                               levelOfCare.includes('behavioral');
+        service_domains = hasMentalHealth ? ['co_occurring'] : ['substance_use'];
+      } else {
+        // Default to mental_health
+        service_domains = ['mental_health'];
+      }
+    }
+  }
+  
+  // Aggregate sud_services from program and location levels
+  let sud_services = p.sud_services;
+  if (!sud_services || !Array.isArray(sud_services) || sud_services.length === 0) {
+    // Check location-level sud_services (aggregate unique values)
+    const locationSudServices = normalizedLocations
+      .map(loc => loc.sud_services)
+      .filter(Boolean)
+      .flat()
+      .filter((v, i, arr) => arr.indexOf(v) === i); // unique
+    
+    if (locationSudServices.length > 0) {
+      sud_services = locationSudServices;
+    } else {
+      sud_services = undefined;
+    }
+  }
+  
+  // Migrate verification data to new structure (backward compatible)
+  let verification = p.verification;
+  if (!verification && (p.verification_source || p.last_verified)) {
+    verification = {
+      last_verified_at: p.last_verified || undefined,
+      sources: p.verification_source ? [{
+        name: p.verification_source,
+        type: 'website',
+        url: p.verification_source.startsWith('http') ? p.verification_source : undefined,
+        verified_at: p.last_verified || undefined
+      }] : []
+    };
+  }
+  
+  return {
+    program_id: p.program_id || "",
+    entry_type: p.entry_type || "Treatment Program",
+    organization: p.organization || "",
+    program_name: p.program_name || "",
+    level_of_care: p.level_of_care || "Unknown",
+    service_setting: p.service_setting || "Unknown",
+    ages_served: p.ages_served || "Unknown",
+    locations: normalizedLocations,
+    website_url: p.website_url || p.website || "",
+    website_domain: p.website_domain || "",
+    notes: p.notes || "",
+    transportation_available: p.transportation_available || "Unknown",
+    insurance_notes: p.insurance_notes || "Unknown",
+    verification_source: p.verification_source || "", // Keep for backward compatibility
+    last_verified: p.last_verified || "", // Keep for backward compatibility
+    accepting_new_patients: p.accepting_new_patients || "Unknown",
+    waitlist_status: p.waitlist_status || "Unknown",
+    accepted_insurance: p.accepted_insurance || null,
+    phone: p.phone || "",
+    // New statewide-ready fields (all optional)
+    primary_county: p.primary_county || undefined,
+    service_area: p.service_area || undefined,
+    geo: p.geo || undefined, // Program-level geo (if different from location-level)
+    verification: verification || undefined,
+    service_domains: service_domains,
+    sud_services: sud_services || undefined
+  };
+}
+
 // Try to load regional data (manifest-based)
 async function tryLoadRegionalData() {
   try {
@@ -3931,100 +4145,7 @@ async function loadPrograms(retryCount = 0){
       ? window.normalizeCityName 
       : (city) => city;
     
-    let loadedPrograms = data.programs.map(p => {
-      // Normalize locations and migrate lat/lng to geo structure
-      const normalizedLocations = Array.isArray(p.locations) ? p.locations.map(loc => {
-        const normalized = {
-          ...loc,
-          city: loc.city ? normalizeCity(loc.city) : loc.city
-        };
-        
-        // Migrate existing lat/lng to geo structure (backward compatibility)
-        if (loc.lat !== undefined || loc.lng !== undefined) {
-          normalized.geo = {
-            lat: typeof loc.lat === 'number' ? loc.lat : (loc.geo?.lat),
-            lng: typeof loc.lng === 'number' ? loc.lng : (loc.geo?.lng),
-            precision: loc.geo?.precision || (loc.lat && loc.lng ? 'street' : 'city')
-          };
-          // Remove old lat/lng from location to avoid duplication
-          delete normalized.lat;
-          delete normalized.lng;
-        } else if (loc.geo) {
-          // Preserve existing geo structure
-          normalized.geo = loc.geo;
-        }
-        
-        return normalized;
-      }) : [];
-      
-      // Determine service_domains based on SUD tags or default to mental_health
-      let service_domains = p.service_domains;
-      if (!service_domains || !Array.isArray(service_domains) || service_domains.length === 0) {
-        // Check for SUD indicators in existing fields
-        const hasSUD = p.sud_services && Array.isArray(p.sud_services) && p.sud_services.length > 0;
-        const levelOfCare = (p.level_of_care || '').toLowerCase();
-        const notes = (p.notes || '').toLowerCase();
-        const hasSUDKeywords = levelOfCare.includes('substance') || 
-                              levelOfCare.includes('sud') ||
-                              notes.includes('substance') ||
-                              notes.includes('detox') ||
-                              notes.includes('opioid') ||
-                              notes.includes('addiction');
-        
-        if (hasSUD || hasSUDKeywords) {
-          // Check if it's co-occurring (mental health + SUD)
-          const hasMentalHealth = levelOfCare.includes('mental') || 
-                                 levelOfCare.includes('psychiatric') ||
-                                 levelOfCare.includes('behavioral');
-          service_domains = hasMentalHealth ? ['co_occurring'] : ['substance_use'];
-        } else {
-          // Default to mental_health
-          service_domains = ['mental_health'];
-        }
-      }
-      
-      // Migrate verification data to new structure (backward compatible)
-      let verification = p.verification;
-      if (!verification && (p.verification_source || p.last_verified)) {
-        verification = {
-          last_verified_at: p.last_verified || undefined,
-          sources: p.verification_source ? [{
-            name: p.verification_source,
-            type: 'website',
-            url: p.verification_source.startsWith('http') ? p.verification_source : undefined,
-            verified_at: p.last_verified || undefined
-          }] : []
-        };
-      }
-      
-      return {
-        program_id: p.program_id || "",
-        entry_type: p.entry_type || "Treatment Program",
-        organization: p.organization || "",
-        program_name: p.program_name || "",
-        level_of_care: p.level_of_care || "Unknown",
-        service_setting: p.service_setting || "Unknown",
-        ages_served: p.ages_served || "Unknown",
-        locations: normalizedLocations,
-        website_url: p.website_url || p.website || "",
-        website_domain: p.website_domain || "",
-        notes: p.notes || "",
-        transportation_available: p.transportation_available || "Unknown",
-        insurance_notes: p.insurance_notes || "Unknown",
-        verification_source: p.verification_source || "", // Keep for backward compatibility
-        last_verified: p.last_verified || "", // Keep for backward compatibility
-        accepting_new_patients: p.accepting_new_patients || "Unknown",
-        waitlist_status: p.waitlist_status || "Unknown",
-        accepted_insurance: p.accepted_insurance || null,
-        // New statewide-ready fields (all optional)
-        primary_county: p.primary_county || undefined,
-        service_area: p.service_area || undefined,
-        geo: p.geo || undefined, // Program-level geo (if different from location-level)
-        verification: verification || undefined,
-        service_domains: service_domains,
-        sud_services: p.sud_services || undefined
-      };
-    });
+    let loadedPrograms = data.programs.map(p => normalizeProgramData(p, normalizeCity));
     
     // Set programs first (before async geocoded data merge)
     programs = loadedPrograms;
@@ -4034,6 +4155,9 @@ async function loadPrograms(retryCount = 0){
     // Update available filters after programs are loaded
     availableFilters = computeAvailableFilters(programs);
     updateFilterVisibility();
+    
+    // Apply feature flags to UI on initial load
+    applyFeatureFlagsToUI();
 
     // Build autocomplete indexes to avoid O(n^2) behavior
     buildAutocompleteIndexes(programs);
@@ -4069,6 +4193,9 @@ async function loadPrograms(retryCount = 0){
         // Recompute available filters after geocoded data merge
         availableFilters = computeAvailableFilters(programs);
         updateFilterVisibility();
+        
+        // Re-apply feature flags after geocoded data merge
+        applyFeatureFlagsToUI();
         // Re-render with geocoded data
         if (ready) {
           render();
@@ -4158,6 +4285,20 @@ document.addEventListener('click', (e) => {
     els.onlyVirtualTop.checked = false;
     els.showCrisis.checked = false;
     els.showCrisisTop.checked = false;
+    
+    // Clear statewide filters if feature flags are enabled
+    const flags = window.FEATURE_FLAGS || {};
+    if (flags.STATEWIDE_MODE && els.county) els.county.value = '';
+    if (flags.SHOW_SUD_FILTERS) {
+      if (els.serviceDomain) els.serviceDomain.value = '';
+      if (els.sudServices) {
+        Array.from(els.sudServices.options).forEach(opt => opt.selected = false);
+      }
+    }
+    if (flags.SHOW_VERIFICATION_FILTERS && els.verificationRecency) {
+      els.verificationRecency.value = '';
+    }
+    
     syncTopToggles();
     render();
   } else if (action === 'broaden-search') {

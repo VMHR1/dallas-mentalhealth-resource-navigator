@@ -42,11 +42,21 @@ const MAX_RECENT_SEARCHES = 5;
 const MAX_CALL_HISTORY = 20;
 const MAX_COMPARISON_ITEMS = 3;
 
+// ========== Feature Flags ==========
+// Feature flags control statewide-ready functionality without UI clutter
+// Set to true to enable features; false to keep UI minimal
+const FEATURE_FLAGS = {
+  STATEWIDE_MODE: false,           // Enable county filtering and statewide location support
+  SHOW_SUD_FILTERS: false,        // Enable service_domain and sud_services filters
+  SHOW_VERIFICATION_FILTERS: false // Enable verification recency filter
+};
+
 // For non-module environments
 if (typeof window !== 'undefined') {
   window.CITIES = CITIES;
   window.LEVELS_OF_CARE = LEVELS_OF_CARE;
   window.FILTER_PRESETS = FILTER_PRESETS;
+  window.FEATURE_FLAGS = FEATURE_FLAGS;
 }
 
 
