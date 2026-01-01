@@ -116,11 +116,22 @@ function handleBannerOffsetResize() {
 // On mobile/coarse pointer devices, this causes constant stutter due to frequent resize events
 let __rzT;
 let __rzRAF;
+let __lastWidth = window.innerWidth;
 const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
 
 if (!isCoarsePointer) {
   // Only run on fine pointer devices (desktop)
   window.addEventListener("resize", () => {
+    // On coarse pointer devices, never toggle is-resizing
+    if (isCoarsePointer) return;
+    
+    const currentWidth = window.innerWidth;
+    // Only trigger on meaningful width changes (ignore height-only changes)
+    if (Math.abs(currentWidth - __lastWidth) < 5) {
+      return;
+    }
+    __lastWidth = currentWidth;
+    
     // Cancel any pending RAF
     if (__rzRAF) {
       cancelAnimationFrame(__rzRAF);
@@ -3989,18 +4000,19 @@ let didWarnDisplayGrid = false;
 // This warns once per page load if the computed display becomes "grid" instead of "flex"
 function checkTreatmentGridDisplayRegression() {
   // Only run in dev environments (localhost or 127.0.0.1, or with ?debug=1)
+  // NOTE: Removed *.pages.dev from dev detection to prevent forced layout on production
   const isDev = typeof window !== 'undefined' && (
     window.location.hostname.includes('localhost') ||
     window.location.hostname.includes('127.0.0.1') ||
     new URLSearchParams(window.location.search).get('debug') === '1'
   );
   
-  // Set flag immediately to prevent multiple runs, even if check doesn't trigger warning
+  // Set flag BEFORE any checks to prevent multiple runs, even if check doesn't trigger warning
   if (!isDev || didWarnDisplayGrid || !els.treatmentGrid) {
     return;
   }
   
-  // Mark as checked immediately to prevent re-running
+  // Mark as checked immediately to prevent re-running (set BEFORE getComputedStyle)
   didWarnDisplayGrid = true;
   
   const computedDisplay = window.getComputedStyle(els.treatmentGrid).display;
