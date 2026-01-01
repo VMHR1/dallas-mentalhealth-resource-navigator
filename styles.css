@@ -544,6 +544,7 @@ h1{
   .bg-gradient {
     animation: none !important;
     background: linear-gradient(180deg, var(--bg1), var(--bg0)); /* drop the big radial gradients */
+    transform: none !important; /* Prevent transform-based animations */
   }
   
   /* reduce repaint cost from large shadows */
@@ -552,6 +553,46 @@ h1{
   .modal-content,
   .triage-card {
     box-shadow: var(--shadow-sm) !important;
+  }
+  
+  /* Disable expensive infinite animations on mobile for smooth text-size changes */
+  .btn-emergency {
+    animation: none !important;
+  }
+  
+  .accuracyStrip {
+    animation: none !important;
+  }
+  
+  .shimmer {
+    animation: none !important;
+  }
+}
+
+/* Temporarily disable expensive animations during iOS visualViewport changes */
+/* This prevents jank when user adjusts text size via aA menu */
+@media (pointer: coarse) {
+  html.vv-changing .bg-gradient {
+    animation: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  
+  html.vv-changing .btn-emergency {
+    animation: none !important;
+  }
+  
+  html.vv-changing .accuracyStrip {
+    animation: none !important;
+  }
+  
+  html.vv-changing .shimmer {
+    animation: none !important;
+  }
+  
+  html.vv-changing .floating-card {
+    animation: none !important;
+    transform: none !important;
   }
 }
 

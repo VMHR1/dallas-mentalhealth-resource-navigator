@@ -155,6 +155,29 @@ window.addEventListener("orientationchange", () => {
   setTimeout(updateCrisisBannerOffset, 100);
 });
 
+// iOS visualViewport change detection for smooth text-size adjustments
+// Temporarily disables expensive animations during viewport changes on mobile
+if (isCoarsePointer && window.visualViewport) {
+  let __vvT;
+  let __vvRAF;
+  
+  window.visualViewport.addEventListener('resize', () => {
+    // Cancel any pending RAF
+    if (__vvRAF) {
+      cancelAnimationFrame(__vvRAF);
+    }
+    
+    // Use rAF to batch visualViewport events
+    __vvRAF = requestAnimationFrame(() => {
+      document.documentElement.classList.add('vv-changing');
+      clearTimeout(__vvT);
+      __vvT = setTimeout(() => {
+        document.documentElement.classList.remove('vv-changing');
+      }, 200);
+    });
+  });
+}
+
 let comparisonSet = new Set(JSON.parse(localStorage.getItem('comparison') || '[]'));
 
 const programDataMap = new Map();
