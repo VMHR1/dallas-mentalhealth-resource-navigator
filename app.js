@@ -143,8 +143,14 @@ function updateTextScaleClass() {
     }
     
     // If current is smaller than baseline by more than 0.5px, activate dense mode
+    // CRITICAL: At smaller text sizes, more elements are visible = more paint cost
+    // Need aggressive optimizations
     if (currentRootPx < baselineRootPx - 0.5) {
       document.documentElement.classList.add('text-small');
+      // Log for debugging (only in perf mode)
+      if (PERF_MODE) {
+        console.log('[DENSE MODE] Activated - text size:', currentRootPx, 'vs baseline:', baselineRootPx);
+      }
     } else {
       document.documentElement.classList.remove('text-small');
     }

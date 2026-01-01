@@ -824,7 +824,8 @@ html.perf-no-sticky .search-section {
 
 /* ========== Dense Mode: Text Scale Below 100% (TASK B) ========== */
 /* Activates when iOS Safari text size is below baseline (aA smaller) */
-/* Reduces paint/compositing cost without changing layout */
+/* CRITICAL: At smaller text sizes, more elements are visible = more paint cost */
+/* Apply aggressive optimizations to handle increased element density */
 @media (pointer: coarse) {
   /* TASK B.1: Disable ALL infinite/looping animations when text is small */
   html.text-small .bg-gradient {
@@ -833,9 +834,9 @@ html.perf-no-sticky .search-section {
     filter: none !important;
   }
   
+  /* CRITICAL: Hide floating cards completely in dense mode (already hidden on mobile, but ensure it) */
   html.text-small .floating-card {
-    animation: none !important;
-    transform: none !important;
+    display: none !important;
   }
   
   html.text-small .btn-emergency {
@@ -850,28 +851,28 @@ html.perf-no-sticky .search-section {
     animation: none !important;
   }
   
-  /* TASK B.2: Flatten heavy shadows on sticky containers */
+  /* CRITICAL FIX: At smaller text sizes, remove ALL shadows - too many elements to repaint */
+  /* Use borders only for visual separation */
   html.text-small .crisis-banner {
-    box-shadow: 0 1px 3px rgba(239,68,68,.1) !important;
-    /* Use border instead of heavy shadow */
-    border-bottom: 2px solid rgba(239,68,68,.2) !important;
+    box-shadow: none !important; /* Remove shadow completely */
+    border-bottom: 2px solid rgba(239,68,68,.25) !important; /* Use border only */
   }
   
   html.text-small .search-section {
-    box-shadow: 0 1px 3px rgba(15,23,42,.05) !important;
-    /* Use border instead of heavy shadow */
-    border: 1px solid rgba(15,23,42,.12) !important;
+    box-shadow: none !important; /* Remove shadow completely */
+    border: 1px solid rgba(15,23,42,.15) !important; /* Use border only */
   }
   
-  /* TASK B.2: Flatten shadows on cards/modals */
+  /* CRITICAL: Remove ALL card shadows in dense mode - too many cards visible */
   html.text-small .card {
-    box-shadow: 0 1px 2px rgba(15,23,42,.04) !important;
-    border: 1px solid rgba(15,23,42,.15) !important; /* Stronger border to compensate */
+    box-shadow: none !important; /* Remove shadow completely */
+    border: 1px solid rgba(15,23,42,.18) !important; /* Stronger border to compensate */
   }
   
   html.text-small .modal-content,
   html.text-small .section {
-    box-shadow: 0 1px 3px rgba(15,23,42,.06) !important;
+    box-shadow: none !important; /* Remove shadow completely */
+    border: 1px solid rgba(15,23,42,.12) !important; /* Use border only */
   }
   
   /* TASK B.3: Remove fixed full-viewport background layer */
@@ -884,19 +885,39 @@ html.perf-no-sticky .search-section {
     background: var(--bg0) !important;
   }
   
-  /* TASK B.4: Add content-visibility to long results list */
+  /* CRITICAL: More aggressive content-visibility for dense mode */
+  /* At smaller text sizes, more cards are visible - need better optimization */
   html.text-small .grid {
     content-visibility: auto !important;
-    contain-intrinsic-size: 1200px !important; /* Prevent jump when content loads */
+    contain-intrinsic-size: 800px !important; /* Smaller intrinsic size for denser content */
+    contain: layout style paint !important; /* Aggressive containment */
+  }
+  
+  /* CRITICAL: Apply content-visibility to individual cards in dense mode */
+  /* This prevents offscreen cards from painting during scroll */
+  html.text-small .card {
+    content-visibility: auto !important;
+    contain-intrinsic-size: 150px !important; /* Smaller for denser text */
+    contain: layout style paint !important;
+  }
+  
+  /* CRITICAL: Disable all transitions in dense mode - too many elements */
+  html.text-small * {
+    transition: none !important; /* Remove all transitions to prevent repaints */
+  }
+  
+  /* CRITICAL: Disable will-change hints in dense mode - reduces compositing cost */
+  html.text-small * {
+    will-change: auto !important;
   }
   
   /* TASK C: While-scrolling optimization (dense mode only) */
-  /* Temporarily remove shadows during active scrolling for better FPS */
+  /* Shadows already removed above, but ensure borders stay for visual separation */
   html.text-small.is-scrolling .card,
   html.text-small.is-scrolling .crisis-banner,
   html.text-small.is-scrolling .search-section {
-    box-shadow: none !important;
-    /* Keep borders for visual separation */
+    /* Shadows already removed, just ensure no other expensive properties */
+    transform: none !important;
   }
 }
 
