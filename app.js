@@ -2204,21 +2204,33 @@ function renderFavorites() {
         // Remove any existing handlers
         expandBtn.onclick = null;
         expandBtn.ontouchend = null;
+        expandBtn.onpointerup = null;
         
-        // Create a unified handler for both click and touch events
+        // Create a unified handler with debounce guard to prevent double toggles
         const handleExpand = (e) => {
           e.preventDefault();
           e.stopPropagation();
           e.stopImmediatePropagation(); // Prevent other handlers
+          
+          // Guard against double toggles (e.g., touch + synthetic click)
+          const now = Date.now();
+          const lastToggleTs = parseInt(expandBtn.dataset.lastToggleTs || '0', 10);
+          if (now - lastToggleTs < 350) {
+            return; // Ignore if fired within 350ms of last toggle
+          }
+          
+          // Update timestamp before toggling
+          expandBtn.dataset.lastToggleTs = now.toString();
           toggleModalCardDetails(card);
         };
         
-        // Attach both click and touchend for mobile support
-        expandBtn.addEventListener('click', handleExpand, { passive: false });
-        expandBtn.addEventListener('touchend', handleExpand, { passive: false });
-        
-        // Also handle pointerup for broader device support
-        expandBtn.addEventListener('pointerup', handleExpand, { passive: false });
+        // Use pointerup for all devices (unified event), with click fallback
+        if (window.PointerEvent) {
+          expandBtn.addEventListener('pointerup', handleExpand, { passive: false });
+        } else {
+          // Fallback for browsers without PointerEvent support
+          expandBtn.addEventListener('click', handleExpand, { passive: false });
+        }
       }
     }
     
