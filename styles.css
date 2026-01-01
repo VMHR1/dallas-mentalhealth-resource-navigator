@@ -27,6 +27,22 @@
 }
 
 *{box-sizing:border-box}
+
+/* Disable animations/transitions during resize to prevent stuttering */
+html.is-resizing *,
+html.is-resizing *::before,
+html.is-resizing *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+html.is-resizing .bg-gradient {
+  animation: none !important;
+  filter: none !important;
+  transform: none !important;
+}
+
 html{
   height:100%;
   overflow-x: hidden;

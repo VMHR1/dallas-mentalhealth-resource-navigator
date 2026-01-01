@@ -96,6 +96,16 @@ async function initializeEncryptedStorage() {
 // Initialize on load
 initializeEncryptedStorage();
 
+// Disable animations during resize to prevent stuttering
+let __rzT;
+window.addEventListener("resize", () => {
+  document.documentElement.classList.add("is-resizing");
+  clearTimeout(__rzT);
+  __rzT = setTimeout(() => {
+    document.documentElement.classList.remove("is-resizing");
+  }, 200);
+}, { passive: true });
+
 let comparisonSet = new Set(JSON.parse(localStorage.getItem('comparison') || '[]'));
 
 const programDataMap = new Map();
