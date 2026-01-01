@@ -3866,30 +3866,6 @@ async function loadPrograms(retryCount = 0){
       programsMetadata = data.metadata;
     }
     
-    // Parse JSON - use validation if available, but always allow fallback
-    let data;
-    try {
-      // Try to parse directly first (most reliable)
-      data = JSON.parse(jsonText);
-      
-    // Store metadata for display
-    if (data.metadata) {
-      programsMetadata = data.metadata;
-    }
-    
-    // If validation is available and we have jsonText (fallback case), run it
-    if (jsonText && typeof window.validateJSON === 'function') {
-      const jsonValidation = window.validateJSON(jsonText);
-      if (!jsonValidation.valid) {
-        // Log warning but don't fail - validation might be too strict
-        console.warn('JSON validation warning (non-blocking):', jsonValidation.error);
-        if (typeof window.logSecurityEvent === 'function') {
-          window.logSecurityEvent('json_validation_warning', { error: jsonValidation.error });
-        }
-        // Continue with parsed data anyway
-      }
-    }
-    
     if(!data || !Array.isArray(data.programs)) {
       throw new Error("Programs data loaded but missing a top-level `programs` array.");
     }
