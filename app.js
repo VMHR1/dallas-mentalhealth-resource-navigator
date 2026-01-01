@@ -192,15 +192,13 @@ if (isCoarsePointer && window.visualViewport) {
   // Use visualViewport for mobile to avoid window resize spam
   let __vvT;
   let __vvRAF;
-  let __vvClassT;
   let __vvHeightCheckT;
   let __lastVvHeight = window.visualViewport.height;
   let __isVvChanging = false;
-  let __lastHeightCheck = 0;
+  let __vvEventCount = 0;
+  let __vvStartTime = 0;
   
   window.visualViewport.addEventListener('resize', () => {
-    const now = Date.now();
-    
     // Cancel any pending RAF
     if (__vvRAF) {
       cancelAnimationFrame(__vvRAF);
@@ -208,42 +206,49 @@ if (isCoarsePointer && window.visualViewport) {
     
     // Use rAF to batch visualViewport events
     __vvRAF = requestAnimationFrame(() => {
-      // Aggressively debounce class toggling: only add class once at start
-      // Keep it on until viewport stabilizes to avoid frequent style recalculations
-      clearTimeout(__vvClassT);
-      if (!__isVvChanging) {
-        // Add class immediately on first event to start optimizations
-        __isVvChanging = true;
-        document.documentElement.classList.add('vv-changing');
-      }
-      
-      // Throttle height checks aggressively: only check every 150ms
-      // This reduces property access overhead during rapid viewport changes
+      // Throttle height checks: only check every 200ms to reduce overhead
       clearTimeout(__vvHeightCheckT);
       __vvHeightCheckT = setTimeout(() => {
         const currentHeight = window.visualViewport.height;
         const heightDiff = Math.abs(currentHeight - __lastVvHeight);
         
-        // Only update banner offset if viewport height changed significantly
-        if (heightDiff > 10) {
+        // CRITICAL: Only apply vv-changing during ACTUAL text-size changes
+        // Text-size changes cause sustained height changes (>15px) over multiple events
+        // Normal scrolling causes small, transient height changes
+        if (heightDiff > 15) {
+          // Significant height change - likely text-size adjustment
           __lastVvHeight = currentHeight;
-          // Update banner offset after viewport stabilizes
+          __vvEventCount++;
+          
+          if (!__isVvChanging) {
+            __isVvChanging = true;
+            __vvStartTime = Date.now();
+            document.documentElement.classList.add('vv-changing');
+          }
+          
+          // Reset timeout - keep class on while changes are happening
           clearTimeout(__vvT);
           __vvT = setTimeout(() => {
             __isVvChanging = false;
+            __vvEventCount = 0;
             document.documentElement.classList.remove('vv-changing');
             // Update banner offset after viewport change completes
             updateCrisisBannerOffset();
-          }, 350);
-        } else {
-          // Small height changes - remove class after delay
+          }, 400);
+        } else if (__isVvChanging && heightDiff < 5) {
+          // Height has stabilized - remove class after delay
           clearTimeout(__vvT);
           __vvT = setTimeout(() => {
             __isVvChanging = false;
+            __vvEventCount = 0;
             document.documentElement.classList.remove('vv-changing');
+            updateCrisisBannerOffset();
           }, 300);
+        } else {
+          // Small height changes during normal scrolling - don't apply class
+          // This prevents optimizations from affecting normal scroll behavior
         }
-      }, 150);
+      }, 200);
     });
   });
   

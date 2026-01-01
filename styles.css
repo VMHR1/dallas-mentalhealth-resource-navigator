@@ -620,15 +620,21 @@ h1{
   }
   
   /* Disable transforms and filters that cause expensive repaints */
-  html.vv-changing * {
+  /* BUT: Allow transforms on cards for hover effects (only disable animations) */
+  html.vv-changing .bg-gradient,
+  html.vv-changing .floating-card,
+  html.vv-changing .btn-emergency {
     transform: none !important;
     filter: none !important;
   }
   
-  /* Disable all transitions during viewport changes to prevent recalculation */
-  html.vv-changing *,
-  html.vv-changing *::before,
-  html.vv-changing *::after {
+  /* Disable transitions on animated elements during viewport changes */
+  /* BUT: Keep transitions on interactive elements (cards, buttons) to avoid visual glitches */
+  html.vv-changing .bg-gradient,
+  html.vv-changing .floating-card,
+  html.vv-changing .btn-emergency,
+  html.vv-changing .shimmer,
+  html.vv-changing .accuracyStrip {
     transition: none !important;
   }
   
@@ -640,36 +646,10 @@ h1{
     contain: layout style paint !important;
   }
   
-  /* Disable hover effects that use transforms during viewport changes */
-  html.vv-changing .card:hover,
-  html.vv-changing .card:hover::before,
-  html.vv-changing button:hover,
-  html.vv-changing .btnlike:hover,
-  html.vv-changing .linkBtn:hover {
-    transform: none !important;
-  }
+  /* REMOVED: Disabling hover effects - causes visual glitches during scrolling */
+  /* REMOVED: will-change modification - not needed */
   
-  /* Simplify sticky positioning recalculation during viewport changes */
-  html.vv-changing .search-section {
-    will-change: auto !important;
-  }
-  
-  /* CRITICAL: Use content-visibility to skip paint of off-screen content during viewport changes */
-  /* This matches the performance when content is hidden, but keeps layout intact */
-  html.vv-changing .grid {
-    content-visibility: auto !important;
-  }
-  
-  /* Ensure cards in grid skip paint when not in viewport during changes */
-  html.vv-changing .grid .card {
-    content-visibility: auto !important;
-    contain-intrinsic-size: 240px !important;
-  }
-  
-  /* Skip paint on sections that are not currently in viewport */
-  html.vv-changing .section {
-    content-visibility: auto !important;
-  }
+  /* REMOVED: content-visibility - causes layout shifts and visual glitches during scrolling */
   
   /* Optimize text rendering during viewport changes */
   html.vv-changing {
@@ -677,25 +657,9 @@ h1{
     -webkit-font-smoothing: auto !important;
   }
   
-  /* Force GPU compositing on main containers to reduce paint cost */
-  html.vv-changing .grid,
-  html.vv-changing .section {
-    transform: translateZ(0) !important;
-    will-change: contents !important;
-  }
-  
-  /* Disable expensive pseudo-elements during viewport changes */
-  html.vv-changing .card::before,
-  html.vv-changing .card::after {
-    display: none !important;
-  }
-  
-  /* Simplify border-radius calculations during viewport changes */
-  html.vv-changing .card,
-  html.vv-changing .section,
-  html.vv-changing .search-section {
-    border-radius: 12px !important; /* Use fixed value instead of CSS variable */
-  }
+  /* REMOVED: transform: translateZ(0) - causes layout shifts during scrolling */
+  /* REMOVED: Disabling pseudo-elements - causes visual glitches (card::before is the gradient line) */
+  /* REMOVED: content-visibility - causes layout shifts during scrolling */
 }
 
 @media (max-width: 768px) {
