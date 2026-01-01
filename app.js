@@ -706,7 +706,8 @@ if (isCoarsePointer && window.visualViewport && !__vvListenerAttached) {
           __vvEventSequence = [];
         }
       }, checkInterval);
-    });
+      });
+    }, 150); // Throttle visualViewport processing to 150ms
   });
   
   // Still listen to orientation changes
