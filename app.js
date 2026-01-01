@@ -17,6 +17,12 @@ let availableFilters = {
   hasServiceArea: false
 };
 
+// Statewide filter state (with safe defaults)
+let selectedCounty = null;
+let selectedServiceDomains = [];
+let selectedSudServices = [];
+let verificationRecencyDays = null;
+
 // Load encrypted data
 async function loadEncryptedData(key, defaultValue = []) {
   try {
@@ -147,6 +153,10 @@ const els = {
   historyList: document.getElementById("historyList"),
   toast: document.getElementById("toast"),
   insurance: document.getElementById("insurance"),
+  county: document.getElementById("county"),
+  serviceDomain: document.getElementById("serviceDomain"),
+  sudServices: document.getElementById("sudServices"),
+  verificationRecency: document.getElementById("verificationRecency"),
   viewComparison: document.getElementById("viewComparison"),
   comparisonModal: document.getElementById("comparisonModal"),
   comparisonList: document.getElementById("comparisonList"),
@@ -1088,6 +1098,65 @@ function matchesFilters(p){
 
   if (onlyVirtual && !hasVirtual(p)) {
     return false;
+  }
+
+  // County filter - read from UI element
+  const countyVal = els.county ? safeStr(els.county.value || '') : '';
+  if (countyVal) {
+    const programCounty = safeStr(p.primary_county || '').toLowerCase();
+    const serviceAreaCounties = Array.isArray(p.service_area?.counties) 
+      ? p.service_area.counties.map(c => safeStr(c).toLowerCase())
+      : [];
+    const countyMatch = programCounty === countyVal.toLowerCase() ||
+                        serviceAreaCounties.includes(countyVal.toLowerCase());
+    if (!countyMatch) return false;
+  }
+
+  // Service domain filter - read from UI element
+  const serviceDomainVal = els.serviceDomain ? safeStr(els.serviceDomain.value || '') : '';
+  if (serviceDomainVal) {
+    const programDomains = Array.isArray(p.service_domains) 
+      ? p.service_domains.map(d => safeStr(d).toLowerCase())
+      : [];
+    // Check if program's service_domains includes the selected domain
+    if (!programDomains.includes(serviceDomainVal.toLowerCase())) return false;
+  }
+
+  // SUD services filter - read from UI element (multi-select)
+  if (els.sudServices) {
+    const selectedOptions = Array.from(els.sudServices.selectedOptions).map(opt => opt.value);
+    if (selectedOptions.length > 0) {
+      const programSudServices = Array.isArray(p.sud_services)
+        ? p.sud_services.map(s => safeStr(s).toLowerCase())
+        : [];
+      // Check if there's any intersection between selected and program SUD services
+      const hasMatch = selectedOptions.some(selected =>
+        programSudServices.includes(selected.toLowerCase())
+      );
+      if (!hasMatch) return false;
+    }
+  }
+
+  // Verification recency filter - read from UI element
+  const verificationRecencyVal = els.verificationRecency ? safeStr(els.verificationRecency.value || '') : '';
+  if (verificationRecencyVal) {
+    const recencyDays = parseInt(verificationRecencyVal, 10);
+    if (!isNaN(recencyDays) && recencyDays > 0) {
+      const verifiedAt = p.verification?.last_verified_at || p.last_verified; // Support legacy field
+      if (!verifiedAt) return false; // Program must have verification date
+      
+      try {
+        const verifiedDate = new Date(verifiedAt);
+        if (isNaN(verifiedDate.getTime())) return false; // Invalid date
+        
+        const now = new Date();
+        const daysDiff = Math.floor((now - verifiedDate) / (1000 * 60 * 60 * 24));
+        if (daysDiff > recencyDays) return false;
+      } catch (e) {
+        // Invalid date format - exclude programs with malformed dates
+        return false;
+      }
+    }
   }
 
   return true;
@@ -2710,6 +2779,39 @@ function bind(){
     on(els.insurance, "change", scheduleRender);
   }
   
+  // Statewide filter handlers
+  if (els.county) {
+    on(els.county, "change", () => {
+      selectedCounty = els.county.value || null;
+      scheduleRender();
+    });
+  }
+  
+  if (els.serviceDomain) {
+    on(els.serviceDomain, "change", () => {
+      selectedServiceDomains = els.serviceDomain.value ? [els.serviceDomain.value] : [];
+      scheduleRender();
+    });
+  }
+  
+  if (els.sudServices) {
+    on(els.sudServices, "change", () => {
+      // Get selected options from multi-select
+      const selected = Array.from(els.sudServices.selectedOptions).map(opt => opt.value);
+      selectedSudServices = selected;
+      scheduleRender();
+    });
+  }
+  
+  if (els.verificationRecency) {
+    on(els.verificationRecency, "change", () => {
+      verificationRecencyDays = els.verificationRecency.value 
+        ? parseInt(els.verificationRecency.value, 10) 
+        : null;
+      scheduleRender();
+    });
+  }
+  
   // Sort functionality
   on(els.sortSelect, "change", (e) => {
     currentSort = e.target.value;
@@ -2785,6 +2887,19 @@ function bind(){
     if (els.insurance) els.insurance.value = "";
     els.onlyVirtual.checked = false;
     els.showCrisis.checked = false;
+    
+    // Reset statewide filters
+    selectedCounty = null;
+    selectedServiceDomains = [];
+    selectedSudServices = [];
+    verificationRecencyDays = null;
+    if (els.county) els.county.value = "";
+    if (els.serviceDomain) els.serviceDomain.value = "";
+    if (els.sudServices) {
+      Array.from(els.sudServices.options).forEach(opt => opt.selected = false);
+    }
+    if (els.verificationRecency) els.verificationRecency.value = "";
+    
     openId = null;
     syncTopToggles();
     updateURLState();
@@ -2805,9 +2920,22 @@ function bind(){
     els.age.value = "";
     if (window.__ageDropdownSync) window.__ageDropdownSync();
     els.care.value = "";
-    els.insurance.value = "";
+    if (els.insurance) els.insurance.value = "";
     els.onlyVirtual.checked = false;
     els.showCrisis.checked = false;
+    
+    // Reset statewide filters
+    selectedCounty = null;
+    selectedServiceDomains = [];
+    selectedSudServices = [];
+    verificationRecencyDays = null;
+    if (els.county) els.county.value = "";
+    if (els.serviceDomain) els.serviceDomain.value = "";
+    if (els.sudServices) {
+      Array.from(els.sudServices.options).forEach(opt => opt.selected = false);
+    }
+    if (els.verificationRecency) els.verificationRecency.value = "";
+    
     openId = null;
     syncTopToggles();
     render();
