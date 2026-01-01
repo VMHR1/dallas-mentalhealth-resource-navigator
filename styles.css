@@ -1569,9 +1569,8 @@ a.btnlike:focus{
     will-change: auto; /* Don't hint unless needed */
     /* Disable card animations on mobile for better scroll performance */
     animation: none !important;
-    /* CRITICAL FIX: Disable expensive hover transforms during scroll */
-    /* Transform and box-shadow changes on hover cause repaints - disable on mobile */
-    transition: opacity 0.2s ease !important; /* Only allow opacity, not transform */
+    /* CRITICAL FIX: Disable ALL transitions on mobile - transitions cause repaints during scroll */
+    transition: none !important; /* Remove all transitions to prevent repaints */
   }
   
   /* CRITICAL FIX: Completely disable ALL hover effects on mobile - they cause repaints during scroll */
@@ -1586,11 +1585,6 @@ a.btnlike:focus{
   /* Disable card::before gradient line animation on mobile */
   .card::before {
     display: none !important; /* Remove animated gradient line */
-  }
-  
-  /* CRITICAL: Disable all card transitions on mobile - transitions cause repaints during scroll */
-  .card {
-    transition: none !important; /* Remove all transitions to prevent repaints */
   }
 }
 .card::before{
