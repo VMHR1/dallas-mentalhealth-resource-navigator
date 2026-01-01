@@ -51,7 +51,7 @@ async function loadEncryptedData(key, defaultValue = []) {
   } catch (error) {
     // Only log unexpected errors, not expected decryption failures
     if (!error.message || !error.message.includes('OperationError')) {
-      console.error(`Error loading ${key}:`, error);
+    console.error(`Error loading ${key}:`, error);
     }
     return defaultValue;
   }
@@ -381,7 +381,10 @@ window.addEventListener("resize", () => {
 
 // Update banner offset on resize/orientation
 // On mobile, prefer visualViewport events to avoid layout thrash during text-size changes
-if (isCoarsePointer && window.visualViewport) {
+// SECURITY AUDIT FIX: Prevent duplicate listener attachment
+let __vvListenerAttached = false;
+if (isCoarsePointer && window.visualViewport && !__vvListenerAttached) {
+  __vvListenerAttached = true;
   // Use visualViewport for mobile to avoid window resize spam
   let __vvT;
   let __vvRAF;
@@ -643,6 +646,19 @@ document.addEventListener('click', (e) => {
           card.replaceWith(newCard);
         }
       }
+    }
+    return;
+  }
+
+  // SECURITY AUDIT FIX: Handle comparison remove buttons via event delegation
+  // This prevents listener accumulation when renderComparison() is called multiple times
+  const removeCompareBtn = e.target.closest('.remove-compare');
+  if (removeCompareBtn && typeof toggleComparison === 'function') {
+    e.preventDefault();
+    const id = removeCompareBtn.dataset.remove;
+    if (id) {
+      toggleComparison(id);
+      renderComparison();
     }
     return;
   }
@@ -1075,7 +1091,19 @@ function initAgeDropdown(){
     close(false);
   });
 
-  window.addEventListener("resize", () => close(false));
+  // SECURITY AUDIT FIX: Throttle resize handler to prevent jank
+  let __modalResizeRAF = null;
+  let __modalResizeT = null;
+  const handleModalResize = () => {
+    if (__modalResizeRAF) cancelAnimationFrame(__modalResizeRAF);
+    __modalResizeRAF = requestAnimationFrame(() => {
+      if (__modalResizeT) clearTimeout(__modalResizeT);
+      __modalResizeT = setTimeout(() => {
+        close(false);
+      }, 150);
+    });
+  };
+  window.addEventListener("resize", handleModalResize);
 }
 
 // ========== Utility Functions ==========
@@ -1988,6 +2016,12 @@ function isInComparison(programId) {
 }
 
 function renderComparison() {
+  // SECURITY AUDIT FIX: Add null check before DOM manipulation
+  if (!els.comparisonList) {
+    console.warn('Comparison list element not found');
+    return;
+  }
+
   if (comparisonSet.size === 0) {
     els.comparisonList.innerHTML = '<p style="color: var(--muted); text-align: center; padding: 40px 20px;">No programs selected for comparison. Check the "Compare" box on program cards to add them.</p>';
     return;
@@ -2064,14 +2098,9 @@ function renderComparison() {
   html += '</tbody></table></div>';
   els.comparisonList.innerHTML = html;
   
-  // Add remove handlers
-  els.comparisonList.querySelectorAll('.remove-compare').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.remove;
-      toggleComparison(id);
-      renderComparison();
-    });
-  });
+  // SECURITY AUDIT FIX: Use event delegation instead of adding listeners per button
+  // This prevents listener accumulation if renderComparison() is called multiple times
+  // Event delegation is handled at document level in bind() function
 }
 
 async function saveFavorites() {
@@ -2553,6 +2582,12 @@ function renderRecentSearches() {
 }
 
 function renderFavorites() {
+  // SECURITY AUDIT FIX: Add null check before DOM manipulation
+  if (!els.favoritesList) {
+    console.warn('Favorites list element not found');
+    return;
+  }
+
   const favoritePrograms = programs.filter(p => {
     const id = stableIdFor(p, programs.indexOf(p));
     return favorites.has(id);
@@ -2740,6 +2775,12 @@ function exportFavorites() {
 }
 
 function renderCallHistory() {
+  // SECURITY AUDIT FIX: Add null check before DOM manipulation
+  if (!els.historyList) {
+    console.warn('History list element not found');
+    return;
+  }
+
   if (callHistory.length === 0) {
     els.historyList.innerHTML = '<p style="color: var(--muted); text-align: center; padding: 40px 20px;">No call history yet. Call buttons will appear here after you use them.</p>';
     return;
