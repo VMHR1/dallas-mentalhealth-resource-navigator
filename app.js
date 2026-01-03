@@ -614,6 +614,12 @@ if (isCoarsePointer && window.visualViewport && !__vvListenerAttached) {
                 // TASK C: Only update banner offset after confirmed text-size change completes
                 // Do NOT update during scroll-driven viewport changes
                 updateCrisisBannerOffset();
+                
+                // CRITICAL FIX: Trigger ONE render after text size stabilizes
+                // This ensures cards display properly after text size change completes
+                if (typeof render === 'function') {
+                  setTimeout(() => render(), 100);
+                }
               }, isRealIOSDevice ? 500 : 400);
             }
           }
@@ -3041,6 +3047,14 @@ function render(){
   if (!ready) {
     return;
   }
+  
+  // CRITICAL FIX: Block rendering during text size changes on mobile
+  // Continuous re-rendering during vv-changing causes non-stop stutter
+  if (isCoarsePointer && __isVvChangingFlag) {
+    console.log('[RENDER BLOCKED] Skipping render during vv-changing to prevent stutter');
+    return;
+  }
+  
   const showCrisis = els.showCrisis?.checked || false;
 
   const filtered = programs.filter(p => matchesFilters(p));
@@ -3116,8 +3130,10 @@ function render(){
       activeList.forEach((p, idx) => {
         const realIdx = showCrisis ? (idx + 10000) : idx;
         const card = createCard(p, realIdx);
-        // Use CSS variable instead of inline style for animation delay
-        card.style.setProperty('--enter-delay', `${Math.min(idx, 18) * 18}ms`);
+        // CRITICAL FIX: Don't set animation delays on mobile - they cause continuous stutter
+        if (!isCoarsePointer) {
+          card.style.setProperty('--enter-delay', `${Math.min(idx, 18) * 18}ms`);
+        }
         fragment.appendChild(card);
       });
       
