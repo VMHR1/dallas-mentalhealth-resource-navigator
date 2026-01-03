@@ -2511,35 +2511,23 @@ footer{
 }
 /* Add these fixes to your styles.css file */
 
-/* FIX 1: Recently Updated Badge - Now in badgeRow, disable ::after on mobile */
-/* Desktop: Keep absolute positioning for visual hierarchy */
+/* FIX 1: Recently Updated Badge - Now in badgeRow, disable ::after to prevent duplicates */
 .card[data-recent="true"]::after{
-  content: "Recently Updated";
-  position: absolute;
-  top: 14px;
-  right: 14px;
+  content: none; /* Disabled - badge is now in badgeRow for all devices */
+}
+
+/* Style the "Recently Updated" badge in badgeRow for desktop */
+.badge.recent {
   background: rgba(34,197,94,.12);
   color: #15803d;
+  border: 1px solid rgba(34,197,94,.25);
   font-size: 10px;
   padding: 4px 8px;
   border-radius: 999px;
-  border: 1px solid rgba(34,197,94,.25);
   font-weight: 800;
   letter-spacing: .03em;
   text-transform: uppercase;
-  z-index: 5;
-  max-width: 120px;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Mobile: Hide ::after badge (now in badgeRow) */
-@media (max-width: 640px), (pointer: coarse) {
-  .card[data-recent="true"]::after {
-    content: none !important;
-    display: none !important;
-  }
 }
 
 /* Ensure card has proper overflow handling - properties already defined above at line 1118 */
@@ -2929,11 +2917,7 @@ footer{
 }
 
 /* FIX 4: Card Content - Prevent Badge from Covering Text */
-/* Only apply padding when card has "Recently Updated" badge */
-.card[data-recent="true"] .cardTop{
-  padding-right: 100px; /* Add space for the "Recently Updated" badge */
-  position: relative;
-}
+/* Removed padding-right for ::after badge since badge is now in badgeRow */
 
 /* Responsive adjustment for smaller screens - badge now in badgeRow, no absolute positioning needed */
 @media (max-width: 640px){
