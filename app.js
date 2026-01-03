@@ -210,7 +210,7 @@ const TEXT_SCALE_STABILIZE_DELAY = 300; // Wait for text size to stabilize befor
 
 function updateTextScaleClass() {
   // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:updateTextScaleClass:entry',message:'Text scale check called',data:{lastCheck:__lastTextScaleCheck,now:Date.now()},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A'})}).catch(()=>{});
+  console.log('[DEBUG A] updateTextScaleClass called', {lastCheck:__lastTextScaleCheck, now:Date.now(), throttled:(Date.now() - __lastTextScaleCheck < TEXT_SCALE_CHECK_INTERVAL)});
   // #endregion
   
   // Throttle: only check once per 200ms burst
@@ -256,7 +256,7 @@ function updateTextScaleClass() {
             // CRITICAL: Class toggle triggers massive CSS recalculation, so we must be certain
             if (__lastTextScaleState !== shouldBeSmall) {
               // #region agent log
-              fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:updateTextScaleClass:classToggle',message:'Text-small class toggling',data:{shouldBeSmall:shouldBeSmall,currentRootPx:currentRootPx,baselineRootPx:baselineRootPx},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'E'})}).catch(()=>{});
+              console.log('[DEBUG E] text-small class toggle', {shouldBeSmall:shouldBeSmall, currentRootPx:currentRootPx, baselineRootPx:baselineRootPx, timestamp:Date.now()});
               // #endregion
               __lastTextScaleState = shouldBeSmall;
               // Use rAF for class toggle to batch with browser's style recalculation
@@ -380,7 +380,7 @@ window.addEventListener('scroll', () => {
 let __cachedBannerHeight = 0;
 function updateCrisisBannerOffset() {
   // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:updateCrisisBannerOffset:entry',message:'Banner offset update called',data:{isVvChanging:__isVvChangingFlag,isCoarse:isCoarsePointer},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'B'})}).catch(()=>{});
+  console.log('[DEBUG B] updateCrisisBannerOffset called', {isVvChanging:__isVvChangingFlag, isCoarse:isCoarsePointer, timestamp:Date.now()});
   // #endregion
   
   // Skip updates during active viewport changes on mobile to prevent layout thrash
@@ -508,7 +508,7 @@ if (isCoarsePointer && window.visualViewport && !__vvListenerAttached) {
   let __vvResizeT = null;
   window.visualViewport.addEventListener('resize', () => {
     // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:visualViewport:resizeEvent',message:'VisualViewport resize fired',data:{vvHeight:window.visualViewport.height,vvWidth:window.visualViewport.width,isVvChanging:__isVvChangingFlag},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'C'})}).catch(()=>{});
+    console.log('[DEBUG C] visualViewport resize', {vvHeight:window.visualViewport.height, vvWidth:window.visualViewport.width, isVvChanging:__isVvChangingFlag, timestamp:Date.now()});
     // #endregion
     
     const now = Date.now();
@@ -590,7 +590,7 @@ if (isCoarsePointer && window.visualViewport && !__vvListenerAttached) {
           // Only apply if we have sustained pattern and NOT scrolling
           if (hasSustainedPattern && !__isVvChangingFlag && !isScrolling) {
             // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:visualViewport:vvChangingStart',message:'VV-changing class ADDED',data:{eventCount:__vvEventCount,heightChange:heightDiff,isScrolling:isScrolling},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'C,E'})}).catch(()=>{});
+            console.log('[DEBUG C,E] vv-changing class ADDED', {eventCount:__vvEventCount, heightChange:heightDiff, isScrolling:isScrolling, timestamp:Date.now()});
             // #endregion
             __isVvChangingFlag = true;
             __vvStartTime = Date.now();
@@ -601,7 +601,7 @@ if (isCoarsePointer && window.visualViewport && !__vvListenerAttached) {
               clearTimeout(__vvT);
               __vvT = setTimeout(() => {
                 // #region agent log
-                fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:visualViewport:vvChangingEnd',message:'VV-changing class REMOVED',data:{duration:Date.now()-__vvStartTime},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'C,E'})}).catch(()=>{});
+                console.log('[DEBUG C,E] vv-changing class REMOVED', {duration:Date.now()-__vvStartTime, timestamp:Date.now()});
                 // #endregion
                 __isVvChangingFlag = false;
                 __vvEventCount = 0;
@@ -3103,7 +3103,7 @@ function render(){
       els.treatmentGrid.innerHTML = "";
       
       // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/67f16d41-0ece-449d-bea9-b5a8996fb326',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:render:cardsRendering',message:'Cards being rendered',data:{cardCount:activeList.length,isVvChanging:__isVvChangingFlag,textSmallActive:document.documentElement.classList.contains('text-small')},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'D'})}).catch(()=>{});
+      console.log('[DEBUG D] Cards rendering', {cardCount:activeList.length, isVvChanging:__isVvChangingFlag, textSmallActive:document.documentElement.classList.contains('text-small'), timestamp:Date.now()});
       // #endregion
       
       // Use DocumentFragment to batch DOM operations
