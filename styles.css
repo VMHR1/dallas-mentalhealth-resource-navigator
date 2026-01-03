@@ -652,6 +652,175 @@ h1{
     margin-left: 0 !important;
     margin-right: 0 !important;
   }
+  
+  /* ========== COMPREHENSIVE MOBILE UI/UX OPTIMIZATION ========== */
+  
+  /* Fix card text overflow and prevent overlap */
+  .card {
+    padding: 16px !important;
+    margin-bottom: 12px !important;
+  }
+  
+  .cardTop {
+    gap: 12px !important;
+    align-items: flex-start !important;
+    flex-wrap: nowrap !important;
+  }
+  
+  .pname {
+    font-size: 16px !important;
+    line-height: 1.3 !important;
+    margin: 0 0 6px !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    hyphens: auto !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    max-width: calc(100% - 60px) !important; /* Leave space for expand button */
+  }
+  
+  .org {
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    margin: 0 !important;
+  }
+  
+  .meta {
+    margin-top: 10px !important;
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+    font-size: 12px !important;
+  }
+  
+  /* Ensure expand button doesn't overlap text */
+  .expandBtn {
+    flex: 0 0 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    padding: 0 !important;
+    margin-left: auto !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: rgba(79, 209, 197, 0.2) !important;
+    position: relative !important;
+    z-index: 10 !important;
+  }
+  
+  /* Fix badge row to prevent overlap */
+  .badgeRow {
+    max-width: 100% !important;
+    margin: 0 0 10px !important;
+    gap: 6px !important;
+    flex-wrap: wrap !important;
+  }
+  
+  /* Fix panel expansion on mobile */
+  .panel {
+    margin-top: 12px !important;
+    padding-top: 12px !important;
+    padding-bottom: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+  }
+  
+  .card[data-open="true"] .panel {
+    max-height: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  
+  /* Fix kv grid for mobile */
+  .kv {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    padding: 10px 0 !important;
+  }
+  
+  .k {
+    font-size: 11px !important;
+    margin-bottom: 4px !important;
+  }
+  
+  .v {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+  
+  /* Fix card action buttons */
+  .card-action-btn {
+    min-height: 44px !important;
+    padding: 10px 12px !important;
+    font-size: 13px !important;
+    touch-action: manipulation !important;
+  }
+  
+  /* Fix search header text */
+  .search-header h3 {
+    font-size: 18px !important;
+    line-height: 1.3 !important;
+    margin: 0 0 8px !important;
+    word-wrap: break-word !important;
+  }
+  
+  .search-header p {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    margin: 0 0 12px !important;
+    word-wrap: break-word !important;
+  }
+  
+  /* Fix filter presets spacing */
+  .filter-presets {
+    margin: 12px 0 !important;
+    gap: 8px !important;
+    justify-content: flex-start !important;
+  }
+  
+  .filter-preset-btn {
+    padding: 10px 16px !important;
+    font-size: 13px !important;
+    min-height: 44px !important;
+    touch-action: manipulation !important;
+  }
+  
+  /* Fix container padding on mobile */
+  .container {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+  
+  /* Fix section spacing */
+  .section {
+    margin-top: 16px !important;
+    margin-bottom: 16px !important;
+    padding: 0 !important;
+  }
+  
+  /* Fix grid spacing */
+  .grid {
+    gap: 12px !important;
+    padding: 12px !important;
+  }
+  
+  /* Ensure all text is readable and doesn't overlap */
+  * {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+  
+  /* Fix results header */
+  .results-header {
+    padding: 12px 0 !important;
+    margin: 12px 0 !important;
+  }
 }
 
 /* ========== Performance Kill Switches (perf mode only) ========== */
