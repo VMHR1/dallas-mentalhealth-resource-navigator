@@ -1,0 +1,22 @@
+[
+  {
+    "fileName": "main-overview.mdc",
+    "description": "Complete system overview covering the mental health program directory architecture, key components, and high-level data flow"
+  },
+  {
+    "fileName": "data-models-programs.mdc",
+    "description": "Detailed documentation of mental health program data models, including validation rules, required fields, relationships, and service area mappings"
+  },
+  {
+    "fileName": "algorithm-program-matching.mdc",
+    "description": "Comprehensive documentation of the program search and matching algorithms, including location-based matching, service area calculations, and crisis resource prioritization"
+  },
+  {
+    "fileName": "validation-rules.mdc",
+    "description": "Detailed documentation of all domain-specific validation rules for mental health programs, including crisis content handling, neutrality enforcement, and service categorization"
+  },
+  {
+    "fileName": "data-flow-submission.mdc",
+    "description": "Documentation of the program submission workflow, verification system, and data flow between components including rate limiting and security checks"
+  }
+]
