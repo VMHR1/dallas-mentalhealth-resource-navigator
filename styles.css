@@ -610,6 +610,48 @@ h1{
     margin: 0 !important;
     padding: 0 !important;
   }
+  
+  /* Fix search input field on mobile - ensure full width and no text cutoff */
+  .input-group-primary {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+  }
+  
+  .input-wrapper {
+    width: 100% !important;
+  }
+  
+  input[type="search"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  
+  /* Ensure search-simple stacks properly on mobile */
+  .search-simple {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  
+  .btn-smart-search,
+  .btn-advanced {
+    width: 100% !important;
+    margin-top: 0 !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Fix search section spacing on mobile */
+  .search-section {
+    margin-top: -20px !important;
+    margin-bottom: 16px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
 }
 
 /* ========== Performance Kill Switches (perf mode only) ========== */
