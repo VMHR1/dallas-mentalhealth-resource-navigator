@@ -122,7 +122,9 @@ let baselineRootPx = null;
 let __textScaleRAF = null;
 let __textScaleT = null;
 let __lastTextScaleCheck = 0;
+let __lastTextScaleState = null; // Cache last state to avoid unnecessary toggles
 const TEXT_SCALE_CHECK_INTERVAL = 200; // Max one check per 200ms
+const TEXT_SCALE_STABILIZE_DELAY = 300; // Wait for text size to stabilize before checking
 
 function updateTextScaleClass() {
   // Throttle: only check once per 200ms burst
@@ -133,25 +135,49 @@ function updateTextScaleClass() {
   __lastTextScaleCheck = now;
   
   try {
-    // Get current root font size
-    const currentRootPx = parseFloat(window.getComputedStyle(document.documentElement).fontSize);
+    // CRITICAL FIX: Defer getComputedStyle call to avoid layout thrashing during active text size changes
+    // If vv-changing class is active, wait longer for stabilization
+    const isVvChanging = document.documentElement.classList.contains('vv-changing');
+    const stabilizeDelay = isVvChanging ? TEXT_SCALE_STABILIZE_DELAY + 200 : TEXT_SCALE_STABILIZE_DELAY;
     
-    // Initialize baseline on first call
-    if (baselineRootPx === null) {
-      baselineRootPx = currentRootPx;
-      return; // Don't set class on first call, just store baseline
-    }
+    // Clear any pending check
+    if (__textScaleT) clearTimeout(__textScaleT);
     
-    // If current is smaller than baseline by more than 0.5px, activate dense mode
-    // CRITICAL: At smaller text sizes, more elements are visible = more paint cost
-    // Need aggressive optimizations
-    if (currentRootPx < baselineRootPx - 0.5) {
-      document.documentElement.classList.add('text-small');
-    } else {
-      document.documentElement.classList.remove('text-small');
-    }
+    // Defer the expensive getComputedStyle call until after text size stabilizes
+    __textScaleT = setTimeout(() => {
+      // Use rAF to batch with browser's layout cycle
+      if (__textScaleRAF) cancelAnimationFrame(__textScaleRAF);
+      __textScaleRAF = requestAnimationFrame(() => {
+        try {
+          // Get current root font size (this forces layout, so we do it after stabilization)
+          const currentRootPx = parseFloat(window.getComputedStyle(document.documentElement).fontSize);
+          
+          // Initialize baseline on first call
+          if (baselineRootPx === null) {
+            baselineRootPx = currentRootPx;
+            __lastTextScaleState = null;
+            return; // Don't set class on first call, just store baseline
+          }
+          
+          // Determine new state
+          const shouldBeSmall = currentRootPx < baselineRootPx - 0.5;
+          
+          // Only toggle class if state actually changed (avoid unnecessary repaints)
+          if (__lastTextScaleState !== shouldBeSmall) {
+            __lastTextScaleState = shouldBeSmall;
+            if (shouldBeSmall) {
+              document.documentElement.classList.add('text-small');
+            } else {
+              document.documentElement.classList.remove('text-small');
+            }
+          }
+        } catch (e) {
+          // Silently fail if getComputedStyle fails
+        }
+      });
+    }, stabilizeDelay);
   } catch (e) {
-    // Silently fail if getComputedStyle fails
+    // Silently fail
   }
 }
 
@@ -169,15 +195,24 @@ function initTextScaleDetection() {
   }
   
   // Check on visualViewport resize (throttled with rAF + timeout)
+  // CRITICAL FIX: Use longer delay during active text size changes to prevent stutter
   if (window.visualViewport) {
+    let __vvResizeForTextScale = null;
     window.visualViewport.addEventListener('resize', () => {
-      if (__textScaleRAF) cancelAnimationFrame(__textScaleRAF);
-      __textScaleRAF = requestAnimationFrame(() => {
-        if (__textScaleT) clearTimeout(__textScaleT);
-        __textScaleT = setTimeout(() => {
-          updateTextScaleClass();
-        }, 50); // Small delay to batch rapid events
-      });
+      // Clear any pending check
+      if (__vvResizeForTextScale) clearTimeout(__vvResizeForTextScale);
+      
+      // Check if vv-changing is active (text size is being adjusted)
+      const isVvChanging = document.documentElement.classList.contains('vv-changing');
+      
+      // Use longer delay during active text size changes to avoid layout thrashing
+      // This prevents getComputedStyle from being called during rapid resize events
+      const delay = isVvChanging ? 400 : 150;
+      
+      __vvResizeForTextScale = setTimeout(() => {
+        // Only check after viewport has stabilized
+        updateTextScaleClass();
+      }, delay);
     });
   }
   
