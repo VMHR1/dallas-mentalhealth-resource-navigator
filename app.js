@@ -134,6 +134,13 @@ function updateTextScaleClass() {
     return;
   }
   
+  // CRITICAL: If vv-changing is active, DO NOT toggle text-small class
+  // The vv-changing class already applies necessary optimizations
+  // Adding text-small during viewport change causes massive style recalc (html.text-small * selectors)
+  if (__vvChangingFlag) {
+    return; // Skip entirely during viewport changes
+  }
+  
   // Throttle: only check once per 200ms burst
   const now = Date.now();
   if (now - __lastTextScaleCheck < TEXT_SCALE_CHECK_INTERVAL) {
@@ -143,14 +150,20 @@ function updateTextScaleClass() {
   __textScaleProcessing = true; // Set circuit breaker
   
   try {
-    // Use cached flag instead of classList.contains to avoid layout-forcing operation
-    const stabilizeDelay = __vvChangingFlag ? TEXT_SCALE_STABILIZE_DELAY + 200 : TEXT_SCALE_STABILIZE_DELAY;
+    // Use much longer stabilization delay to ensure viewport is truly stable
+    const stabilizeDelay = TEXT_SCALE_STABILIZE_DELAY + 500; // Wait 800ms total
     
     // Clear any pending check
     if (__textScaleT) clearTimeout(__textScaleT);
     
     // Defer the expensive getComputedStyle call until after text size stabilizes
     __textScaleT = setTimeout(() => {
+      // Double-check vv-changing hasn't started during delay
+      if (__vvChangingFlag) {
+        __textScaleProcessing = false;
+        return; // Abort if viewport is still changing
+      }
+      
       // Use rAF to batch with browser's layout cycle
       if (__textScaleRAF) cancelAnimationFrame(__textScaleRAF);
       __textScaleRAF = requestAnimationFrame(() => {
@@ -170,7 +183,8 @@ function updateTextScaleClass() {
           const shouldBeSmall = currentRootPx < baselineRootPx - 0.5;
           
           // Only toggle class if state actually changed (avoid unnecessary repaints)
-          if (__lastTextScaleState !== shouldBeSmall) {
+          // ONLY apply after viewport is completely stable
+          if (__lastTextScaleState !== shouldBeSmall && !__vvChangingFlag) {
             __lastTextScaleState = shouldBeSmall;
             if (shouldBeSmall) {
               document.documentElement.classList.add('text-small');
@@ -207,21 +221,27 @@ function initTextScaleDetection() {
   }
   
   // Check on visualViewport resize (throttled with rAF + timeout)
-  // CRITICAL FIX: Use longer delay during active text size changes to prevent stutter
+  // CRITICAL FIX: Disable during active viewport changes to prevent massive style recalcs
   if (window.visualViewport) {
     let __vvResizeForTextScale = null;
     window.visualViewport.addEventListener('resize', () => {
       // Clear any pending check
       if (__vvResizeForTextScale) clearTimeout(__vvResizeForTextScale);
       
-      // Use cached flag instead of classList.contains to avoid layout-forcing operation
-      // This prevents triggering the feedback loop
-      const delay = __vvChangingFlag ? 400 : 150;
+      // CRITICAL: DO NOT check during viewport changes - wait for complete stabilization
+      // The vv-changing class already provides necessary optimizations
+      // Toggling text-small during viewport change causes massive style recalc
+      if (__vvChangingFlag) {
+        return; // Skip entirely during viewport changes
+      }
       
+      // Wait much longer to ensure viewport is truly stable
       __vvResizeForTextScale = setTimeout(() => {
-        // Only check after viewport has stabilized
-        updateTextScaleClass();
-      }, delay);
+        // Double-check viewport is still stable before checking
+        if (!__vvChangingFlag) {
+          updateTextScaleClass();
+        }
+      }, 1000); // Wait 1 full second after last resize
     });
   }
   
