@@ -122,21 +122,51 @@ const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
 if (isCoarsePointer) {
   // Execute immediately, don't wait for DOMContentLoaded
   const forceHideExpensiveElements = () => {
-    // CRITICAL: Hide ALL sections from triage through hero (user confirmed these cause stutter)
-    const sectionsToHide = [
-      '.bg-gradient',
-      '.triage-split',
-      '.trust-strip', 
-      '.hero'
-    ];
+    // CRITICAL PERFORMANCE FIXES - simplify expensive elements but keep them visible
     
-    sectionsToHide.forEach(selector => {
-      document.querySelectorAll(selector).forEach(el => {
-        el.style.display = 'none';
-        el.style.visibility = 'hidden';
-        el.remove(); // Remove from DOM entirely
-      });
+    // Remove .bg-gradient completely
+    const bgGradient = document.querySelector('.bg-gradient');
+    if (bgGradient) bgGradient.remove();
+    
+    // Remove floating cards (decorative only)
+    document.querySelectorAll('.floating-card').forEach(el => el.remove());
+    
+    // Simplify triage cards - remove gradients, shadows, transitions
+    document.querySelectorAll('.triage-card').forEach(card => {
+      card.style.background = 'rgba(255,255,255,.95)';
+      card.style.boxShadow = 'none';
+      card.style.backdropFilter = 'none';
+      card.style.transition = 'none';
+      card.style.transform = 'none';
+      card.style.animation = 'none';
     });
+    
+    // Simplify trust strip
+    const trustStrip = document.querySelector('.trust-strip');
+    if (trustStrip) {
+      trustStrip.style.background = 'rgba(255,255,255,.95)';
+      trustStrip.style.boxShadow = 'none';
+    }
+    
+    document.querySelectorAll('.trust-item').forEach(item => {
+      item.style.background = 'rgba(255,255,255,.95)';
+      item.style.boxShadow = 'none';
+    });
+    
+    // Simplify hero sections
+    const heroCopy = document.querySelector('.hero-copy');
+    if (heroCopy) {
+      heroCopy.style.backdropFilter = 'none';
+      heroCopy.style.webkitBackdropFilter = 'none';
+      heroCopy.style.background = 'rgba(255,255,255,.95)';
+      heroCopy.style.boxShadow = 'none';
+    }
+    
+    const heroVisual = document.querySelector('.hero-visual');
+    if (heroVisual) {
+      heroVisual.style.background = 'rgba(245,245,245,.95)';
+      heroVisual.style.boxShadow = 'none';
+    }
     
     // Disable search-section sticky
     const searchSection = document.querySelector('.search-section');
@@ -152,9 +182,6 @@ if (isCoarsePointer) {
       card.style.transition = 'none';
       card.style.opacity = '1';
     });
-    
-    // Disable ALL animations globally on mobile
-    document.documentElement.style.setProperty('--should-animate', '0');
   };
   
   // Run immediately

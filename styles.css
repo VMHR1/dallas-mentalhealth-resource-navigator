@@ -608,25 +608,71 @@ html.perf-no-sticky .search-section {
     -webkit-backdrop-filter: none !important;
   }
   
-  /* CRITICAL FIX: Hide ALL expensive elements from triage cards through search section */
-  /* User confirmed: hiding these sections stops ALL stuttering */
-  .triage-split,
-  .trust-strip,
-  .hero {
-    display: none !important; /* Completely remove from layout */
+  /* CRITICAL PERFORMANCE FIXES: Keep sections visible but optimize them heavily */
+  
+  /* Fix triage cards - remove ALL expensive properties */
+  .triage-card {
+    background: rgba(255,255,255,.95) !important; /* Solid color, no gradient */
+    box-shadow: none !important; /* Remove shadow completely */
+    border: 2px solid rgba(15,23,42,.12) !important;
+    transform: none !important;
+    transition: none !important;
+    will-change: auto !important;
+    contain: layout style paint; /* Isolate from rest of page */
+  }
+  
+  .triage-card.emergency {
+    background: rgba(255,255,255,.95) !important;
+    border-color: rgba(239,68,68,.3) !important;
+  }
+  
+  .triage-card.planning {
+    background: rgba(255,255,255,.95) !important;
+    border-color: rgba(79,209,197,.3) !important;
+  }
+  
+  /* Fix trust strip - simplify completely */
+  .trust-strip {
+    background: rgba(255,255,255,.95) !important; /* Solid, no gradient */
+    box-shadow: none !important;
+    border: 1px solid rgba(15,23,42,.1) !important;
+    contain: layout style paint;
+  }
+  
+  .trust-item {
+    background: rgba(255,255,255,.95) !important;
+    box-shadow: none !important;
+    border: 1px solid rgba(15,23,42,.08) !important;
+  }
+  
+  /* Fix hero section - remove ALL backdrop-filters and gradients */
+  .hero-copy {
+    background: rgba(255,255,255,.95) !important; /* Solid color */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: 1px solid rgba(15,23,42,.12) !important;
+  }
+  
+  .hero-visual {
+    background: rgba(245,245,245,.95) !important; /* Simple solid */
+    box-shadow: none !important;
+  }
+  
+  /* Hide floating cards on mobile - they're decorative and expensive */
+  .floating-card {
+    display: none !important;
   }
   
   /* CRITICAL FIX: Disable sticky positioning on mobile to eliminate stutter */
-  /* Sticky elements cause continuous repaints during text size changes */
   .search-section {
-    position: static !important; /* Override sticky positioning */
+    position: static !important;
     margin-top: 0 !important;
   }
   
-  /* CRITICAL: Hide fixed full-viewport background layer completely on mobile */
-  /* Even without animation, a fixed full-viewport element with complex gradients is expensive to repaint during scroll */
+  /* CRITICAL: Hide fixed full-viewport background */
   .bg-gradient {
-    display: none !important; /* Completely remove from paint/compositing */
+    display: none !important;
   }
   
   /* Use static body background instead */
