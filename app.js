@@ -210,7 +210,9 @@ const TEXT_SCALE_STABILIZE_DELAY = 300; // Wait for text size to stabilize befor
 
 function updateTextScaleClass() {
   // #region agent log
-  fetch('http://192.168.1.244:8888/log',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'updateTextScaleClass',message:'Text scale check',data:{lastCheck:__lastTextScaleCheck,throttled:(Date.now()-__lastTextScaleCheck<TEXT_SCALE_CHECK_INTERVAL)},timestamp:Date.now(),hypothesisId:'A'})}).catch(()=>{});
+  const logData = {location:'updateTextScaleClass',message:'Text scale check',data:{lastCheck:__lastTextScaleCheck,throttled:(Date.now()-__lastTextScaleCheck<TEXT_SCALE_CHECK_INTERVAL)},timestamp:Date.now(),hypothesisId:'A'};
+  console.log('[TEXT SCALE]', logData);
+  fetch('http://192.168.1.244:8888/log',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(logData)}).catch(e=>console.error('Fetch failed:',e));
   // #endregion
   
   // Throttle: only check once per 200ms burst
@@ -508,7 +510,9 @@ if (isCoarsePointer && window.visualViewport && !__vvListenerAttached) {
   let __vvResizeT = null;
   window.visualViewport.addEventListener('resize', () => {
     // #region agent log
-    fetch('http://192.168.1.244:8888/log',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'vvResize',message:'visualViewport resize',data:{vvHeight:window.visualViewport.height,vvWidth:window.visualViewport.width,isVvChanging:__isVvChangingFlag},timestamp:Date.now(),hypothesisId:'C'})}).catch(()=>{});
+    const logData = {location:'vvResize',message:'visualViewport resize',data:{vvHeight:window.visualViewport.height,vvWidth:window.visualViewport.width,isVvChanging:__isVvChangingFlag},timestamp:Date.now(),hypothesisId:'C'};
+    console.log('[VV RESIZE]', logData);
+    fetch('http://192.168.1.244:8888/log',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(logData)}).catch(e=>console.error('Fetch failed:',e));
     // #endregion
     
     const now = Date.now();
