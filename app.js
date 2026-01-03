@@ -1064,6 +1064,16 @@ function parseSmartSearch(query) {
     filters.care = 'Navigation';
   }
   
+  // Service domain detection - eating disorders
+  if(q.includes('eating disorder') || q.includes('anorexia') || q.includes('bulimia') || q.includes('binge eating')) {
+    filters.serviceDomain = 'eating_disorders';
+  }
+  
+  // Service domain detection - substance use
+  if(q.includes('substance use') || q.includes('substance abuse') || q.includes('drug treatment') || q.includes('alcohol treatment') || q.includes('addiction')) {
+    filters.serviceDomain = 'substance_use';
+  }
+  
   // Crisis detection
   if(q.includes('crisis') || q.includes('emergency') || q.includes('urgent')) {
     filters.showCrisis = true;
@@ -1708,16 +1718,18 @@ function matchesFilters(p){
     // }
   }
 
-  // Service domain filter - only applies when SHOW_SUD_FILTERS is enabled
+  // Service domain filter - check both UI element and parsed search filters
+  const serviceDomainVal = (els.serviceDomain ? safeStr(els.serviceDomain.value || '') : '') || parsed.serviceDomain || '';
+  if (serviceDomainVal) {
+    const programDomains = Array.isArray(p.service_domains) 
+      ? p.service_domains.map(d => safeStr(d).toLowerCase())
+      : [];
+    // Check if program's service_domains includes the selected domain
+    if (!programDomains.includes(serviceDomainVal.toLowerCase())) return false;
+  }
+  
+  // SUD services filter - only applies when SHOW_SUD_FILTERS is enabled
   if (flags.SHOW_SUD_FILTERS) {
-    const serviceDomainVal = els.serviceDomain ? safeStr(els.serviceDomain.value || '') : '';
-    if (serviceDomainVal) {
-      const programDomains = Array.isArray(p.service_domains) 
-        ? p.service_domains.map(d => safeStr(d).toLowerCase())
-        : [];
-      // Check if program's service_domains includes the selected domain
-      if (!programDomains.includes(serviceDomainVal.toLowerCase())) return false;
-    }
 
     // SUD services filter - only applies when SHOW_SUD_FILTERS is enabled
     if (els.sudServices) {
@@ -3707,6 +3719,11 @@ function bind(){
     if(parsed.care) els.care.value = parsed.care;
     els.showCrisis.checked = parsed.showCrisis;
     
+    // Apply service domain filter if detected
+    if(parsed.serviceDomain && els.serviceDomain) {
+      els.serviceDomain.value = parsed.serviceDomain;
+    }
+    
     syncTopToggles();
     render();
     
@@ -4244,7 +4261,8 @@ function updateActiveFilterChips() {
     const domainLabels = {
       'mental_health': 'Mental Health',
       'substance_use': 'Substance Use',
-      'co_occurring': 'Co-occurring'
+      'co_occurring': 'Co-occurring',
+      'eating_disorders': 'Eating Disorders'
     };
     activeFilters.push({
       type: 'serviceDomain',

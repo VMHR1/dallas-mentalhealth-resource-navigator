@@ -199,6 +199,16 @@ function parseSmartSearch(query, cities) {
     filters.care = 'Navigation';
   }
   
+  // Service domain detection - eating disorders
+  if(q.includes('eating disorder') || q.includes('anorexia') || q.includes('bulimia') || q.includes('binge eating')) {
+    filters.serviceDomain = 'eating_disorders';
+  }
+  
+  // Service domain detection - substance use
+  if(q.includes('substance use') || q.includes('substance abuse') || q.includes('drug treatment') || q.includes('alcohol treatment') || q.includes('addiction')) {
+    filters.serviceDomain = 'substance_use';
+  }
+  
   // Crisis detection
   if(q.includes('crisis') || q.includes('emergency') || q.includes('urgent')) {
     filters.showCrisis = true;
